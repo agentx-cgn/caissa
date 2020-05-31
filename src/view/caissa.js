@@ -91,9 +91,8 @@ const Events = {
         DB.caissa('lastend', Date.now());
         console.log('Bye');
     },
-    onunload: function () {
+    onload: function () {
         console.log('Info   :', '... done after', Date.now() - window.t0, 'msecs');
-        console.log(' ');
     },
     onselectionchange : function() {
         const selection = document.getSelection();

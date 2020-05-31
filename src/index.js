@@ -19,7 +19,7 @@ window.caissa = {
     db:     DB,
 };
 
-window.addEventListener('unload',            Events.onunload);
+window.addEventListener('load',              Events.onload);
 window.addEventListener('beforeunload',      Events.onbeforeunload);
 document.addEventListener('selectionchange', Events.onselectionchange);
 
