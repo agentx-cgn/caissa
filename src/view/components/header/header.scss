@@ -1,0 +1,83 @@
+
+/*
+<nav#site-navigation>
+  <label>
+  <input#toggle-mobile-menu>
+  <ul#main-menu>
+*/
+
+#site-navigation {
+    display: block;
+    background: #555;
+}
+
+#site-navigation  input {
+    display: none;
+}
+#site-navigation input:checked + ul {
+    position: absolute;
+    display: block;
+    clear: both;
+    background: #555;
+    color: #fff;
+    z-index: 10;
+}
+
+#site-navigation label {
+    display: block;
+    font-size: 28px;
+    color: #fff;
+    position: absolute;
+    padding: 4px 4px 4px 12px;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  #site-navigation ul li {
+    display: block;
+    padding: 12px 10px;
+    cursor: pointer;
+  }
+
+  #site-navigation ul li.unselected:hover {
+    background-color: #806464;
+  }
+
+  #site-navigation ul li.unselected:hover {
+    background-color: #806464;
+  }
+
+  #site-navigation ul li.unselected:hover a,
+  #site-navigation ul li.unselected a:focus {
+    color: black;
+    outline: none
+  }
+
+  #site-navigation ul li.selected {
+    background-color: #806464;
+  }
+  #site-navigation ul li.selected a:focus {
+    outline: none;
+  }
+
+//   #site-navigation a {
+//     text-decoration: none;
+//     color: #eee;
+//   }
+
+  i.navi.fa {
+    color: #bbb; flex-grow: 0; padding: 12px 10px;
+  }
+  i.hamburger {
+    font-size: 24px;
+    color: #AAA
+  }
+  div.home {
+    padding-top: 10px;
+    margin-left: 32px;
+  }

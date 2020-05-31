@@ -1,0 +1,260 @@
+
+import board_svg         from '../../extern/cm-chessboard/chessboard-sprite.svg';
+import {COLOR, MOVE_INPUT_MODE} from '../../extern/cm-chessboard/Chessboard';
+
+const fens =   {
+    empty: '8/8/8/8/8/8/8/8 w - - 0 1',
+    start: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+};
+
+const pieces = {
+    fens :{
+        white:  'PPPPPPPPRNBQKBNR',
+        black:  'pppppppprnbqkbnr',
+        sorted: 'kqrbnp',
+    },
+    blacks: ['wk', 'wq', 'wr', 'wb', 'wn', 'wp' ],
+    whites: ['bk', 'bq', 'br', 'bb', 'bn', 'bp' ],
+};
+
+
+const playtemplates = [
+    {mode: 's-s', turn: 0 , uuid: '0000000A', subline: 'this is fun',
+        pgn: '', white: 'Stockfish', black: 'Stockfish', engine: 'stockfish',
+        depth: 5, timecontrol: 1,
+    },
+
+    {mode: 'h-s', turn: 0 , uuid: '0000000B', subline: 'beat the machine',
+        pgn: '', white: 'Human', black: 'Stockfish', engine: 'stockfish',
+        depth: 3, timecontrol: 1,
+    },
+
+];
+
+const playstatetemplate = {
+    // timestamp: null, is in play
+    moves: [],
+    fen:   fens.start,
+    play:  null,
+    timecontrol: null,
+};
+
+const gametemplateshort = {
+
+    uuid:        '00000000',     // string, 6 or 8 alphanums
+    // STR (Seven Tag Roster)
+    white:       'White',        // name of white player
+    black:       'Black',        // name of black player
+    event:       '',
+    site:        '',
+    round:       '',
+    date:        '',
+    result:      '',
+
+    //
+    termination: '',
+    timecontrol: '',
+    pgn:         '',             // game moves in pgn notation
+    header:      {},            // from PGN parsing
+
+};
+
+const gametemplate = {
+    ...gametemplateshort,
+    mode:       'h-h',          // indicates opponents s=stockfish, h= human, l=leela
+    turn:       -3 ,            // Number, used to gen gen and display on board (-3 unknown, -2 empty board, -1 start, 0 after first ply)
+    plycount:   0,              // # of halfmoves
+    subline:    'this is fun',  // optional comment
+    opening:    '',             // optional
+    time:       10,             // optional, only for machine opponent
+    depth:      3,              // optional,
+    difficulty: 'rooky',        // optional, only for machine opponent
+    timestamp:  1589137091395,  // game started or viewed
+};
+
+const gamestatetemplate = {
+    game        : {},
+    moves       : [],
+    score: {
+        maxcp       : 0,
+        maxmate     : 0,
+    },
+    buttons: {
+        minimize: true,
+        maximize: false,
+        rotate:   true,
+        backward: true,
+        forward:  true,
+        left:     true,
+        right:    true,
+        play:     false,
+        pause:    false,
+        evaluate: true,
+        spinner:  false,
+    },
+    flags : {
+        turn: '',     // turn w || b
+        over: false,  // game_over
+        chck: false,  // in_check
+        mate: false,  // check_mate
+        draw: false,  // in_draw
+        stal: false,  // in_stalemate
+        insu: false,  // insufficient_material
+        repe: false,  // in_threefold_repetition
+    },
+};
+
+
+const opponents = {
+    'h': 'Human',
+    'l': 'Leela',
+    's': 'Stockfish',
+};
+
+// const urls = [
+//     'https://google.com',
+//     'https://en.wikipedia.com',
+// ].map(encodeURI);
+
+const config = {
+
+    fens,
+    pieces,
+    opponents,
+
+    gametemplate,
+    gametemplateshort,
+
+    gamestatetemplate,
+    playstatetemplate,
+
+    playtemplates,
+
+    navigation : [
+        ['/sources/',    'PGNS'],
+        ['/games/',      'GAMES'],  // loads imported games so far
+        ['/game/',       'GAME'],
+        ['/plays/',      'PLAY'],
+        ['/analyzer/',   'ANALYSE'],
+        ['/system/',     'SYSTEM'],
+        ['/options/',    'OPTIONS'],
+        ['/help/',       'HELP'],
+
+        // ['/logs/',       'LOGS'],
+        // [`/info/${urls[1]}/`,   'INFO'],
+        // ['/options/',     m('i.fa.fa-cog', {})],
+        // ['/config',    'CONFIG'],
+        // ['/db',       'DB'],
+        // ['/test',     'TEST'],
+    ],
+    apis: [
+        {idx: 1, caption: 'api.chess.com/pub/player/',   value: 'https://api.chess.com/pub/player/noiv/games/2020/04/pgn'},
+        {idx: 2, caption: 'lichess.org/api/games/user',  value: 'http://localhost:3000/static/games.pgn'},
+        {idx: 3, caption: 'localhost:3000/static/games.few.pgn',   value: 'http://localhost:3000/static/games.few.pgn'},
+        {idx: 4, caption: 'localhost:3000/static/games.pgn',       value: 'http://localhost:3000/static/games.pgn'},
+    ],
+
+    timecontrols: [                          // initial | bonus
+        {idx: 0, caption: '10 secs', value:`${ 1*10*1000}|0`},
+        {idx: 1, caption: '1 min', value:  `${ 1*60*1000}|0`},
+        {idx: 2, caption: '5 min', value:  `${ 5*60*1000}|0`},
+        {idx: 3, caption: '10 min', value: `${10*60*1000}|0`},
+    ],
+
+    plays: {
+        difficulties : {
+            '0':   'looser',
+            '3':   'rooky',
+            '5':   'beginner',
+            '10':  'experienced',
+            '20':  'hardcore',
+            '30': 'no chance',
+        },
+        defaults: [
+            {uuid: '00000001', mode: 'h-s', time: 10, depth: 3, subline: 'play white against Stockfish'},
+            {uuid: '00000002', mode: 's-h', time: 10, depth: 3, subline: 'play black against Stockfish'},
+            {uuid: '00000003', mode: 's-s', time: 10, depth: 3, subline: 'this is fun'                 },
+        ],
+    },
+    board: {
+        config: {
+            position:               'empty',        // set as fen, 'start' or 'empty'
+            orientation:            COLOR.white,    // white on bottom
+            style: {
+                cssClass:           'gray',         // this is custom => analyzer.scss
+                showCoordinates:    false,           // show ranks and files
+                showBorder:         false,           // display a border around the board
+            },
+            sprite: {
+                url:                board_svg ,     // pieces and markers are stored es svg in the sprite
+                grid:               40,             // the sprite is tiled with one piece every 40px
+                markers:            ['marker4', 'marker5'],
+            },
+            responsive:             true,           // resizes the board on window resize, if true
+            animationDuration:      300,            // pieces animation duration in milliseconds
+            moveInputMode:          MOVE_INPUT_MODE.dragPiece, // set to MOVE_INPUT_MODE.dragPiece or MOVE_INPUT_MODE.dragMarker for interactive movement
+        },
+    },
+
+    flagTitles : {
+        'n'  : 'a non-capture',
+        'b'  : 'a pawn push of two squares',
+        'e'  : 'an en passant capture',
+        'c'  : 'a standard capture',
+        'p'  : 'a promotion',
+        'k'  : 'kingside castling',
+        'q'  : 'queenside castling',
+        'pc' : 'capture + promotion',
+    },
+    flagColors: {
+        w: {
+            'n'  : '#fff',
+            'b'  : 'darkgreen',
+            'e'  : 'darkgreen',
+            'c'  : 'darkred',
+            'p'  : 'red',
+            'k'  : 'darkgreen',
+            'q'  : 'darkgreen',
+            'pc' : 'orange',
+        },
+        b: {
+            'n'  : '#333',
+            'b'  : 'darkgreen',
+            'e'  : 'darkred',
+            'c'  : 'darkred',
+            'p'  : 'red',
+            'k'  : 'darkgreen',
+            'q'  : 'darkgreen',
+            'pc' : 'orange',
+        },
+    },
+
+    fontPieces : { // 'l w t n j o'
+        'k': 'l',
+        'q': 'w',
+        'r': 't',
+        'b': 'n',
+        'n': 'j',
+        'p': 'o',
+    },
+    fontPiecesWhite : { // 'l w t n j o'
+        'K': 'l',
+        'Q': 'w',
+        'R': 't',
+        'B': 'n',
+        'N': 'j',
+        'P': 'o',
+    },
+
+    // fontPieces : {
+    //     'k': '♚',
+    //     'q': '♛',
+    //     'r': '♜',
+    //     'b': '♝',
+    //     'n': '♞',
+    //     'p': '♟',
+    // },
+
+};
+
+export default config;

@@ -1,0 +1,39 @@
+/* font converted using font-converter.net. thank you! */
+@font-face {
+  font-family: "Iosevka-Term-Regular";
+  src: url("./iosevka-term-regular.eot"); /* IE9 Compat Modes */
+  src: url("./iosevka-term-regular.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("./iosevka-term-regular.otf") format("opentype"), /* Open Type Font */
+    url("./iosevka-term-regular.svg") format("svg"), /* Legacy iOS */
+    url("./iosevka-term-regular.ttf") format("truetype"), /* Safari, Android, iOS */
+    url("./iosevka-term-regular.woff") format("woff"), /* Modern Browsers */
+    url("./iosevka-term-regular.woff2") format("woff2"); /* Modern Browsers */
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Iosevka-Term-Medium";
+  src: url("./iosevka-term-medium.eot"); /* IE9 Compat Modes */
+  src: url("./iosevka-term-medium.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("./iosevka-term-medium.otf") format("opentype"), /* Open Type Font */
+    url("./iosevka-term-medium.svg") format("svg"), /* Legacy iOS */
+    url("./iosevka-term-medium.ttf") format("truetype"), /* Safari, Android, iOS */
+    url("./iosevka-term-medium.woff") format("woff"), /* Modern Browsers */
+    url("./iosevka-term-medium.woff2") format("woff2"); /* Modern Browsers */
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Iosevka-Term-Bold";
+  src: url("./iosevka-term-bold.eot"); /* IE9 Compat Modes */
+  src: url("./iosevka-term-bold.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("./iosevka-term-bold.otf") format("opentype"), /* Open Type Font */
+    url("./iosevka-term-bold.svg") format("svg"), /* Legacy iOS */
+    url("./iosevka-term-bold.ttf") format("truetype"), /* Safari, Android, iOS */
+    url("./iosevka-term-bold.woff") format("woff"), /* Modern Browsers */
+    url("./iosevka-term-bold.woff2") format("woff2"); /* Modern Browsers */
+  font-weight: normal;
+  font-style: normal;
+}

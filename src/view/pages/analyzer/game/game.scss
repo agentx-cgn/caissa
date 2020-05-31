@@ -1,0 +1,117 @@
+
+/*
+.section
+    .gm-bar
+        .gm-bar-buttons
+            .gm-button ...
+        .gm-bar-progress
+            .gm-progress
+    .gm-players
+    .gm-moves
+        tr.move ...
+    .gm-bar
+        .gm-bar-flags
+            .gm-flag ...
+    .gm-result
+*/
+
+div.gm-bar {
+    height: 42px;
+    background-color: #888;
+    padding-top: 5px;
+    text-align: center;
+}
+
+div.gm-bar-progress {
+    width: 100%;
+    height: 4px;
+}
+
+div.gm-progress {
+    width: 0;
+    height: 100%;
+    // height: 0.5rem;
+    // background-color: transparent;
+    background-color: #4a8;
+}
+
+div.gm-moves {
+    margin: 0.5rem 0;
+}
+tr.gm-move {
+    cursor: pointer;
+}
+tr.gm-move:hover {
+    background-color: #a78e8e;
+}
+
+
+
+/* GAME FLAGS */
+// div.gm-flags {
+//     text-align: center;
+// }
+div.gm-flag {
+    width: 20px;
+    height: 20px;
+    border-radius: 12px;
+    margin: 0.4rem;
+}
+i.gm-flag {
+    margin: 0.5rem;
+    background-color: transparent;
+    vertical-align: top;
+}
+
+/* GAME BUTTONS */
+div.gm-buttons {
+    width: 100%;
+    height: 100%;
+    color: white;
+    text-align: center;
+}
+
+i.gm-button:hover {
+    color: #000;
+    background-color: #a78e8e;
+}
+i.gm-button,
+i.gm-spinner {
+    color: #ddd;
+    padding: 0.4rem 0.65rem;
+    font-size: 1.3rem;
+}
+i.gm-button {
+    cursor: pointer;
+    width: 24px;
+}
+i.gm-button.dn,
+i.gm-spinner.dn {
+    display: none;
+}
+
+
+div.game-entry {
+    padding: 0.125rem 1rem ;
+    margin: 0.25rem 0;
+    background-color: transparent;
+    cursor: pointer;
+}
+div.game-entry:hover {
+    background-color: #89b;
+    color: white;
+    transition: background-color 0.2s ease;
+}
+div.game-line1 {
+    font-family: 'Iosevka-Term-Medium';
+    color: #333
+}
+div.game-line2 {
+    font-family: 'Iosevka-Term-Medium';
+    color: #ddd;
+    margin: 0.125rem 0;
+}
+div.game-line3 {
+    font-family: 'Iosevka-Term-Regular';
+    color: #ddd;
+}

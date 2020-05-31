@@ -1,0 +1,35 @@
+/* https://fonts.google.com/specimen/Saira+Condensed?category=Sans+Serif,Display&query=condensed */
+
+@font-face {
+  font-family: 'SairaCondensed-Light';
+  src: url('SairaCondensed-Light.eot');
+  src: url('SairaCondensed-Light.eot?#iefix') format('embedded-opentype'),
+       url('SairaCondensed-Light.svg#SairaCondensed-Light') format('svg'),
+       url('SairaCondensed-Light.ttf') format('truetype'),
+       url('SairaCondensed-Light.woff') format('woff'),
+       url('SairaCondensed-Light.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+    font-family: 'SairaCondensed-Regular';
+    src: url('SairaCondensed-Regular.eot');
+    src: url('SairaCondensed-Regular.eot?#iefix') format('embedded-opentype'),
+         url('SairaCondensed-Regular.svg#SairaCondensed-Regular') format('svg'),
+         url('SairaCondensed-Regular.ttf') format('truetype'),
+         url('SairaCondensed-Regular.woff') format('woff'),
+         url('SairaCondensed-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'SairaCondensed-Medium';
+    src: url('SairaCondensed-Medium.eot');
+    src: url('SairaCondensed-Medium.eot?#iefix') format('embedded-opentype'),
+         url('SairaCondensed-Medium.svg#SairaCondensed-Medium') format('svg'),
+         url('SairaCondensed-Medium.ttf') format('truetype'),
+         url('SairaCondensed-Medium.woff') format('woff'),
+         url('SairaCondensed-Medium.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}

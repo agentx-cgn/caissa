@@ -1,0 +1,295 @@
+// import '../../../../extern/cm-chessboard/cm-chessboard.css';
+
+
+section.section-left {
+  overflow-x: hidden;
+}
+
+// BOARD
+div.board-bar-top,
+div.board-bar-bot {
+    padding: 10px 8px 6px 8px;
+    background-color: #bbb;
+}
+
+.ahover-b {
+  color: #333;
+  font-weight: 800;
+  padding: 1px 2px;
+}
+.ahover-b:hover {
+  background-color: #a78e8e;
+  color: white;
+}
+.ahover-w {
+  color: #333;
+  font-weight: 800;
+  padding: 1px 2px;
+}
+.ahover-w:hover {
+  background-color: #a78e8e;
+  color: white;
+}
+
+
+/* GAMES */
+
+
+
+
+
+
+
+
+
+
+
+
+/* MOVE */
+
+// td.tr.fiom.f5.fw8.c555
+.moves-num {
+  text-align: right;
+  font-family: Iosevka;
+  font-weight: 800;
+  font-size: Xrem;
+  color: #555;
+}
+
+// tc.f4.pa0
+.moves-piece-white {
+  text-align: center;
+  font-size: 1rem;
+  padding: 0;
+  color: white
+}
+.moves-piece-black {
+  text-align: center;
+  font-size: 1rem;
+  padding: 0;
+  color: black
+
+}
+
+// td.tl.fiom.f5
+.moves-san {
+  text-align: left;
+  font-family: Iosevka;
+  font-size: 1rem;
+
+}
+
+// 'td.f6'
+.moves-eval {
+  font-size: 1rem;
+  min-width: 20px
+}
+
+div.default-options {
+  background-color: #aaa;
+  padding: 8px 24px;
+}
+div.default-options div.cat-caption {
+  margin-top: 1rem;
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  color: white;
+}
+div.play-options input,
+div.default-options input {
+  font-weight: 800;
+}
+div.play-options input[type="checkbox"],
+div.default-options input[type="checkbox"] {
+  vertical-align: middle;
+  transform: scale(1.5);
+}
+div.play-options input[type="number"],
+div.default-options input[type="number"] {
+  text-align: right;
+}
+div.play-options input[type="range"],
+div.default-options input[type="range"] {
+  max-width: 100%; vertical-align: middle;
+}
+div.default-options select option:hover {
+  background-color: #a89;
+}
+
+div.play-options {
+  background-color: #bbb;
+  margin: 0.5rem 0;
+  padding: 0.5rem 2rem;
+  border-top: 5px solid #89b;
+}
+div.play-options div.cat-caption {
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  color: white;
+}
+
+
+div.page-options {
+  background-color: #eee;
+  padding: 8px 24px;
+}
+div.page-options div.cat-caption {
+  font-weight: 800;
+  font-size: 1.25rem;
+  margin: 2rem 0 0.5rem 0;
+  padding-left: 1rem;
+  letter-spacing: 1px
+}
+
+div.control {
+    margin: 0.6rem 0;
+    width: 100%;
+}
+div.control-label-40 {
+    // dib tr f5 pr3 w-40
+    display: inline-block;
+    text-align: right;
+    font-size: 1rem;
+    padding-right: 1rem;
+    width: 40%;
+}
+div.control-input-60 {
+    display: inline-block;
+    text-align: left;
+    width: 60%;
+}
+div.control-label-100 {
+    // div.tl.f5.pl3.w-100
+    display: inline-block;
+    text-align: left;
+    font-size: 1rem;
+    padding-left: 1rem;
+    width: 100%;
+}
+div.tl.f5.pl3.w-100
+
+
+/*
+  f5 : 1rem
+  f4: 1.25 rem
+  p3: 1rem
+
+*/
+
+
+
+
+
+/* CHESSBOARD */
+svg.cm-chessboard rect.border {
+    stroke: transparent;
+  }
+
+  .cm-chessboard rect.square.dropzone {
+    fill: darkred;
+  }
+
+  .cm-chessboard.gray .board .square.white {
+    fill: #bbb;
+  }
+
+  .cm-chessboard.gray .board .square.black {
+    fill: #888;
+  }
+
+  .cm-chessboard.gray.has-border .board .border {
+    fill: #ccc;
+  }
+
+  .cm-chessboard.gray.has-border .board .border-inner {
+    fill: #444;
+  }
+
+
+  .cm-chessboard .markers .marker.emphasize {
+    stroke: blue;
+    opacity: 0.5; }
+
+  .cm-chessboard .markers .marker.pointer {
+    stroke: red;
+    fill: blue;
+    opacity: 0.5; }
+
+  .cm-chessboard .markers .marker.line {
+    stroke: green;
+    fill: yellow;
+    opacity: 0.5; }
+
+  .cm-chessboard .markers .marker.arrow {
+    stroke: orange;
+    fill: yellow;
+    opacity: 0.5; }
+
+  .cm-chessboard .markers .marker.rectblack {
+    fill: black;
+    opacity: 0.5; }
+
+  .cm-chessboard .markers .marker.rectwhite {
+    fill: white;
+    opacity: 0.5; }
+
+
+  .cm-chessboard .caissa-arrows {
+    pointer-events: none;
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 1.0;
+  }
+
+  .cm-chessboard .caissa-arrows .arrow.test {
+    pointer-events: auto;
+    fill: none;
+    stroke: darkorange;
+    stroke-width: 4;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+
+  .cm-chessboard .caissa-arrows .arrow.pinned {
+    stroke: darkred;
+    opacity: 0.5;
+  }
+
+  .cm-chessboard .caissa-arrows .arrow.last-black {
+    stroke: black;
+    stroke-width: 3;
+    opacity: 0.2;
+  }
+
+  .cm-chessboard .caissa-arrows .arrow.last-white {
+    stroke: white;
+    stroke-width: 3;
+    opacity: 0.2;
+  }
+
+  .cm-chessboard .caissa-arrows .arrow.bestmove {
+    pointer-events: stroke;
+    stroke: green;
+    stroke-width: 6;
+    opacity: 0.5;
+    cursor: pointer;
+  }
+
+  .cm-chessboard .caissa-arrows .arrow.ponder {
+    stroke: red;
+    stroke-width: 6;
+    opacity: 0.5;
+  }
+
+  .cm-chessboard .caissa-arrows .arrow.validmove {
+    // stroke: greenyellow;
+    stroke: #7b7;
+    stroke-width: 4;
+    opacity: 0.9;
+  }

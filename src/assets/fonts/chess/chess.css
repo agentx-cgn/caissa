@@ -1,0 +1,12 @@
+@font-face {
+    font-family: 'Chess';
+    src: url('ChessPiece.eot');
+    src: url('ChessPiece.eot?#iefix') format('embedded-opentype'),
+        url('ChessPiece.woff2') format('woff2'),
+        url('ChessPiece.woff') format('woff'),
+        url('ChessPiece.ttf') format('truetype'),
+        url('ChessPiece.svg#ChessPiece') format('svg');
+    font-weight: 100;
+    font-style: normal;
+}
+

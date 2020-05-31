@@ -1,0 +1,138 @@
+@import-normalize; /* bring in normalize.css styles */
+@import './extern/cm-chessboard/cm-chessboard.css';
+
+@import './assets/fonts/fontawesome/css/all.css';
+@import './assets/fonts/chess/chess.css';
+
+@import './assets/fonts/Iosevka/iosevka-term.css';
+@import './assets/fonts/Saira/saira.css';
+
+// https://www.dafont.com/chess.font
+
+// ns = not small -> @media screen and (min-width: 30em) = [0, 30em]
+// m = medium -> @media screen and (min-width: 30em) and (max-width: 60em) = [30em, 60em]
+// l = large -> @media screen and (min-width: 60em) = [60em, ∞]
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  position: relative;
+}
+
+body, #root {
+  font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  color: #333;
+  background-color: #888;
+  overflow: hidden;
+}
+
+input {
+  background-color: #ddd;
+  padding: 4px 16px;
+  border: 0;
+  color:  #333;
+  margin: 2px 0;
+}
+
+input:focus {
+  outline:none;
+  border-color:#9ecaed;
+  box-shadow:0 0 10px #9ecaed;
+}
+
+div.header {
+  overflow-y: hidden;
+  background-color: #555;
+  height: 42px;
+}
+
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.noselect {
+  user-select: none;         /* standard syntax */
+  -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+  -moz-user-select: none;    /* mozilla browsers */
+  -khtml-user-select: none;  /* webkit (konqueror) browsers */
+  -ms-user-select: none;     /* IE10+ */
+}
+
+
+
+/* overwrite or extend tachyons here */
+
+
+.flex-grow {
+    flex: 1 0 auto;
+}
+.flex-shrink {
+    flex: 0 1 auto;
+}
+.viewport-y {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.viewport-xy {
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.outline   { outline: 1px solid white }
+
+.chess     { font-family: 'Chess'; }
+.fior      { font-family: 'Iosevka-Term-Regular'; }
+.fiom      { font-family: 'Iosevka-Term-Medium'; }
+.fiob      { font-family: 'Iosevka-Term-Bold'; }
+.sail      { font-family: 'SairaCondensed-Light'; }
+.sair      { font-family: 'SairaCondensed-Regular'; }
+.saim      { font-family: 'SairaCondensed-Medium'; }
+
+.lh1       { line-height: 1rem; }
+.h05       { height:  0.5rem; }
+.pa0       { padding: 0 !important; }
+.ma0       { margin:  0 !important; }
+
+.cred      { color: darkred; }
+.c156      { color: #156; }
+.cfe6      { color: #fe6} ;
+
+.cfff      { color: #fff; }
+.ceee      { color: #eee; }
+.cddd      { color: #ddd; }
+.cbbb      { color: #bbb; }
+.caaa      { color: #aaa; }
+.c999      { color: #999; }
+.c888      { color: #888; }  // background
+.c777      { color: #777; }
+.c666      { color: #666; }
+.c555      { color: #555; }
+.c333      { color: #333; }
+
+.ctrans    { color: transparent; }
+.bg-trans  { background-color: transparent; }
+.bg-8a8    { background-color: #8a8; }
+.bg-89a    { background-color: #89a; } // selected data
+.bg-89b    { background-color: #89b; } // selected data
+.bg-a88    { background-color: #a88; } // selected navigation
+.bg-eee    { background-color: #eee; }
+.bg-ddd    { background-color: #ddd; }
+.bg-ccc    { background-color: #ccc; }
+.bg-fff    { background-color: #fff; }
+.bg-aaa    { background-color: #aaa; }
+.bg-888    { background-color: #888; }
+.bg-999    { background-color: #999; }
+.bg-555    { background-color: #555; } // header bg
+.bg-333    { background-color: #333; } // header bg
+.bg-fdd    { background-color: #fdd; }
+.bg-aa7    {background-color:  #aa7; } // game flag neutral
+.bg-fa7    {background-color:  #fa7; } // game flag active
+
+
+
+
