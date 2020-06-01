@@ -1,21 +1,18 @@
 
 import DB         from '../../services/database';
 import Forms      from '../../components/forms';
-import { Spacer, TitleLeft } from '../../components/misc';
+import { TitleLeft } from '../../components/misc';
 
 let formgroups = Object.keys(DB.Options);
-// let formgroups = ['play-s-s', 'play-h-s'];
-// let formgroups = ['play-s-s'];
 
 export default {
     oncreate: function( /* vnode */ ) {
         formgroups = Object.keys(DB.Options);
-        // formgroups = ['play-s-s', 'play-h-s'];
-        // formgroups = ['play-s-s'];
     },
     view ( /* vnode */ ) {
         // TODO: think about auto save, with monkeypatching onchanges/oninput
         return m('div.flexlist.viewport-y', [
+
             m(TitleLeft, 'Options'),
             m('div.mv1.ph3.w-100',
                 m('button.w-100.pv1', {onclick: () => DB.reset()   },        'Defaults'),
@@ -31,6 +28,7 @@ export default {
                 };
                 return m(Forms, {formdata, class: 'default-options'});
             }),
+
         ]);
     },
 

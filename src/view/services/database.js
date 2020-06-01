@@ -171,7 +171,7 @@ const db =  {
             const games = ls('games');
             const game = games.find( game => game.uuid === uuid );
             if (!game) {
-                console.warn('DB.game.get', 'uuid', uuid, 'no found');
+                // console.warn('DB.game.get', 'uuid', uuid, 'not found');
                 return null;
             }
             return game;

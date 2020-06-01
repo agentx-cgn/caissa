@@ -1,7 +1,7 @@
 
 import Caissa     from '../../../caissa';
 import DB         from '../../../services/database';
-import { H }      from '../../../services/helper';
+// import { H }      from '../../../services/helper';
 import Forms      from '../../../components/forms';
 import Tools      from '../../../tools/tools';
 import Config     from '../../../data/config';
@@ -48,6 +48,10 @@ export default {
             m(FixedList, Config.playtemplates.map( play => {
 
                 const formdata = forms[play.mode];
+                const style = mode === play.mode
+                    ? {marginBottom: '0px', backgroundColor: '#89b'}
+                    : {}
+                ;
                 const onclick  = mode === play.mode
                     // just toggles
                     ? () => Caissa.route('/plays/',       {},                {replace: true})
@@ -56,13 +60,13 @@ export default {
 
                 return m('[', [
 
-                    m(FlexListEntry, { onclick }, [
+                    m(FlexListEntry, { onclick,  style }, [
                         m('div.fiom.f4', play.white + ' vs. ' + play.black),
                         m('div.fior.f5', play.subline),
                     ]),
 
                     play.mode === mode
-                        ? m(Forms, {formdata, class: 'play-options'})
+                        ? m(Forms, {formdata, class: 'play-options', style: 'background-color: #acb5ca'})
                         : m(Nothing),
 
                 ]);

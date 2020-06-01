@@ -87,7 +87,7 @@ div.board-bar-bot {
 
 div.default-options {
   background-color: #aaa;
-  padding: 8px 24px;
+  padding: 0.5rem 1.5rem;
 }
 div.default-options div.group-title {
   margin-top: 0.5rem;
@@ -125,13 +125,13 @@ div.default-options select option:hover {
 
 div.play-options {
   background-color: #bbb;
-  margin: 0.5rem 0;
+  margin: 0 0 0.5rem 0;
   padding: 0.5rem 2rem;
   border-top: 5px solid #89b;
 }
-div.play-options div.group-title{
+div.play-options div.group-title {
   font-weight: 800;
-  font-size: 1rem;
+  font-size: 1.3rem;
   letter-spacing: 1px;
   color: white;
 }
@@ -139,7 +139,7 @@ div.play-options div.group-title{
 
 div.page-options {
   background-color: #eee;
-  padding: 8px 24px;
+  padding: 0.5rem 1.5 rem;
 }
 div.page-options div.group-title {
   font-weight: 800;

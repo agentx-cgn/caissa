@@ -13,7 +13,11 @@ const Events = {
         console.log('Bye');
     },
     onload: function () {
-        console.log('Info   :', '... done after', Date.now() - window.t0, 'msecs');
+        const t = Date.now() - window.t0;
+        t > 2000
+            ? console.warn('Warn   :', '... done after', 0, t, 'msecs')
+            : console.log ('Info   :', '... done after', 0, t, 'msecs')
+        ;
     },
     onselectionchange : function() {
         // const selection = document.getSelection();
@@ -55,7 +59,7 @@ const Caissa = {
 
         onupdate ( vnode ) {
             // DOM elements whose vnodes have an onupdate hook do not get recycled.
-            DEBUG && console.log('RD', ++redraws, 'caissa.onupdate', H.strip(vnode.attrs));
+            true && console.log('RD', ++redraws, 'caissa.onupdate', history.length, H.strip(vnode.attrs));
         },
 
         view ( vnode ) {
