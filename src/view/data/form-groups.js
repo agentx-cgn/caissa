@@ -10,7 +10,13 @@ import System from './system';
  *     option:     value, ... ,
  *     submit:     function () { saves options }}
  *     autosubmit: [bool]
+ *
+ *  EVENTS:
+ *  onchange : select // after user committed
+ *  oninput  :
  * */
+
+
 
 const FormGroups = function ( formdata ) {
 
@@ -25,8 +31,8 @@ const FormGroups = function ( formdata ) {
                         });
                     })(),
                     attributes: {
-                        // oninput: (e) => {
-                        onchange: (e) => {
+                        oninput: (e) => {
+                        // onchange: (e) => {
                             const value         = ~~e.target.value;
                             formdata.depth      = value;
                             formdata.difficulty = Tools.resolveDifficulty(value);
@@ -34,7 +40,6 @@ const FormGroups = function ( formdata ) {
                         },
                         min: 1, max: 30, step: 1,
                         list: 'dl-stockfish-depth',
-                        style: 'max-width: 100%; width: 100%; margin:0; padding: 0; vertical-align: middle;',
                     },
 
                 }, { caption: 'Difficulty',  sort: 20, type: 'none',                           active: true,
@@ -88,14 +93,13 @@ const FormGroups = function ( formdata ) {
                     })(),
                     attributes: {
                         oninput: (e) => {
-                            const value     = ~~e.target.value;
+                            const value         = ~~e.target.value;
                             formdata.depth      = value;
                             formdata.difficulty = Tools.resolveDifficulty(value);
                             formdata.autosubmit && formdata.submit();
                         },
                         min: 1, max: 30, step: 1,
                         list: 'dl-stockfish-depth',
-                        style: 'max-width: 100%; width: 100%; margin:0; padding: 0; vertical-align: middle;',
                     },
                 }, { caption: 'Difficulty',  sort: 20, type: 'none',                           active: true,
                     value: () => formdata.difficulty + ' (' + formdata.depth + ')',
@@ -151,9 +155,9 @@ const FormGroups = function ( formdata ) {
                     value: () => formdata.lastmove,
                     attributes:  {
                         type:    'checkbox',
-                        // style:   'vertical-align: text-bottom;',
                         oninput: (e) => {
                             formdata.lastmove = !!e.target.checked;
+                            formdata.autosubmit && formdata.submit();
                         },
                     },
                 }  ],
@@ -166,6 +170,7 @@ const FormGroups = function ( formdata ) {
                     attributes: {
                         oninput: (e) => {
                             formdata.maxthreads = ~~e.target.value;
+                            formdata.autosubmit && formdata.submit();
                         },
                         min: 1, max: System.threads -1, step: 1,
                         list: 'dl-evaluator-threads',
@@ -177,6 +182,7 @@ const FormGroups = function ( formdata ) {
                         min: 1, max: 50, step: 1,
                         onchange: (e) => {
                             formdata.maxdepth = ~~e.target.value;
+                            formdata.autosubmit && formdata.submit();
                         },
                     },
                 }, { caption: 'Max Wait',    sort: 30, type: 'number',                         active: true,
@@ -186,6 +192,7 @@ const FormGroups = function ( formdata ) {
                         min: '0.1', max: '5.0', step: '0.1',
                         onchange: (e) => {
                             formdata.maxsecs = parseFloat(e.target.value);
+                            formdata.autosubmit && formdata.submit();
                         },
                     },
                 }  ],
@@ -198,7 +205,7 @@ const FormGroups = function ( formdata ) {
                     attributes: {
                         onchange: (e) => {
                             formdata.api = Config.apis.find( api => api.idx === ~~e.target.value);
-                            // console.log('options.api.change', e.target.value, formdata.api);
+                            formdata.autosubmit && formdata.submit();
                         },
                     },
                 }  ],
