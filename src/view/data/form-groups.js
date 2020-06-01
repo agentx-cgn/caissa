@@ -12,10 +12,9 @@ import System from './system';
  *     autosubmit: [bool]
  *
  *  EVENTS:
- *  onchange : select // after user committed
- *  oninput  :
+ *  onchange : select, checkbox // after user committed
+ *  oninput  : all other
  * */
-
 
 
 const FormGroups = function ( formdata ) {
@@ -32,18 +31,17 @@ const FormGroups = function ( formdata ) {
                     })(),
                     attributes: {
                         oninput: (e) => {
-                        // onchange: (e) => {
                             const value         = ~~e.target.value;
                             formdata.depth      = value;
-                            formdata.difficulty = Tools.resolveDifficulty(value);
+                            // formdata.difficulty = Tools.resolveDifficulty(value);
                             formdata.autosubmit && formdata.submit();
                         },
                         min: 1, max: 30, step: 1,
                         list: 'dl-stockfish-depth',
                     },
 
-                }, { caption: 'Difficulty',  sort: 20, type: 'none',                           active: true,
-                    value: () => formdata.difficulty + ' (' + formdata.depth + ')',
+                }, { caption: 'Difficulty',  sort: 20, type: 'passive',                        active: true,
+                    value: () => Tools.resolveDifficulty(formdata.depth) + ' (' + formdata.depth + ')',
 
                 }, { caption: 'Timecontrol', sort: 30, type: 'selectindexed-split',            active: true,
                     options:  Config.timecontrols,
@@ -54,7 +52,6 @@ const FormGroups = function ( formdata ) {
                         onchange: (e) => {
                             formdata.timecontrol = Config.timecontrols.find( tc => tc.idx === ~~e.target.value);
                             formdata.autosubmit && formdata.submit();
-                            // console.log('options.api.change', e.target.value, formdata.api);
                         },
                     },
 
@@ -101,8 +98,8 @@ const FormGroups = function ( formdata ) {
                         min: 1, max: 30, step: 1,
                         list: 'dl-stockfish-depth',
                     },
-                }, { caption: 'Difficulty',  sort: 20, type: 'none',                           active: true,
-                    value: () => formdata.difficulty + ' (' + formdata.depth + ')',
+                }, { caption: 'Difficulty',  sort: 20, type: 'passive',                        active: true,
+                    value: () => Tools.resolveDifficulty(formdata.depth) + ' (' + formdata.depth + ')',
                 }, { caption: 'Timecontrol', sort: 30, type: 'selectindexed-split',            active: true,
                     options:  Config.timecontrols,
                     value: () => {
@@ -112,7 +109,6 @@ const FormGroups = function ( formdata ) {
                         onchange: (e) => {
                             formdata.timecontrol = Config.timecontrols.find( tc => tc.idx === ~~e.target.value);
                             formdata.autosubmit && formdata.submit();
-                            // console.log('options.api.change', e.target.value, formdata.api);
                         },
                     },
 
@@ -123,7 +119,6 @@ const FormGroups = function ( formdata ) {
                 }, { caption: 'Play',        sort: 90, type: 'button',                         active: !formdata.autosubmit,
                     attributes: {
                         onclick: () => {
-                            // console.log('options.submit', formdata);
                             formdata.submit(formdata);
                         },
                     },
@@ -147,15 +142,16 @@ const FormGroups = function ( formdata ) {
                     value: () => formdata.bestmove,
                     attributes: {
                         type: 'checkbox',
-                        onclick: (e) => {
+                        onchange: (e) => {
                             formdata.bestmove = !!e.target.checked;
+                            formdata.autosubmit && formdata.submit();
                         },
                     },
                 }, { caption: 'Last Move',   sort: 20, type: 'checkbox',                       active: true,
                     value: () => formdata.lastmove,
                     attributes:  {
                         type:    'checkbox',
-                        oninput: (e) => {
+                        onchange: (e) => {
                             formdata.lastmove = !!e.target.checked;
                             formdata.autosubmit && formdata.submit();
                         },

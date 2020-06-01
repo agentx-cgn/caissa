@@ -16,8 +16,8 @@ const Events = {
         console.log('Info   :', '... done after', Date.now() - window.t0, 'msecs');
     },
     onselectionchange : function() {
-        const selection = document.getSelection();
-        console.log('Info   :', 'Selection', selection);
+        // const selection = document.getSelection();
+        // console.log('Info   :', 'Selection', selection);
     },
 };
 

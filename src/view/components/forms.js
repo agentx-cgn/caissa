@@ -57,7 +57,7 @@ function renderGroupControl (control) {
 
         }
 
-    } else if (control.type === 'none') {
+    } else if (control.type === 'passive') {
         return [
             m('div.control-label-40', read(control.caption)),
             m('div.control-60', read(control.value)),
