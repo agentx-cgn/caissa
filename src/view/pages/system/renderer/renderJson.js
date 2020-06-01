@@ -13,7 +13,7 @@ function renderExpanded(sprop, tree, paths, isArray, path, statusLookup, options
     divs.push('' + sprop + (isArray ? '[' : '{'));
     divs.push( m('button', {onclick: () => statusLookup[path] = true}, '-'));
     for (var key in tree) {
-        if (!tree.hasOwnProperty(key)) continue;
+        // if (!tree.hasOwnProperty(key)) continue;
         var child = tree[key];
         var newpath = paths.slice();
         newpath.push(key);

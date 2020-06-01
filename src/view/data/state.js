@@ -1,16 +1,17 @@
 import {COLOR} from '../../extern/cm-chessboard/Chessboard';
-import CFG from './config';
+import { H }   from '../services/helper';
+import CFG     from './config';
 
-export default {
+export default H.create({
 
-    game : { ...CFG.gamestatetemplate },
-    play : { ...CFG.playstatetemplate },
+    game : H.create({ ...H.deepcopy(CFG.gamestatetemplate) }),
+    play : H.create({ ...H.deepcopy(CFG.playstatetemplate) }),
 
-    games : {
+    games : H.create({
         idx: 0,
-    },
+    }),
 
-    board: {
+    board: H.create({
         fen: '',
         pgn: '',
         orientation: COLOR.white,
@@ -19,11 +20,6 @@ export default {
 
         illustrations : CFG.board.illustrations,
 
-    },
-    // chess: {
-    //     pgn:        '',
-    //     fen:        'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-    //     curMove:    0,
-    // },
+    }),
 
-};
+});

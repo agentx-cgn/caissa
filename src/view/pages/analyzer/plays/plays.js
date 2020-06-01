@@ -19,21 +19,16 @@ const forms = {};
 
 Config.playtemplates.forEach( template =>  {
 
+    const group = 'play-' + template.mode;
     const form = {
-
-        ...Tools.expandPlayTemplate(H.deepcopy(template)),
-
+        group,
+        autosubmit: false,
+        ...DB.Options[group],
         submit: (form) => {
-
-            let play = H.deepcopy(form);
-
-            play.uuid  = H.shortuuid();
+            let play = Tools.createPlayTemplate(template, form);
             DB.Plays.create(play);
-
             console.log('plays.form.submitted', play.uuid, play.mode, play.white, play.black);
-
             Caissa.route('/play/:uuid/', {uuid: play.uuid});
-
         },
     };
 
@@ -67,7 +62,7 @@ export default {
                     ]),
 
                     play.mode === mode
-                        ? m(Forms, {formdata, categories: ['play defaults ' + mode], class: 'play-options'})
+                        ? m(Forms, {formdata, class: 'play-options'})
                         : m(Nothing),
 
                 ]);

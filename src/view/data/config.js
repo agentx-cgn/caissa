@@ -1,45 +1,47 @@
 
 import board_svg         from '../../extern/cm-chessboard/chessboard-sprite.svg';
 import {COLOR, MOVE_INPUT_MODE} from '../../extern/cm-chessboard/Chessboard';
+import { H } from '../services/helper';
+import playtemplates from './play-templates';
 
-const fens =   {
+const fens = H.create({
     empty: '8/8/8/8/8/8/8/8 w - - 0 1',
     start: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-};
+});
 
-const pieces = {
-    fens :{
+const pieces = H.create({
+    fens : {
         white:  'PPPPPPPPRNBQKBNR',
         black:  'pppppppprnbqkbnr',
         sorted: 'kqrbnp',
     },
     blacks: ['wk', 'wq', 'wr', 'wb', 'wn', 'wp' ],
     whites: ['bk', 'bq', 'br', 'bb', 'bn', 'bp' ],
-};
+});
 
 
-const playtemplates = [
-    {mode: 's-s', turn: 0 , uuid: '0000000A', subline: 'this is fun',
-        pgn: '', white: 'Stockfish', black: 'Stockfish', engine: 'stockfish',
-        depth: 5, timecontrol: 1,
-    },
+// const playtemplates = [
+//     {mode: 's-s', turn: 0 , uuid: '0000000A', subline: 'this is fun',
+//         pgn: '', white: 'Stockfish', black: 'Stockfish', engine: 'stockfish',
+//         depth: 5, timecontrol: 1,
+//     },
 
-    {mode: 'h-s', turn: 0 , uuid: '0000000B', subline: 'beat the machine',
-        pgn: '', white: 'Human', black: 'Stockfish', engine: 'stockfish',
-        depth: 3, timecontrol: 1,
-    },
+//     {mode: 'h-s', turn: 0 , uuid: '0000000B', subline: 'beat the machine',
+//         pgn: '', white: 'Human', black: 'Stockfish', engine: 'stockfish',
+//         depth: 3, timecontrol: 1,
+//     },
 
-];
+// ];
 
-const playstatetemplate = {
+const playstatetemplate = H.create({
     // timestamp: null, is in play
     moves: [],
     fen:   fens.start,
     play:  null,
     timecontrol: null,
-};
+});
 
-const gametemplateshort = {
+const gametemplateshort = H.create({
 
     uuid:        '00000000',     // string, 6 or 8 alphanums
     // STR (Seven Tag Roster)
@@ -57,9 +59,9 @@ const gametemplateshort = {
     pgn:         '',             // game moves in pgn notation
     header:      {},            // from PGN parsing
 
-};
+});
 
-const gametemplate = {
+const gametemplate = H.create({
     ...gametemplateshort,
     mode:       'h-h',          // indicates opponents s=stockfish, h= human, l=leela
     turn:       -3 ,            // Number, used to gen gen and display on board (-3 unknown, -2 empty board, -1 start, 0 after first ply)
@@ -70,9 +72,9 @@ const gametemplate = {
     depth:      3,              // optional,
     difficulty: 'rooky',        // optional, only for machine opponent
     timestamp:  1589137091395,  // game started or viewed
-};
+});
 
-const gamestatetemplate = {
+const gamestatetemplate = H.create({
     game        : {},
     moves       : [],
     score: {
@@ -102,21 +104,21 @@ const gamestatetemplate = {
         insu: false,  // insufficient_material
         repe: false,  // in_threefold_repetition
     },
-};
+});
 
-
-const opponents = {
+const opponents = H.create({
     'h': 'Human',
     'l': 'Leela',
     's': 'Stockfish',
-};
+});
 
 // const urls = [
 //     'https://google.com',
 //     'https://en.wikipedia.com',
 // ].map(encodeURI);
 
-const config = {
+export default H.deepFreeze(H.create({
+// export default H.freeze(H.create({
 
     fens,
     pieces,
@@ -147,6 +149,7 @@ const config = {
         // ['/db',       'DB'],
         // ['/test',     'TEST'],
     ],
+
     apis: [
         {idx: 1, caption: 'api.chess.com/pub/player/',   value: 'https://api.chess.com/pub/player/noiv/games/2020/04/pgn'},
         {idx: 2, caption: 'lichess.org/api/games/user',  value: 'http://localhost:3000/static/games.pgn'},
@@ -154,14 +157,20 @@ const config = {
         {idx: 4, caption: 'localhost:3000/static/games.pgn',       value: 'http://localhost:3000/static/games.pgn'},
     ],
 
-    timecontrols: [                          // initial | bonus
-        {idx: 0, caption: '10 secs', value:`${ 1*10*1000}|0`},
-        {idx: 1, caption: '1 min', value:  `${ 1*60*1000}|0`},
-        {idx: 2, caption: '5 min', value:  `${ 5*60*1000}|0`},
-        {idx: 3, caption: '10 min', value: `${10*60*1000}|0`},
+    openings : [
+        H.create({idx: 0, caption: 'OP01', value: 'OP01'}),
+        H.create({idx: 1, caption: 'OP02', value: 'OP02'}),
+        H.create({idx: 2, caption: 'OP03', value: 'OP03'}),
     ],
 
-    plays: {
+    timecontrols: [                          // initial | bonus
+        H.create({idx: 0, caption: '10 secs', value: `${ 1*10*1000}|0`}),
+        H.create({idx: 1, caption: '1 min',   value: `${ 1*60*1000}|0`}),
+        H.create({idx: 2, caption: '5 min',   value: `${ 5*60*1000}|0`}),
+        H.create({idx: 3, caption: '10 min',  value: `${10*60*1000}|0`}),
+    ],
+
+    plays: H.create({
         difficulties : {
             '0':   'looser',
             '3':   'rooky',
@@ -175,8 +184,8 @@ const config = {
             {uuid: '00000002', mode: 's-h', time: 10, depth: 3, subline: 'play black against Stockfish'},
             {uuid: '00000003', mode: 's-s', time: 10, depth: 3, subline: 'this is fun'                 },
         ],
-    },
-    board: {
+    }),
+    board: H.create({
         config: {
             position:               'empty',        // set as fen, 'start' or 'empty'
             orientation:            COLOR.white,    // white on bottom
@@ -194,9 +203,9 @@ const config = {
             animationDuration:      300,            // pieces animation duration in milliseconds
             moveInputMode:          MOVE_INPUT_MODE.dragPiece, // set to MOVE_INPUT_MODE.dragPiece or MOVE_INPUT_MODE.dragMarker for interactive movement
         },
-    },
+    }),
 
-    flagTitles : {
+    flagTitles : H.create({
         'n'  : 'a non-capture',
         'b'  : 'a pawn push of two squares',
         'e'  : 'an en passant capture',
@@ -205,8 +214,8 @@ const config = {
         'k'  : 'kingside castling',
         'q'  : 'queenside castling',
         'pc' : 'capture + promotion',
-    },
-    flagColors: {
+    }),
+    flagColors: H.create({
         w: {
             'n'  : '#fff',
             'b'  : 'darkgreen',
@@ -227,34 +236,22 @@ const config = {
             'q'  : 'darkgreen',
             'pc' : 'orange',
         },
-    },
-
-    fontPieces : { // 'l w t n j o'
+    }),
+    fontPieces : H.create({ // 'l w t n j o'
         'k': 'l',
         'q': 'w',
         'r': 't',
         'b': 'n',
         'n': 'j',
         'p': 'o',
-    },
-    fontPiecesWhite : { // 'l w t n j o'
+    }),
+    fontPiecesWhite : H.create({ // 'l w t n j o'
         'K': 'l',
         'Q': 'w',
         'R': 't',
         'B': 'n',
         'N': 'j',
         'P': 'o',
-    },
+    }),
 
-    // fontPieces : {
-    //     'k': '♚',
-    //     'q': '♛',
-    //     'r': '♜',
-    //     'b': '♝',
-    //     'n': '♞',
-    //     'p': '♟',
-    // },
-
-};
-
-export default config;
+}));

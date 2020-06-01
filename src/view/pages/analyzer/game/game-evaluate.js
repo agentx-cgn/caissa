@@ -12,9 +12,9 @@ export default function evaluate (state) {
     const bigStep    = 4;
     const smallStep  = ( 99 - 3 * bigStep * threads ) / state.moves.length;
     const divisor    = 2;
-    const options    = DB.Options;
-    const depth      = ~~options.evaluator.maxdepth;
-    const threads    = ~~options.evaluator.maxthreads;
+    const options    = DB.Options['game-evaluator'];
+    const depth      = ~~options.maxdepth;
+    const threads    = ~~options.maxthreads;
     const partitions = H.partitions(state.moves, threads);
 
     let counter      = 0;
@@ -27,7 +27,7 @@ export default function evaluate (state) {
 
     const conditions = {
         depth,
-        time:  options.evaluator.maxtime,
+        time:  options.maxsecs,
     };
 
     const updateProgress = (step) => {

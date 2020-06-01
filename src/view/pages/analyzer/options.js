@@ -1,26 +1,36 @@
 
-import DB         from '../../services/database';   
+import DB         from '../../services/database';
 import Forms      from '../../components/forms';
-import { Spacer } from '../../components/misc';
+import { Spacer, TitleLeft } from '../../components/misc';
 
-const categories = ['User', 'Illustrations', 'Evaluator'];
-
-let form = DB.Options;
+let formgroups = Object.keys(DB.Options);
+// let formgroups = ['play-s-s', 'play-h-s'];
+// let formgroups = ['play-s-s'];
 
 export default {
     oncreate: function( /* vnode */ ) {
-        form = DB.Options;
+        formgroups = Object.keys(DB.Options);
+        // formgroups = ['play-s-s', 'play-h-s'];
+        // formgroups = ['play-s-s'];
     },
     view ( /* vnode */ ) {
         // TODO: think about auto save, with monkeypatching onchanges/oninput
-        return m('[', [
-            m(Spacer),
-            m('button.mh3', {onclick: () => {
-                DB.saveOptions(form);
-            } }, 'save options'),
-            m('button.mh3', {onclick: () => DB.reset()   }, 'DB.reset()'),
-            m(Spacer),
-            m(Forms, {form, categories, class: 'default-options'}),
+        return m('div.flexlist.viewport-y', [
+            m(TitleLeft, 'Options'),
+            m('div.mv1.ph3.w-100',
+                m('button.w-100.pv1', {onclick: () => DB.reset()   },        'Defaults'),
+            ),
+            ...formgroups.map( formgroup => {
+                const formdata = {
+                    group: formgroup,
+                    autosubmit: true,
+                    ...DB.Options[formgroup],
+                    submit: () => {
+                        DB.Forms.save(formgroup, formdata);
+                    },
+                };
+                return m(Forms, {formdata, class: 'default-options'});
+            }),
         ]);
     },
 
@@ -43,9 +53,9 @@ playTemplates/available             X
     json
 Engines                             X
     stockfish|leela
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 User                                            X
-    name                    
+    name
 defaultEngine                                   X
     select
 evaluator                                       X

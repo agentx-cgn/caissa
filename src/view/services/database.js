@@ -2,55 +2,16 @@
 // https://github.com/bevacqua/local-storage
 
 import * as ls from 'local-storage';
-import { H }     from './helper';
+import { H }   from './helper';
 import System  from '../data/system';
+import Options from '../data/options';
 
-const options = {
-    user: {
-        name: 'noiv',
-    },
-    evaluator: {
-        engine:      'stockfish', // not yet an options
-        maxthreads:  2,           //
-        maxdepth:    5,          //
-        maxsecs:     1.0,         // 0.01 60 secs
-        divisor:     2,           // not yet an options
-    },
-    analysis : {
-        depth:     5,
-        maxpv:     1,
-        maxmate:   2,
-        multipv:   1,
-    },
-    board : {
-        illustrations : {
-            pinning   : true,
-            bestmove  : true,
-            ponder    : true,
-            lastmove  : true,
-            availmoves: true,
-            attack    : true,
-            valid     : true,
-        },
-    },
-    ui : {
-        collapsed: {
-            'section-left':  false,
-        },
-        board: {
-            decoration: false,          // a1 - h8
-            'light-color': '#789',      // fields light
-            'dark-color':  '#987',      //
-        },
-        'vertical-scrolling' : true,    // mousewheel for horizontal scrolling (breaks touchpads)
-    },
-};
 
 const db =  {
     dump  () { console.log(JSON.stringify(localStorage, null, 2).replace(/\\"/g, '\''));},
     all   () {
         return {
-            caissa:  ls('caisssa'),
+            usage:   ls('usage'),
             options: ls('options'),
             plays:   ls('plays'),
             games:   ls('games'),
@@ -63,8 +24,8 @@ const db =  {
         ls.clear();
         ls.set('plays',     []);
         ls.set('games',     []);  // games are imported/hardcoded
-        ls.set('options',   options);
-        ls.set('caissa', {
+        ls.set('options',   Options);
+        ls.set('usage', {
             laststart: Date.now(),
             lastend:   Date.now(),
             usage:     0,
@@ -78,23 +39,23 @@ const db =  {
                 console.error('Info   :', 'BE', 'localStorage not available');
             }
 
-            const test = ls('caissa');
+            const test = ls('usage');
 
             // eslint-disable-next-line no-constant-condition
             if ( !test || false ) {
                 db.reset();
 
             } else {
-                const caissa  = ls('caissa');
+                const usage  = ls('usage');
                 const options = ls('options');
-                const ago    = H.msecs2human(Date.now() - caissa.lastend);
+                const ago    = H.msecs2human(Date.now() - usage.lastend);
 
-                caissa.usage    += 1;
-                caissa.laststart = Date.now();
-                caissa.lastend   = Date.now();
-                ls('caissa', caissa);
+                usage.usage    += 1;
+                usage.laststart = Date.now();
+                usage.lastend   = Date.now();
+                ls('usage', usage);
 
-                console.log('Info   :', 'DB', db.Games.length, 'games', 'user:', options.user.name, 'usage:', caissa.usage, 'last:', ago, 'ago');
+                console.log('Info   :', 'DB', db.Games.length, 'games', 'user:', options['user-data'].name, 'usage:', usage.usage, 'last:', ago, 'ago');
             }
 
         } catch (e) {
@@ -104,7 +65,17 @@ const db =  {
 
     },
 
-    saveOptions (value) {
+    Usage (key, value) {
+        const usage = ls('usage');
+        usage[key] = value;
+        ls('usage', usage);
+    },
+
+    XOptions : {
+
+    },
+
+    set Options (value) {
         ls('options', value);
         console.log('database.options.saved', value);
     },
@@ -112,11 +83,16 @@ const db =  {
         return ls('options');
     },
 
-    caissa (key, value) {
-        const caissa = ls('caissa');
-        caissa[key] = value;
-        ls('caissa', caissa);
+    Forms : {
+        save (group, formdata) {
+            const t0 = Date.now();
+            const options  = ls('options');
+            options[group] = formdata;
+            ls('options', options);
+            console.log('DB.Forms.save', group, formdata, Date.now() - t0, 'msecs');
+        },
     },
+
 
     Plays : {
         get list () {

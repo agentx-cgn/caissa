@@ -1,5 +1,5 @@
 
-import { FormDefinitions }  from '../data/forms';
+import { FormGroups }  from '../data/form-groups';
 import { H }  from '../services/helper';
 
 const read = H.interprete;
@@ -15,37 +15,43 @@ const TimeStamp = function () {
             }, 1000);
         },
         onremove () { clearInterval(ticker); },
-        view     () { return m('div.control-input-60', 'HUHU');},
+        view ( vnode ) {
+            return m('div', vnode.attrs, H.date2isoLocal(new Date()));
+        },
     };
 };
 
-function renderCat  (cat)  {
+function renderFormGroup (group)  {
+
+    // console.log('renderFormGroup', group);
 
     return m('[', [
-        m('div.cat-caption', cat.title || cat.category),
-        ...cat.controls
+        m('div.group-title.sair', group.title),
+        ...group.controls
             .sort( (a, b) => a.sort - b.sort)
             .filter (control => control.active)
-            .map( control => m('div.control', renderControl(control) ))
+            .map( control => m('div.control', renderGroupControl(control) ))
         ,
     ]);
 
 }
 
-function renderControl (control) {
+function renderGroupControl (control) {
+
+    // console.log('renderGroupControl', control);
 
     if (control.type === 'button') {
         if (control.title) {
             return [
-                m('div.dib.tr.f5.pr3.w-50', control.title),
-                m('div.dib.tl.w-50',
-                    m('button', control.attributes, read(control.caption)),
+                m('div.control-label-40', control.title),
+                m('div.control-60',
+                    m('button.w-100', control.attributes, read(control.caption)),
                 ),
             ];
         } else {
             return [
-                m('div.dib.tc.w-100',
-                    m('button.w-100.pv1.ph2', control.attributes, read(control.caption)),
+                m('div.control-100',
+                    m('button.tc.w-100.pv1.ph2', control.attributes, read(control.caption)),
                 ),
             ];
 
@@ -54,20 +60,20 @@ function renderControl (control) {
     } else if (control.type === 'none') {
         return [
             m('div.control-label-40', read(control.caption)),
-            m('div.control-input-60', read(control.value)),
+            m('div.control-60', read(control.value)),
         ];
 
     } else if (control.type === 'timestamp') {
         return [
             m('div.control-label-40', read(control.caption)),
-            m(TimeStamp, { control: control }),
+            m(TimeStamp, { class: 'control-60', control: control }),
         ];
 
     } else if (control.type === 'checkbox') {
         control.attributes.checked = read(control.value);
         return [
             m('div.control-label-40', read(control.caption)),
-            m('div.control-input-60',
+            m('div.control-60',
                 m('input[type="checkbox"]', control.attributes),
             ),
         ];
@@ -76,7 +82,7 @@ function renderControl (control) {
         control.attributes.value = read(control.value);
         return [
             m('div.control-label-100', read(control.caption)),
-            m('div.ph3.w-100',
+            m('div.control-100',
                 m('input[type="text"].w-100', control.attributes),
             ),
         ];
@@ -84,8 +90,8 @@ function renderControl (control) {
     } else if (control.type === 'text-split') {
         control.attributes.value = read(control.value);
         return [
-            m('div.dib.pr3.tr.f5.w-40', read(control.caption)),
-            m('div.dib.w-60',
+            m('div.control-label-40', read(control.caption)),
+            m('div.control-60',
                 m('input[type="text"].w-100', control.attributes),
             ),
         ];
@@ -94,7 +100,7 @@ function renderControl (control) {
         control.attributes.value = read(control.value);
         return [
             m('div.control-label-100', read(control.caption)),
-            m('div.ph3.w-100',
+            m('div.control-60',
                 m('input[type="url"].w-100', control.attributes),
             ),
         ];
@@ -107,7 +113,7 @@ function renderControl (control) {
         control.attributes.value = read(control.value);
         return [
             m('div.control-label-40', read(control.caption)),
-            m('div.control-input-60',
+            m('div.control-60',
                 m('input[type="range"]', control.attributes),
             ),
             ! control.attributes.list
@@ -122,12 +128,14 @@ function renderControl (control) {
             return [
                 m('div.control-label-40',           read(control.caption)),
                 m('input[type="number"].w-30',        control.attributes),
-                m('div.dib.dimension.tl.f5.pl2.w-30', control.dimension),
+                m('div.dimension.w-30', control.dimension),
             ];
         } else {
             return [
                 m('div.control-label-40',    read(control.caption)),
-                m('input[type="number"].w-60', control.attributes),
+                m('div.control-60',
+                    m('input[type="number"].w-100', control.attributes),
+                ),
             ];
         }
 
@@ -135,7 +143,9 @@ function renderControl (control) {
         // control.attributes.value = read(control.value);
         return [
             m('div.control-label-100', read(control.caption)),
-            m('select.mh3', control.attributes, control.options.map( opt => m('option', opt) )),
+            m('div.control-100',
+                m('select.mh3', control.attributes, control.options.map( opt => m('option', opt) )),
+            ),
         ];
 
     } else if (control.type === 'selectindexed') {
@@ -143,7 +153,7 @@ function renderControl (control) {
         return [
             m('div.control-label-100', read(control.caption)),
             m('div.tl.f5.pl3.pv2.w-100',
-                m('select.ph2.pv1.w-100',
+                m('select.ph2.w-100', {style: 'padding-top: 2px; padding-bottom: 2px;'},
                     control.attributes,
                     control.options.map( opt => m('option', {value: opt.idx, selected: opt.idx === index}, opt.caption) ),
                 ),
@@ -152,12 +162,15 @@ function renderControl (control) {
         ];
 
     } else if (control.type === 'selectindexed-split') {
+        // const value = read(control.value);
+        // if (!value || value.idx === undefined){
+        //     console.log('form.error', control, value, value.idx);
+        // }
         const index = read(control.value).idx;
         return [
-            m('div.dib.control-label-40', read(control.caption)),
-            m('div.dib.tl.f5.pv2.w-60',
-                m('select.ph2.pv1.w-100',
-                    control.attributes,
+            m('div.control-label-40', read(control.caption)),
+            m('div.control-60',
+                m('select.ph2.w-100', {style: 'padding-top: 2px; padding-bottom: 2px;',  ...control.attributes},
                     control.options.map( opt => m('option', {value: opt.idx, selected: opt.idx === index}, opt.caption) ),
                 ),
             ),
@@ -165,7 +178,7 @@ function renderControl (control) {
         ];
 
     } else {
-        return control.control + ' unknown';
+        return control.type + ' unknown';
     }
 
 }
@@ -174,14 +187,15 @@ export default {
 
     view( vnode ) {
 
-        const { formdata, categories } = vnode.attrs;
-        const catArray = typeof categories === 'string' ? [categories] : categories;
+        const { formdata } = vnode.attrs;
 
         return m('div.bg-eee', vnode.attrs,
-            FormDefinitions(formdata)
-                .filter(cat => catArray.includes(cat.category))
+            FormGroups(formdata)
+                .filter(
+                    form => form.group === formdata.group,
+                )
                 .sort( (a, b) => a.sort - b.sort )
-                .map( renderCat )
+                .map( renderFormGroup )
             ,
         );
 

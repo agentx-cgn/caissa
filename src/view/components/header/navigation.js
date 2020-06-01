@@ -7,8 +7,8 @@ export default {
 
     view( vnode ) {
 
-        const navi    = vnode.attrs.navi;
-        const clicker = (href) => {
+        const { navi } = vnode.attrs;
+        const clicker  = (href) => {
             return () => {
                 Caissa.route(href);
                 $$('#toggle-mobile-menu').checked = false;
@@ -29,13 +29,11 @@ export default {
             m('input[type=checkbox]', {id: 'toggle-mobile-menu'}),
 
             m('ul', [
-                // TODO: make li clickable
                 ...Config.navigation.map( (item) => {
                     const [href, child] = item;
                     return m('li', {onclick: clicker(href), class: href.startsWith(navi) ? 'selected' : 'unselected'}, child);
                 }),
                 m('li.unselected', m('a.link', {target:'_blank', href: 'https://github.com/agentx-cgn/caissa'}, 'SOURCE')),
-                // m('li.unselected', m('a.link', {target:'_blank', href: 'https://agentx-cgn.github.io/caissa/dist/#!/analyzer'}, 'LIVE')),
                 m('li.unselected', m('a.link', {target:'_blank', href: 'https://caissa.js.org/'}, 'LIVE')),
 
             ]),

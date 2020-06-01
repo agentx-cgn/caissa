@@ -56,26 +56,31 @@ const Tools = {
 
     },
 
-    resolveOpponents (game) {
+    resolvePlayers (game) {
 
         const opponents = Config.opponents;
 
         const w = game.mode[0];
         const b = game.mode[2];
 
-        game.white = opponents[w];
-        game.black = opponents[b];
+        return {
+            white: opponents[w],
+            black: opponents[b],
+        };
 
     },
 
-    expandPlayTemplate (playtemplate) {
+    createPlayTemplate (playtemplate, formdata) {
 
-        const play = {...playtemplate};
-
-        Tools.resolveOpponents(play);
-        play.difficulty = Tools.resolveDifficulty(play.depth);
-        play.turn = 0;
-        play.pgn  = '';
+        const play = {
+            uuid: H.shortuuid(),
+            turn: 0,
+            ...Tools.resolvePlayers(playtemplate),
+            ...formdata,
+            ...playtemplate,
+            difficulty: Tools.resolveDifficulty(formdata.depth),
+            pgn: '',
+        };
 
         return play;
 

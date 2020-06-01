@@ -2,7 +2,7 @@ import './game.scss';
 
 import Caissa            from '../../../caissa';
 import Tools             from '../../../tools/tools';
-// import { H }             from '../../../globals/helper';
+import { H }             from '../../../services/helper';
 import Dispatcher        from '../../../services/dispatcher';
 import DB                from '../../../services/database';
 import State             from '../../../data/state';
@@ -14,7 +14,7 @@ import { GameFlags, GameButtons } from './game-bars';
 import { Spacer, GrowSpacer, TitleLeft, HeaderCentered, TextCenter} from './../../../components/misc';
 
 const state = State.game;
-Object.assign(state, Config.gamestatetemplate);
+Object.assign(state, H.deepcopy(Config.gamestatetemplate));
 
 const fire = Dispatcher.connect({ name: 'game'});
 
@@ -43,7 +43,7 @@ export default {
             const game    = DB.Games.get(uuid);
             const moves   = Tools.genMoves(game.pgn);
             const newturn = turn !== undefined ? turn : moves.length -1;
-            Object.assign(state, Config.gamestatetemplate, {
+            Object.assign(state, H.deepcopy(Config.gamestatetemplate), {
                 game: DB.Games.update(uuid, {turn: newturn, plycount: moves.length}),
                 moves,
             });

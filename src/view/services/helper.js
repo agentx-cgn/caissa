@@ -18,6 +18,48 @@ const H = {
         return obj;
     },
 
+    deepCreateFreeze (obj) {
+
+        const propNames = Object.getOwnPropertyNames(obj);
+
+        // Freeze properties before freezing self
+        for (let name of propNames) {
+            const value = obj[name];
+            if(value && typeof value === 'object') {
+                Object.setPrototypeOf(value, null);
+                Object.freeze(value);
+            }
+        }
+
+        Object.setPrototypeOf(obj, null);
+        Object.freeze(obj);
+
+        return obj;
+
+    },
+
+    freeze (obj) {
+        return Object.freeze(obj);
+    },
+
+    deepFreeze (obj) {
+
+        // Retrieve the property names defined on object
+        var propNames = Object.getOwnPropertyNames(obj);
+
+        // Freeze properties before freezing self
+        for (let name of propNames) {
+            let value = obj[name];
+
+            if(value && typeof value === 'object') {
+                H.deepFreeze(value);
+            }
+        }
+
+        return Object.freeze(obj);
+
+    },
+
     // removes all undefined props & prototype, improves debugging readabilty
     strip (obj) {
         const copy = H.create({}, obj);

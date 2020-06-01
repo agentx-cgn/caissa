@@ -24,17 +24,22 @@ export default function() {
     // https://mithril.js.org/lifecycle-methods.html
     return {
         oninit: function( /* vnode */ ){
-            // The oninit hook is useful for initializing component state 
+            // The oninit(vnode) hook is called before a vnode is touched by the virtual DOM engine.
+            // The oninit hook is useful for initializing component state
             // based on arguments passed via vnode.attrs or vnode.children.
             console.log('sample.oninit', count);
         },
         oncreate: function( /* vnode */ ) {
+            // The oncreate(vnode) hook is called after a DOM element is created and attached to the document.
             console.log('sample.oncreate', count);
         },
         onbeforeupdate: function( /* newVnode, oldVnode */ ) {
+            // If this function is defined and returns false,
+            // Mithril prevents a diff from happening to the vnode, and consequently to the vnode's children.
             return true;
         },
         onupdate: function( /* vnode */ ) {
+            // DOM elements whose vnodes have an onupdate hook do not get recycled.
             console.log('sample.onupdate', count);
         },
         onbeforeremove: function( /* vnode */ ) {
