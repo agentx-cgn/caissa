@@ -22,6 +22,8 @@ window.caissa = {
 window.addEventListener('load',              Events.onload);
 window.addEventListener('beforeunload',      Events.onbeforeunload);
 document.addEventListener('selectionchange', Events.onselectionchange);
+window.addEventListener('popstate',          Events.onpopstate);
+window.addEventListener('hashchange',        Events.hashchange);
 
 // Extend Mithril
 m.cls = (def = {}, sep = ' ', classes = '') => {

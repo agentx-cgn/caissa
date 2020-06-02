@@ -60,6 +60,15 @@ const H = {
 
     },
 
+    each (obj, fn){
+        for(let prop in obj){
+            if(Object.prototype.hasOwnProperty.call(obj, prop)){
+                fn(prop, obj[prop]);
+            }
+        }
+    },
+
+
     // removes all undefined props & prototype, improves debugging readabilty
     strip (obj) {
         const copy = H.create({}, obj);
@@ -74,12 +83,6 @@ const H = {
 
     deepcopy (obj){
         return JSON.parse(JSON.stringify(obj));
-    },
-
-    each (o,fn) {
-        for(let a in o){
-            fn(a, o[a]);
-        }
     },
 
     map (o, fn) {

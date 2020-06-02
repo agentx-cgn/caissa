@@ -1,5 +1,6 @@
 
 import { H } from './services/helper';
+import History from './services/history';
 import Pages from './pages';
 import DB     from './services/database';
 
@@ -8,20 +9,30 @@ const Routes = {};
 const DefaultRoute = '/sources/';
 
 const Events = {
-    onbeforeunload : function () {
+    onbeforeunload () {
         DB.Usage('lastend', Date.now());
         console.log('Bye');
     },
-    onload: function () {
+    onload () {
         const t = Date.now() - window.t0;
         t > 2000
             ? console.warn('Warn   :', '... done after', 0, t, 'msecs')
             : console.log ('Info   :', '... done after', 0, t, 'msecs')
         ;
     },
-    onselectionchange : function() {
+    onselectionchange () {
         // const selection = document.getSelection();
         // console.log('Info   :', 'Selection', selection);
+    },
+    onpopstate () {
+        true && console.log('onpopstate');
+    },
+    hashchange (e) {
+        // back button pressed
+        // there may be duplicates, bc reroute
+        // Caissa.oncreate too
+        true && console.log('hashchange', e.oldURL);
+        true && console.log('hashchange', e.newURL);
     },
 };
 
@@ -36,6 +47,7 @@ const Caissa = {
 
         if (page) {
             m.route.set(target, params, {title: page.title, ...options});
+            History.route(target, params);
 
         } else {
             console.warn('caissa.route.error', target, params, options);

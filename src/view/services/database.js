@@ -150,8 +150,8 @@ const db =  {
             games.push(game);
             db.Games.save(games);
 
-            console.log('db.games.create', {uuid: game.uuid});
-            console.log('db.games.create.header', game.header);
+            false && console.log('db.games.create', {uuid: game.uuid});
+            false && console.log('db.games.create.header', game.header);
 
             return game;
 

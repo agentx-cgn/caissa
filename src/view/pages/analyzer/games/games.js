@@ -8,7 +8,7 @@ import {ListFilter, FlexListEntry, TitleLeft } from '../../../components/misc';
 import GamesList from '../../../components/gameslist';
 
 const state = State.games;
-const read = H.interprete;
+const read  = H.interprete;
 
 let filter = '';
 
@@ -29,7 +29,7 @@ export default {
                 })
             ;
         } else {
-            true && console.log('games.oninit.cachehit', idx, provider.caption);
+            false && console.log('games.oninit.cachehit', idx, provider.caption);
         }
 
     },

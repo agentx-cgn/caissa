@@ -95,6 +95,11 @@ export default {
     onremove: function( /* vnode */ ) {
         chessBoard.destroy();
     },
+    onbeforeupdate: function( /* newVnode, oldVnode */ ) {
+        // If this function is defined and returns false,
+        // Mithril prevents a diff from happening to the vnode, and consequently to the vnode's children.
+        return false;
+    },
     onupdate: function( vnode ) {
 
         // DOM elements whose vnodes have an onupdate hook do not get recycled.
