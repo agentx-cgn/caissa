@@ -44,6 +44,10 @@
     cursor: pointer;
   }
 
+  #site-navigation ul li {
+    color: white;
+  }
+
   #site-navigation ul li.unselected:hover {
     background-color: #806464;
   }
@@ -54,7 +58,7 @@
 
   #site-navigation ul li.unselected:hover a,
   #site-navigation ul li.unselected a:focus {
-    color: black;
+    // color: black;
     outline: none
   }
 

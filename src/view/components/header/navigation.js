@@ -2,6 +2,7 @@
 import Config from '../../data/config';
 import { $$ } from '../../services/helper';
 import Caissa from '../../caissa';
+import { Backdrop } from '../misc';
 
 export default {
 
@@ -10,6 +11,7 @@ export default {
         const { navi } = vnode.attrs;
         const clicker  = (href) => {
             return () => {
+                Backdrop.hide();
                 Caissa.route(href);
                 $$('#toggle-mobile-menu').checked = false;
             };
@@ -26,7 +28,12 @@ export default {
             m('div.home.dib.tl.f4.fiom.white.ph3', 'Caissa'),
 
             // toggle, needs id for label
-            m('input[type=checkbox]', {id: 'toggle-mobile-menu'}),
+            m('input[type=checkbox]', {id: 'toggle-mobile-menu', oninput: (e) => {
+                console.log('menu.checkbox.click', e.target.checked);
+                e.target.checked && Backdrop.show( () => {
+                    $$('#toggle-mobile-menu').checked = false;
+                });
+            }}),
 
             m('ul', [
                 ...Config.navigation.map( (item) => {

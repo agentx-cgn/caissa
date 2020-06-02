@@ -2,6 +2,37 @@
 import { H } from '../services/helper';
 import './components.scss';
 
+const Backdrop = ( function () {
+
+    let callback = null;
+    let visible = false;
+
+    const onclick = () => {
+        visible = false;
+        callback && callback();
+    };
+
+    return {
+        show (cb) {
+            callback = cb || null;
+            visible = true;
+        },
+        hide () {
+            callback = null;
+            visible = false;
+        },
+        view () {
+            const style = visible
+                ? 'z-index: 5; position:absolute; top:0;left:0; width:100%; height: 100%; background-color: rgba(128, 128, 128, 0.5)'
+                : ''
+            ;
+            return m('div.backdrop', { style, onclick });
+        },
+    };
+
+}());
+
+
 const  Sample = {
     view ( vnode ) {
         return m('div', vnode.attrs, m.trust('&nbsp;'));
@@ -117,6 +148,8 @@ export {
 
     Sample,
     Nothing,
+
+    Backdrop,
 
     Spacer,
     GrowSpacer,

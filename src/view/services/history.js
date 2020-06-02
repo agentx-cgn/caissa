@@ -24,16 +24,18 @@ export default {
         // keep history in track
         pointer -= 1;
         window.history.back();
+        console.log('history.back', pointer);
     },
     forward () {
         // prepare listener for URL change
         // keep history in track
         window.history.forward();
+        console.log('history.back', pointer);
         // check upper bound
         pointer += 1;
     },
     route (target, params) {
-        history.push(interpolate(target, params));
+        pointer = history.push(interpolate(target, params)) -1;
     },
 
 };

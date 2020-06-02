@@ -118,9 +118,25 @@ div.default-options input[type="range"] {
     margin: 0px;
     padding: 0px;
     vertical-align: middle;
+    background-color: transparent;
 }
 div.default-options select option:hover {
   background-color: #a89;
+}
+div.play-options select option,
+div.default-options select option {
+    font-family: 'Iosevka-Term-Medium';
+}
+.section-left button,
+.section-left select {
+    background: #ccc;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#eee), to(#ccc));
+    background: -webkit-linear-gradient(0% 0%, 0% 100%, from(#eee), to(#ccc));
+    background: -moz-linear-gradient(center top, #eee, #ccc);
+    background: linear-gradient(to bottom, #eee, #ccc);
+}
+.section-left select {
+    border: 1px;
 }
 
 div.play-options {

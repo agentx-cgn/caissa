@@ -66,7 +66,7 @@ const Caissa = {
 
         // eslint-disable-next-line no-unused-vars
         oncreate ( vnode ) {
-            console.log('Info   :', 'caissa created after', Date.now() - window.t0, 'msecs');
+            console.log('Info   :', 'caissa created after', Date.now() - window.t0, 'msecs', 'history.length', history.length);
         },
 
         onupdate ( vnode ) {
