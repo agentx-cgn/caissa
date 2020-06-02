@@ -9,71 +9,56 @@
 #site-navigation {
     display: block;
     background: #555;
+    input {
+        display: none;
+    }
+    input:checked + ul {
+        position: absolute;
+        display: block;
+        clear: both;
+        background: #555;
+        color: #fff;
+        z-index: 10;
+    }
+    label {
+        display: block;
+        font-size: 28px;
+        color: #fff;
+        position: absolute;
+        padding: 4px 4px 4px 12px;
+        cursor: pointer;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    ul {
+        li {
+            display: block;
+            padding: 12px 10px;
+            cursor: pointer;
+            color: white;
+        }
+        li:hover {
+            background-color: #806464;
+        }
+        li.selected a:focus,
+        li.unselected:hover a,
+        li.unselected a:focus {
+            outline: none
+        }
+    }
+    i.navi.fa {
+        color: #bbb; flex-grow: 0; padding: 12px 10px;
+    }
+    i.hamburger {
+        font-size: 1.5rem;
+        color: #AAA
+    }
 }
 
-#site-navigation  input {
-    display: none;
-}
-#site-navigation input:checked + ul {
-    position: absolute;
-    display: block;
-    clear: both;
-    background: #555;
-    color: #fff;
-    z-index: 10;
-}
 
-#site-navigation label {
-    display: block;
-    font-size: 28px;
-    color: #fff;
-    position: absolute;
-    padding: 4px 4px 4px 12px;
-    cursor: pointer;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
 
-  #site-navigation ul li {
-    display: block;
-    padding: 12px 10px;
-    cursor: pointer;
-  }
-
-  #site-navigation ul li {
-    color: white;
-  }
-
-  #site-navigation ul li.unselected:hover {
-    background-color: #806464;
-  }
-
-  #site-navigation ul li.unselected:hover {
-    background-color: #806464;
-  }
-
-  #site-navigation ul li.unselected:hover a,
-  #site-navigation ul li.unselected a:focus {
-    // color: black;
-    outline: none
-  }
-
-  #site-navigation ul li.selected {
-    background-color: #806464;
-  }
-  #site-navigation ul li.selected a:focus {
-    outline: none;
-  }
-
-  i.navi.fa {
-    color: #bbb; flex-grow: 0; padding: 12px 10px;
-  }
-  i.hamburger {
-    font-size: 1.5rem;
-    color: #AAA
-  }
 
