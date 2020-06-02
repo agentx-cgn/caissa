@@ -22,15 +22,12 @@ export default {
             // hamburger
             m('label', {for:'toggle-mobile-menu', 'aria-label':'Menu'},
                 m('i.hamburger.fa.fa-bars '),
+                m('span.home.f4.fiom.white.pl3', 'Caissa'),
             ),
 
-            // home
-            m('div.home.dib.tl.f4.fiom.white.ph3', 'Caissa'),
-
             // toggle, needs id for label
-            m('input[type=checkbox]', {id: 'toggle-mobile-menu', oninput: (e) => {
-                console.log('menu.checkbox.click', e.target.checked);
-                e.target.checked && Backdrop.show( () => {
+            m('input[type=checkbox]', {id: 'toggle-mobile-menu', oninput: ({ target }) => {
+                target.checked && Backdrop.show( () => {
                     $$('#toggle-mobile-menu').checked = false;
                 });
             }}),
