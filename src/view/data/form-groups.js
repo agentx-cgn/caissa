@@ -20,7 +20,7 @@ import System from './system';
 const FormGroups = function ( formdata ) {
 
     return [
-        {   group: 'play-s-s',               sort: 20, title: 'Options Stockfish - Stockfish', active: true,
+        {   group: 'play-s-s',               sort: 20, title: 'Stockfish - Stockfish',         active: true,
             controls:
                 [  { caption: 'Depth',       sort: 10, type: 'range',                          active: true,
                     value: () => formdata.depth,
@@ -79,7 +79,7 @@ const FormGroups = function ( formdata ) {
 
                 }  ],
 
-        },{ group: 'play-h-s',               sort: 30, title: 'Options Human - Stockfish',     active: true,
+        },{ group: 'play-h-s',               sort: 30, title: 'Human - Stockfish',             active: true,
             controls:
                 [  { caption: 'Depth',       sort: 10, type: 'range',                          active: true,
                     value: () => formdata.depth,
