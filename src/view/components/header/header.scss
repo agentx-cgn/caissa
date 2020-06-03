@@ -1,12 +1,30 @@
 
 /*
-<nav#site-navigation>
+<navigation>
   <label>
   <input#toggle-mobile-menu>
   <ul#main-menu>
 */
 
-#site-navigation {
+
+// div.header-nav {
+header {
+    display: flex;
+    flex-direction: row;
+    overflow-y: hidden;
+    background-color: #555;
+    border-bottom:
+    1px solid white;
+}
+i.navi.fa {
+    color: #bbb; flex-grow: 0; padding: 12px 10px;
+}
+i.hamburger {
+    font-size: 1.5rem;
+    color: #AAA
+}
+nav {
+    flex-grow: 1;
     display: block;
     background: #555;
     input {
@@ -18,7 +36,7 @@
         clear: both;
         background: #555;
         color: #fff;
-        z-index: 10;
+        z-index: 100;
     }
     label {
         display: block;
@@ -50,13 +68,7 @@
             outline: none
         }
     }
-    i.navi.fa {
-        color: #bbb; flex-grow: 0; padding: 12px 10px;
-    }
-    i.hamburger {
-        font-size: 1.5rem;
-        color: #AAA
-    }
+
 }
 
 

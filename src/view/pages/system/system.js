@@ -11,8 +11,9 @@ import LogsViewer from './renderer/renderLogs';
 import JsonViewer from './renderer/renderJson';
 
 const Json =  {
-    view ( vnode ) {
-        const tree = vnode.attrs.tree;
+    name: 'Json',
+    view ( {attrs : { tree } } ) {
+        // const tree = vnode.attrs.tree;
         return m('div.w-100.bg-eee.overflow-y-scroll.h-100', [
             m('div.f5.fior', { class: 'json-tree'}, [
                 m(JsonViewer, { tree, options: { collapseAfter: 1 } }),
@@ -22,10 +23,10 @@ const Json =  {
 };
 
 export default {
+    name: 'System',
+    view ( {attrs : { module } } ) {
 
-    view ( vnode ) {
-
-        const { module } = vnode.attrs;
+        // const { module } = vnode.attrs;
 
         // reroute, if no module
         if (module === ':module' || module === undefined) {
@@ -41,21 +42,18 @@ export default {
             m(LogsViewer)
         );
 
-        function clicker (module) {
-            return function () {
-                Caissa.route('/system/:module/', { module });
-            };
-        }
+        const clicker = module => (e) => {
+            e.redraw = false;
+            Caissa.route('/system/:module/', { module }, {replace: true});
+        };
 
-        return m('div.system.flex.flex-column.w-100.bg-eee.noselect', [
+        return m('div.page.system.bg-eee', [
             m('div.systemmenu.bg-ddd.w-100', [
-                m('ul.flex.flex-row.ml2', [
-                    m('li.ph2.pv1.f4.pointer', {style: 'list-style-type: none;', onclick: clicker('system') }, 'System'),
-                    m('li.ph2.pv1.f4.pointer', {style: 'list-style-type: none;', onclick: clicker('config') }, 'Config'),
-                    m('li.ph2.pv1.f4.pointer', {style: 'list-style-type: none;', onclick: clicker('state')  }, 'State' ),
-                    m('li.ph2.pv1.f4.pointer', {style: 'list-style-type: none;', onclick: clicker('db')     }, 'DB'    ),
-                    m('li.ph2.pv1.f4.pointer', {style: 'list-style-type: none;', onclick: clicker('logs')   }, 'Logs'  ),
-                ]),
+                m('ul.flex.flex-row.ml2',
+                    'System Config State DB Logs'.split(' ').map( mod => {
+                        return m('li.ph2.pv1.f4.list.pointer', {onclick: clicker(mod.toLowerCase()) }, mod);
+                    }),
+                ),
             ]),
             Component,
         ]);

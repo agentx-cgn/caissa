@@ -4,6 +4,14 @@ import { H, $$ }   from '../services/helper';
 
 const Tools = {
 
+    interpolate (route, params) {
+        let target = route;
+        H.each(params, (key, val) => {
+            target = target.replace(':' + key, val);
+        });
+        return target;
+    },
+
     scrollTurnIntoView (state, msecs=60) {
 
         if (state.moves.length){

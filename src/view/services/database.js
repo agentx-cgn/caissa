@@ -190,5 +190,5 @@ const db =  {
 };
 
 db.init();
-
+window.caissa.onimport && window.caissa.onimport('Storage');
 export { db as default } ;

@@ -22,6 +22,8 @@ export default function() {
     var count = 0; // added a variable
 
     // https://mithril.js.org/lifecycle-methods.html
+    // https://mithril.js.org/route.html#advanced-component-resolution
+
     return {
         oninit: function( /* vnode */ ){
             // The oninit(vnode) hook is called before a vnode is touched by the virtual DOM engine.

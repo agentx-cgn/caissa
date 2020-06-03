@@ -5,31 +5,88 @@
         <title>Caissa</title>
 
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
         <link rel="manifest" href="./static/caissa.manifest">
 
         <link rel="shortcut icon" href="./static/favicon.png" />
+        <style>
+            :root {
+                --sat: env(safe-area-inset-top);
+                --sar: env(safe-area-inset-right);
+                --sab: env(safe-area-inset-bottom);
+                --sal: env(safe-area-inset-left);
+            }
+            .backdrop {
+                top: 40px; left: 0;
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                background-color: rgba(128,128,128, 0.8);
+            }
+            .loader {
+                position: relative;
+                height: 60%;
+                width: 80%;
+                margin: 20% auto;
+                font-family: monospace;
+                color: white;
+
+            }
+            .loader button {
+                display: none;
+                margin-top: 12px;
+                padding: 4px 8px;
+            }
+        </style>
 
         <script>
+            var offset = 16;
             window.t0 = Date.now();
             console.log('Info   :', 'Initializing...');
+
             if (location.hash.includes('debug')){
-                window.onerror = function () {
-                    document.body.innerHTML = JSON.stringify(arguments);
+                window.onerror = function (...args) {
+                    document.body.innerHTML = JSON.stringify(args);
                     console.log(JSON.stringify(arguments))
                 }
             }
+            // create namespace
+            window.caissa = {
+                system: null,
+                state:  null,
+                db:     null,
+                onimport : function (text) {
+                    offset += 50;
+                    setTimeout( function () {
+                        const $msgs = document.querySelector(".loader .messages");
+                        $msgs.innerHTML += '<br>' + text;
+                    }, offset);
+                },
+                onstart: function () {
+                    console.log('onstart');
+                }
+
+            };
             // if('serviceWorker' in navigator) {
             //     navigator.serviceWorker.register('./static/caissa.sw.js');
             // };
         </script>
+        <script src="./static/swiped-events.js"></script>
 
     </head>
-    <body>
-        <noscript>You need to enable JavaScript to run Caissa.</noscript>
 
+    <body>
+
+        <noscript>You need to enable JavaScript to run Caissa.</noscript>
         <div id="root">
-            <!-- Application Layout will be injected dynamically -->
+        </div>
+        <div class="backdrop">
+            <div class="loader">
+                <h3>Caissa loading...</h3>
+                <div class="messages"></div>
+                <button class="onstart" onclick="window.caissa.onstart()">Start</button>
+                <button class="reload" onclick="location.reload()">Reload</button>
+            </div>
         </div>
 
     </body>

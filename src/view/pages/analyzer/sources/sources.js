@@ -3,15 +3,16 @@ import Caissa    from '../../../caissa';
 import Providers from '../../../data/provider';
 import { TitleLeft, HeaderLeft, FlexList, FlexListEntry} from '../../../components/misc';
 
-export default {
-
+const sources = {
+    name:  'Sources',
     view () {
-        return m('[',
+        return m('div.page.sources', [
             m(TitleLeft, 'Choose a Game Collection'),
             m(FlexList,
                 Providers.list.map( provider => {
 
-                    const onclick = async () => {
+                    const onclick = async (e) => {
+                        e.redraw = false;
                         if (!provider.games.length){
                             await provider.fetch();
                             if (!provider.error){
@@ -42,9 +43,11 @@ export default {
 
                 }),
             ),
-
             m(HeaderLeft, 'Or download Online Games'),
-
-        );
+        ]);
     },
+
 };
+
+window.caissa.onimport && window.caissa.onimport('Sources');
+export default sources;

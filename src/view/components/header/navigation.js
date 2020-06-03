@@ -1,23 +1,25 @@
 
-import Config from '../../data/config';
-import { $$ } from '../../services/helper';
-import Caissa from '../../caissa';
-import { Backdrop } from '../misc';
+import Config       from '../../data/config';
+import { H, $$ }    from '../../services/helper';
+import Caissa       from '../../caissa';
+import Backdrop     from '../backdrop';
 
-export default {
-
+const Navigation = H.create({
+    name: 'Navigation',
     view( vnode ) {
 
         const { navi } = vnode.attrs;
         const clicker  = (href) => {
-            return () => {
+            return (e) => {
+                e.redraw = false;
                 Backdrop.hide();
                 Caissa.route(href);
                 $$('#toggle-mobile-menu').checked = false;
+                return H.eat(e);
             };
         };
 
-        return m('nav', {id: 'site-navigation', ...vnode.attrs}, [
+        return m('nav', [
 
             // hamburger
             m('label', {for:'toggle-mobile-menu', 'aria-label':'Menu'},
@@ -26,8 +28,9 @@ export default {
             ),
 
             // toggle, needs id for label
-            m('input[type=checkbox]', {id: 'toggle-mobile-menu', oninput: ({ target }) => {
-                target.checked && Backdrop.show( () => {
+            m('input[type=checkbox]', {id: 'toggle-mobile-menu', oninput: (e) => {
+                e.redraw = false;
+                e.target.checked && Backdrop.show( () => {
                     $$('#toggle-mobile-menu').checked = false;
                 });
             }}),
@@ -37,11 +40,13 @@ export default {
                     const [href, child] = item;
                     return m('li', {onclick: clicker(href), class: href.startsWith(navi) ? 'selected' : 'unselected'}, child);
                 }),
-                m('li.unselected', m('a.link', {target:'_blank', href: 'https://github.com/agentx-cgn/caissa'}, 'SOURCE')),
-                m('li.unselected', m('a.link', {target:'_blank', href: 'https://caissa.js.org/'}, 'LIVE')),
+                // m('li.unselected', m('a.link', {target:'_blank', href: 'https://github.com/agentx-cgn/caissa'}, 'SOURCE')),
+                // m('li.unselected', m('a.link', {target:'_blank', href: 'https://caissa.js.org/'}, 'LIVE')),
 
             ]),
 
         ]);
     },
-};
+});
+
+export default Navigation;

@@ -7,23 +7,22 @@ import './app.scss';
 import System from './view/data/system';
 import State  from './view/data/state';
 import DB     from './view/services/database';
-import { Events, Routes, DefaultRoute } from './view/caissa';
+import { H }  from './view/services/helper';
+import Events from './view/services/events';
+import Caissa, { Routes, DefaultRoute } from './view/caissa';
 
-console.log('Info   :', 'Loaded imports after', Date.now() - window.t0, 'msecs', process.env.NODE_ENV);
+const DEBUG = false;
+
+DEBUG && console.log('Info   :', 'Loaded imports after', Date.now() - window.t0, 'msecs', process.env.NODE_ENV);
 
 if (module.hot) { module.hot.accept(); }
 
-window.caissa = {
-    system: System,
-    state:  State,
-    db:     DB,
-};
-
-window.addEventListener('load',              Events.onload);
-window.addEventListener('beforeunload',      Events.onbeforeunload);
-document.addEventListener('selectionchange', Events.onselectionchange);
-window.addEventListener('popstate',          Events.onpopstate);
-window.addEventListener('hashchange',        Events.hashchange);
+window.H = H;
+window.caissa.system = System;
+window.caissa.state = State;
+window.caissa.db = DB;
+window.caissa.onstart = Caissa.onstart;
+Events.listen();
 
 // Extend Mithril
 m.cls = (def = {}, sep = ' ', classes = '') => {
@@ -40,4 +39,4 @@ const $root = document.body.querySelector('#root');
 m.route.prefix = '#!';
 m.route($root, DefaultRoute, Routes);
 
-console.log('Info   :', 'index.js loaded after', Date.now() - window.t0, 'msecs');
+DEBUG && console.log('Info   :', 'index.js loaded after', Date.now() - window.t0, 'msecs');

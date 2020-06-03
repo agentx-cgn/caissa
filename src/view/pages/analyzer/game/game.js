@@ -1,6 +1,6 @@
 import './game.scss';
 
-import Caissa            from '../../../caissa';
+// import Caissa            from '../../../caissa';
 import Tools             from '../../../tools/tools';
 import { H }             from '../../../services/helper';
 import Dispatcher        from '../../../services/dispatcher';
@@ -19,42 +19,42 @@ Object.assign(state, H.deepcopy(Config.gamestatetemplate));
 const fire = Dispatcher.connect({ name: 'game'});
 
 export default {
+    name: 'Game',
     view( vnode ) {
 
-        const route = '/game/:turn/:uuid/';
-        const uuid  = vnode.attrs.uuid === ':uuid' ? undefined :   vnode.attrs.uuid;
-        const turn  = vnode.attrs.turn === ':turn' ? undefined : ~~vnode.attrs.turn;
+        // const route = '/game/:turn/:uuid/';
+        let uuid  = vnode.attrs.uuid === ':uuid' ? undefined :   vnode.attrs.uuid;
+        let turn  = vnode.attrs.turn === ':turn' ? undefined : ~~vnode.attrs.turn;
 
         // there is nothing, show DB List
         if (!uuid && !state.game.uuid) {
-            return m('[', [
-                m(Spacer),
+            return m('div.page.game', [
                 m(TitleLeft, 'Recent Games (DB)'),
                 m(GamesList, { games: DB.Games.list() }),
             ]);
 
-        // route /wo uuid, recycle game from state, reroute
+        // route /wo uuid, take from state
         } else if (!uuid && state.game.uuid) {
-            Caissa.route(route, { turn: state.game.turn, uuid: state.game.uuid }, { replace: true });
-            return;
+            uuid = state.game.uuid;
+            turn = state.game.turn;
 
-        // new game, overwrite state, reroute
+        // new game, overwrite state
         } else if (uuid !== state.game.uuid) {
             const game    = DB.Games.get(uuid);
             const moves   = Tools.genMoves(game.pgn);
-            const newturn = turn !== undefined ? turn : moves.length -1;
+            turn =  moves.length -1;
             Object.assign(state, H.deepcopy(Config.gamestatetemplate), {
-                game: DB.Games.update(uuid, {turn: newturn, plycount: moves.length}),
+                game: DB.Games.update(uuid, {turn, plycount: moves.length}),
                 moves,
             });
-            Caissa.route(route, { turn: state.game.turn, uuid: state.game.uuid }, { replace: true });
-            return;
 
         // same game, new turn
         // from game-buttons or user reclicked game
         } else if (state.game.turn !== turn && turn !== undefined){
             state.game = DB.Games.update(uuid, { turn });
 
+        // } else {
+        //     console.log('WTF');
         }
 
         // update board, showing fen
@@ -67,7 +67,7 @@ export default {
         // TODO: use {order: x} to swap Flags & Buttons on collapsed
         // https://developer.mozilla.org/en-US/docs/Web/CSS/order
 
-        return m('[', [
+        return m('div.page.game', [
             m(GameButtons),
             m(HeaderCentered, {class: 'gm-players'}, m.trust(players)),
             m(Moves),

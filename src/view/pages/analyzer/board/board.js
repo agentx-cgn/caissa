@@ -37,7 +37,7 @@ const board = {
             const turn = gamestate.game.turn;
             const move = gamestate.moves[turn];
             if (!move) {
-                console.log('board.game', gamestate.game.uuid, turn, move, gamestate.moves.length);
+                console.log('board.game.no.move', gamestate.game.uuid, turn, move, gamestate.moves.length);
             }
             state.fen = move.fen;
 
@@ -92,6 +92,7 @@ Dispatcher.connect(board, false);
 
 
 export default {
+    name: 'Board',
     onremove: function( /* vnode */ ) {
         chessBoard.destroy();
     },
@@ -127,7 +128,7 @@ export default {
             // with orientation = 'w'
             Config.board.config,
         );
-        console.log('board.oncreate.out');
+        false && console.log('board.oncreate.out');
 
         // Tools.updateArrows(chess, chessBoard, state);
         // Tools.updateMarker(chess, chessBoard, state);

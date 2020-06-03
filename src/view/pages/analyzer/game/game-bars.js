@@ -9,6 +9,7 @@ const state = State.game;
 
 let progressdom;
 export const GameProgressBar = {
+    name: 'GameProgressBar',
     render ( width ) {
         progressdom && (progressdom.innerHTML = `<div class="gm-progress" style="width:${width}%">`);
     },
@@ -32,20 +33,23 @@ function setTurn (diff) {
 }
 
 const actions = {
-    back  () { Caissa.route('/game/:turn/:uuid/', {turn: setTurn('0'), uuid: state.game.uuid}, { replace: true }); },
-    left  () { Caissa.route('/game/:turn/:uuid/', {turn: setTurn(-1),  uuid: state.game.uuid}, { replace: true }); },
-    right () { Caissa.route('/game/:turn/:uuid/', {turn: setTurn(+1),  uuid: state.game.uuid}, { replace: true }); },
-    fore  () { Caissa.route('/game/:turn/:uuid/', {turn: setTurn('e'), uuid: state.game.uuid}, { replace: true }); },
-    pause () {},
-    play  () {},
-    eval  () { evaluate(state); },
-    rotate () {
+    back  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn('0'), uuid: state.game.uuid}, { replace: true }); return H.eat(e);},
+    left  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn(-1),  uuid: state.game.uuid}, { replace: true }); return H.eat(e);},
+    right (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn(+1),  uuid: state.game.uuid}, { replace: true }); return H.eat(e);},
+    fore  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn('e'), uuid: state.game.uuid}, { replace: true }); return H.eat(e);},
+    pause (e) {return H.eat(e);},
+    play  (e) {return H.eat(e);},
+    eval  (e) { evaluate(state); return H.eat(e);},
+    rotate (e) {
         State.board.orientation = State.board.orientation === COLOR.white ? COLOR.black : COLOR.white;
-        m.redraw();
+        return H.eat(e);
+        // m.redraw();
     },
-    toggle () {
+    toggle (e) {
         // TODO: use state.ui
         $$('section.section-left').classList.toggle('collapsed');
+        e.redraw = false;
+        return H.eat(e);
     },
 };
 
@@ -68,7 +72,7 @@ const buttons = {
 };
 
 export const GameButtons = {
-
+    name: 'GameButtons',
     onremove () {
         $$('div.gm-buttons') && $$('div.gm-buttons').removeEventListener('wheel', wheeler);
     },
@@ -135,6 +139,7 @@ const flagger = function (flags) {
 };
 
 export const GameFlags = {
+    name: 'GameFlags',
     view( ) {
         return (
             m('div.gm-bar',

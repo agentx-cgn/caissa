@@ -1,6 +1,7 @@
 // TODO: realize other timecontrols w/ time budgets per player
 
 import { H } from '../services/helper';
+import Component from '../components/component';
 
 const clock = (function () {
 
@@ -90,7 +91,8 @@ const clock = (function () {
             return H.msec2HMSm(total);
         },
         comp () {
-            return {
+            return Component.create({
+                name: 'Chessclock',
                 oncreate ( vnode ) {
                     const { player } = vnode.attrs;
                     if (player === 'w'){domWhite = vnode.dom;}
@@ -110,7 +112,7 @@ const clock = (function () {
                         m(tagtotal, clock.total)
                     );
                 },
-            };
+            });
         },
 
     };

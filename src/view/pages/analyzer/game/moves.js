@@ -4,7 +4,7 @@ import State  from '../../../data/state';
 const state = State.game;
 
 const Moves = {
-
+    name: 'Moves',
     renderMove (moves, idx) {
         return m(Move, {
             num:      idx +1,

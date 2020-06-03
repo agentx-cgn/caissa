@@ -7,6 +7,7 @@ import Tools      from './../../../tools/tools';
 const fire = Dispatcher.connect({name: 'board-pieces'}, false);
 
 export default {
+    name: 'BoardPieces',
     onremove () {
         interact('.dropzone').unset();
     },

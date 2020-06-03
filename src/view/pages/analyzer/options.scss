@@ -1,0 +1,136 @@
+// import '../../../../extern/cm-chessboard/cm-chessboard.css';
+
+
+  div.default-options {
+    background-color: #aaa;
+    padding: 0.5rem 1.5rem;
+  }
+  div.default-options div.group-title {
+    margin-top: 0.5rem;
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    color: white;
+  }
+
+  div.play-options input,
+  div.default-options input {
+    font-weight: 800;
+  }
+  div.play-options input[type="checkbox"],
+  div.default-options input[type="checkbox"] {
+    vertical-align: middle;
+    transform: scale(1.5);
+  }
+  div.play-options input[type="number"],
+  div.default-options input[type="number"] {
+      font-family: 'Iosevka-Term-Medium';
+      text-align: right;
+  }
+  div.play-options input[type="range"],
+  div.default-options input[type="range"] {
+      max-width: 100%;
+      width: 100%;
+      margin: 0px;
+      padding: 0px;
+      vertical-align: middle;
+      background-color: transparent;
+  }
+  div.default-options select option:hover {
+    background-color: #a89;
+  }
+  div.play-options select option,
+  div.default-options select option {
+      font-family: 'Iosevka-Term-Medium';
+  }
+  .section-left button,
+  .section-left select {
+      background: #ccc;
+      background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#eee), to(#ccc));
+      background: -webkit-linear-gradient(0% 0%, 0% 100%, from(#eee), to(#ccc));
+      background: -moz-linear-gradient(center top, #eee, #ccc);
+      background: linear-gradient(to bottom, #eee, #ccc);
+  }
+  .section-left select {
+      border: 1px;
+  }
+
+  div.play-options {
+    background-color: #bbb;
+    margin: 0 0 0.5rem 0;
+    padding: 0.5rem 2rem;
+    border-top: 5px solid #89b;
+  }
+  div.play-options div.group-title {
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    color: white;
+  }
+
+
+  div.page-options {
+    background-color: #eee;
+    padding: 0.5rem 1.5rem;
+  }
+  div.page-options div.group-title {
+    font-weight: 800;
+    font-size: 1.25rem;
+    margin: 2rem 0 0.5rem 0;
+    padding-left: 1rem;
+    letter-spacing: 1px
+  }
+
+  div.control {
+      margin: 0.6rem 0 0.2rem 0;
+      width: 100%;
+  }
+
+  div.control-label-40 {
+      display: inline-block;
+      font-family: 'SairaCondensed-Medium';
+      text-align: right;
+      font-size: 1.2rem;
+      padding-right: 1rem;
+      width: 40%;
+  }
+  div.control-label-100 {
+      display: inline-block;
+      text-align: left;
+      font-size: 1rem;
+      padding-left: 1rem;
+      width: 100%;
+  }
+  div.control-60 {
+      font-family: 'Iosevka-Term-Medium';
+      display: inline-block;
+      text-align: left;
+      width: 60%;
+  }
+  // div.control-text-60 {
+  //     display: inline-block;
+  //     text-align: left;
+  //     width: 60%;
+  // }
+  // div.control-select-60 {
+  //     display: inline-block;
+  //     text-align: left;
+  //     width: 60%;
+  // }
+
+  div.control-100 {
+      display: inline-block;
+      text-align: left;
+      width: 100%;
+  }
+
+  div.dimension {
+      display: inline-block;
+      font-family: 'SairaCondensed-Medium';
+      text-align: left;
+      padding-left: .5rem;
+  }
+
+
+
+

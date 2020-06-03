@@ -37,12 +37,12 @@ Config.playtemplates.forEach( template =>  {
 });
 
 export default {
-
+    name: 'Plays',
     view ( vnode ) {
 
         const { mode } = vnode.attrs;
 
-        return m('[', [
+        return m('div.page.plays', [
 
             m(TitleLeft, 'Start a new Play'),
             m(FixedList, Config.playtemplates.map( play => {
@@ -54,8 +54,8 @@ export default {
                 ;
                 const onclick  = mode === play.mode
                     // just toggles
-                    ? () => Caissa.route('/plays/',       {},                {replace: true})
-                    : () => Caissa.route('/plays/:mode/', {mode: play.mode}, {replace: true})
+                    ? (e) => {e.redraw = false; Caissa.route('/plays/',       {},                {replace: true});}
+                    : (e) => {e.redraw = false; Caissa.route('/plays/:mode/', {mode: play.mode}, {replace: true});}
                 ;
 
                 return m('[', [
@@ -75,7 +75,7 @@ export default {
 
             m(TitleLeft, 'Resume a Play (' + DB.Games.list.length + ')'),
             m(FlexListShrink, DB.Plays.list.map (play => {
-                const onclick = () => Caissa.route('/play/:uuid/', {uuid: play.uuid});
+                const onclick = (e) => {e.redraw = false; Caissa.route('/play/:uuid/', {uuid: play.uuid});};
                 return m(FlexListPlayEntry, { onclick, play });
             })),
 

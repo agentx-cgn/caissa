@@ -7,6 +7,7 @@ const read = H.interprete;
 const TimeStamp = function () {
     let _dom, ticker;
     return {
+        name: 'TimeStamp',
         oncreate ({ dom, attrs }) {
             _dom = dom;
             ticker = setInterval( () => {
@@ -184,7 +185,7 @@ function renderGroupControl (control) {
 }
 
 export default {
-
+    'name': 'Forms',
     view( vnode ) {
 
         const { formdata } = vnode.attrs;

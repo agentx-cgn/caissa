@@ -6,9 +6,11 @@ import { FlexList } from './misc';
 
 // turn becomes plycount later
 const GamesList = {
+    name: 'Gameslist',
     view ( vnode ) {
         return m(FlexList, {class: 'games-list'},
-            vnode.attrs.games.map( game => m(GameEntry, { game, onclick: () => {
+            vnode.attrs.games.map( game => m(GameEntry, { game, onclick: (e) => {
+                e.redraw = false;
                 const dbgame = DB.Games.get(game.uuid);
                 if ( dbgame ) {
                     Caissa.route('/game/:turn/:uuid/', {uuid: game.uuid, turn: dbgame.turn});
@@ -30,7 +32,7 @@ const GamesList = {
 // result:     '',
 
 const GameEntry = {
-
+    name: 'GameEntry',
     view ( vnode ) {
 
         const { game, onclick } = vnode.attrs;

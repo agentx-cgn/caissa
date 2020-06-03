@@ -1,4 +1,6 @@
 
+import './options.scss';
+
 import DB         from '../../services/database';
 import Forms      from '../../components/forms';
 import { TitleLeft } from '../../components/misc';
@@ -6,12 +8,13 @@ import { TitleLeft } from '../../components/misc';
 let formgroups = Object.keys(DB.Options);
 
 export default {
+    name: 'Options',
     oncreate: function( /* vnode */ ) {
         formgroups = Object.keys(DB.Options);
     },
     view ( /* vnode */ ) {
         // TODO: think about auto save, with monkeypatching onchanges/oninput
-        return m('div.flexlist.viewport-y', [
+        return m('div.page.options', [
 
             m(TitleLeft, 'Options'),
             m('div.mv1.ph3.w-100',

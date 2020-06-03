@@ -16,22 +16,47 @@ html, body, #root {
     height:    100%;
     font-size: 16px;
     min-width: 320px;
+    overflow: hidden;
 }
 
-body {
+div.layout {
+    height: 100%;
+    flex-direction: column;
+    display: flex;
+}
+
+header {
+    height: 2.625rem;
+    width: 100%;
+}
+
+main {
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+}
+
+nav {
+    height: 2.625rem;
+    > label {
+        left: 0;
+        top: 0;
+    }
+}
+
+div.page {
+    display: flex;
+    flex-direction: column;
     overflow-x: hidden;
+    overflow-y: auto;
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
 }
 
-#site-navigation {
-    height: 42px;
-}
-#site-navigation > label {
-    left: 0;
-    top: 0;
-}
 
 section.section-left.collapsed {
-    min-width: 42px;
+    min-width: 2.625rem;
     transition: min-width 0.3s ease;
     }
     section.section-left.collapsed div.gm-moves {
@@ -45,19 +70,101 @@ section.section-left.collapsed {
     }
 
 
-// GAME
+// BARS
+div.board-bar-top,
+div.board-bar-bot,
+div.gm-bar-flags,
 div.gm-bar-buttons {
-    height: 42px;
-}
-div.gm-bar-flags {
-    height: 42px;
+    height: 2.625rem;
 }
 
-// BOARD
-div.board-bar-top,
-div.board-bar-bot {
-    height: 42px;
+
+// small screen (mobile)
+@media only screen and (max-width: 360px) {
+    main {
+        width: 100vw;
+    }
+    div.chessboard {
+        display: none;
+    }
+    div.slider {
+        position: relative;
+        margin-left: calc(0px - 100vw);
+        width: calc(3 * 100vw);
+        display: flex;
+        flex-direction: row;
+    }
+    div.slide {
+        position: relative;
+        min-width: 100vw;
+        left: 0;
+        &.left {
+            z-index: 12;
+            // background-color: red;
+            background-color: #888;
+        }
+        &.center {
+            z-index: 10;
+            // background-color: green;
+            background-color: #888;
+        }
+        &.right {
+            z-index: 12;
+            // background-color: blue;
+            background-color: #888;
+
+        }
+        &.transitionLeft {
+            transition-property: transform;
+            transition-duration: 400ms;
+            transition-timing-function: cubic-bezier(0.37, 1.08, 0.58, 0.99);
+            transition-delay: 10ms;
+            transform: translateX(-360px);
+            -webkit-transform: translateX(-360px);
+        }
+        &.transitionRight {
+            transition-property: transform;
+            transition-duration: 400ms;
+            transition-timing-function: cubic-bezier(0.37, 1.08, 0.58, 0.99);
+            transition-delay: 10ms;
+            transform: translateX(360px);
+            -webkit-transform: translateX(360px);
+        }
+    }
 }
+
+@media only screen and (min-width: 361) and (max-width: 720px) {
+    main {
+        width: 360px; // was 360px
+        margin: 0 auto;
+    }
+    div.slider {
+        position: relative;
+        width: 360px;
+        overflow: hidden;
+    }
+    div.chessboard {
+        display: none;
+    }
+    // section.section-center {
+    //     display: none;
+    // }
+    div.slide {
+        position: relative;
+        min-width: 360px;
+        &.left {
+            background-color: #888; // red;
+        }
+        &.center {
+            background-color: #888; //  green;
+        }
+        &.right {
+            background-color: #888; // blue;
+        }
+    }
+}
+
+
 
 @media only screen and (orientation:portrait) {
 
@@ -94,16 +201,16 @@ div.board-bar-bot {
     }
 
     // show hamburger
-    #site-navigation {
+    nav {
         height: auto;
     }
-    #site-navigation ul {
+    nav ul {
         display: none;
     }
-    #site-navigation ul li {
+    nav ul li {
         display: block;
     }
-    #site-navigation input:checked + ul {
+    nav input:checked + ul {
         width: 22.5rem;
         top: 40px;
         display: block;
@@ -126,12 +233,12 @@ div.board-bar-bot {
         height: calc(100vh - 126px);
     }
     // hide menu
-    #site-navigation label,
-    #site-navigation div.home,
-    #site-navigation input {
+    nav label,
+    nav div.home,
+    nav input {
         display: none
     }
-    #site-navigation ul li {
+    nav ul li {
         display: inline-block;
     }
 }

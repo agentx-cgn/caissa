@@ -22,6 +22,7 @@ let isReady = false;
 
 
 export default {
+    name: 'Play',
     onbeforeremove ( ) {
         isReady = false;
     },
@@ -46,18 +47,20 @@ export default {
 
     view ( ) {
 
-        return !isReady
-            ? m(TextLeft, 'Please wait...')
-            : m(FlexList, [
-                m('button.pv1.mh3.mv1', {onclick: () => Controller.start(60 * 1000) }, 'Controller.start(60secs)'),
-                m('button.pv1.mh3.mv1', {onclick: () => Controller.white.move() }, 'white.move()'),
-                m('button.pv1.mh3.mv1', {onclick: () => Controller.black.move() }, 'black.move()'),
-                m('button.pv1.mh3.mv1', {onclick: () => Controller.stop() }, 'Controller.stop'),
-                m(Spacer),
-                m(Clock.comp(), {player: '*'}),
-            ])
-        ;
+        return m('div.page.play',
 
+            !isReady
+                ? m(TextLeft, 'Please wait...')
+                : m(FlexList, [
+                    m('button.pv1.mh3.mv1', {onclick: () => Controller.start(60 * 1000) }, 'Controller.start(60secs)'),
+                    m('button.pv1.mh3.mv1', {onclick: () => Controller.white.move() }, 'white.move()'),
+                    m('button.pv1.mh3.mv1', {onclick: () => Controller.black.move() }, 'black.move()'),
+                    m('button.pv1.mh3.mv1', {onclick: () => Controller.stop() }, 'Controller.stop'),
+                    m(Spacer),
+                    m(Clock.comp(), {player: '*'}),
+                ])
+            ,
+        );
     },
 
 };

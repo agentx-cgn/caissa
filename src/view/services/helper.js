@@ -1,7 +1,6 @@
 
 const $$    = document.querySelector.bind(document);
 const $$$   = document.querySelectorAll.bind(document);
-// const slice = Array.prototype.slice;
 
 const H = {
 
@@ -10,16 +9,23 @@ const H = {
      * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
     */
 
-
     // creates new object, like Object.assign, but removes prototype
     create () {
         const obj = !arguments.length ? {} : Object.assign.apply(null, arguments);
         Object.setPrototypeOf(obj, null);
         return obj;
     },
+    clear (obj) {
+        Object.keys(obj).forEach( prop => delete obj[prop] );
+        return obj;
+    },
+    createFreeze (obj) {
+        return H.freeze(H.create(obj));
+    },
 
-    deepCreateFreeze (obj) {
+    deepCreateFreeze () {
 
+        const obj = !arguments.length ? {} : Object.assign.apply(null, arguments);
         const propNames = Object.getOwnPropertyNames(obj);
 
         // Freeze properties before freezing self
@@ -81,6 +87,11 @@ const H = {
         return copy;
     },
 
+    // very short log version of obj
+    shrink (obj) {
+        return JSON.stringify(H.strip(obj)).replace(/"/g, '').slice(0, 140);
+    },
+
     deepcopy (obj){
         return JSON.parse(JSON.stringify(obj));
     },
@@ -90,6 +101,14 @@ const H = {
         for(let a in o){
             out.push( fn(a, o[a]) );
         }
+        return out;
+    },
+
+    transform (obj, fn) {
+        const out = H.create();
+        Object.keys(obj).forEach( prop => {
+            out[prop] = fn( prop, obj[prop] );
+        });
         return out;
     },
 
@@ -259,15 +278,19 @@ const H = {
     },
 
 
+    /**    E V E N T S     */
+
+    eat (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    },
+
+
     /**    S T U F F     */
 
     interprete (val){
         return typeof val === 'function' ? val() : val;
-    },
-
-    eat (e) {
-        e.preventDefault();
-        return false;
     },
 
     msecs2human (milliseconds) {

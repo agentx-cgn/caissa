@@ -13,19 +13,20 @@ const read  = H.interprete;
 let filter = '';
 
 export default {
-
+    name:  'Games',
     oninit ( vnode ) {
 
         const idx      = ~~vnode.attrs.idx;
         const provider = Providers.list.find( p => p.idx === idx );
         false && console.log('games.oninit', idx, provider.caption);
 
+        // probably direct hit from nowhere
         if ( !provider.games.length ) {
             provider.fetch()
                 .then( () => {
                     false && console.log('games.oninit.loaded', idx, provider.games.length);
                     provider.progress = 0;
-                    m.redraw();
+                    // m.redraw();
                 })
             ;
         } else {
@@ -62,7 +63,7 @@ export default {
                 })
             ;
 
-            return m(FlexListEntry, [
+            return m('div.page.games', m(FlexListEntry, [
 
                 m('img.source-icon', {src: provider.icon}),
                 m('div.source-caption.f4',      provider.caption),
@@ -78,7 +79,7 @@ export default {
                     ? m('div.source-progress-on',  {style: `width: ${provider.progress}%;`})
                     : m('div.source-progress-off'),
 
-            ]);
+            ]));
 
         // From here there is a provider + games to filter
         } else {
@@ -89,7 +90,7 @@ export default {
                     :  true;
             });
 
-            return m('[', [
+            return m('div.page.games', [
 
                 m(TitleLeft, filter.length
                     ? read(provider.header)

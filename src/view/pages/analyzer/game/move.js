@@ -21,6 +21,7 @@ const calcWidth = function (move) {
 };
 
 const ply = {
+    name: 'Ply',
     view ( vnode ) {
 
         const { player, move, colbar, colpiece } = vnode.attrs;
@@ -30,7 +31,8 @@ const ply = {
         const piece     = Config.fontPieces[move.piece];
 
         const width     = calcWidth(move);
-        const onclick   = () => {
+        const onclick   = (e) => {
+            e.redraw = false;
             Caissa.route('/game/:turn/:uuid/', {turn: move.turn, uuid: state.game.uuid}, { replace: true });
         };
 
@@ -57,7 +59,7 @@ const ply = {
 };
 
 export default {
-
+    name: 'Move',
     view (vnode) {
         const { num, white, black } = vnode.attrs;
         return m('tr.gm-move.trhover', [

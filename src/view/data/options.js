@@ -41,8 +41,11 @@ export default {
         'dark-color':  '#987',      //
     },
 
-    'ui-collapsed' : {
-        'section-left':  false,
+    'ui' :{
+        waitscreen: false,
+        'ui-collapsed' : {
+            'section-left':  false,
+        },
     },
 
 

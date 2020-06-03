@@ -8,7 +8,7 @@
     var stockfish = new Worker(wasmSupported ? 'stockfish.wasm.js' : 'stockfish.js');
 
     TypeError: asm.js type error: Disabled by debugger
-    Asm.js optimizations aren't possible when the debugger is running. 
+    Asm.js optimizations aren't possible when the debugger is running.
     It will fallback to be executed as normal JS and can debugged that way.
 
 */
@@ -16,6 +16,7 @@
 // import { H } from "../services/helper";
 
 let mem;
+
 
 const system = {
 
@@ -25,9 +26,11 @@ const system = {
     vendor:        navigator.vendor,
     touch :        'ontouchstart' in document.documentElement,
     fetch:         !!window.fetch,
+    online:        !!Navigator.onLine,
     languages:     navigator.languages.join('|'),
     vibration:     !!window.navigator.vibrate,
     localStorage : !!window.localStorage,
+    serviceWorker: !!navigator.serviceWorker,
 
     fullscreen : function () {
         return !!(document.fullscreenEnabled ||
@@ -39,8 +42,8 @@ const system = {
     wasm : function () {
         return typeof WebAssembly === 'object' && WebAssembly.validate(Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00));
     }(),
-    is64bit : function is64Bit () {                                                   
-        const x64 = ['x86_64', 'x86-64', 'Win64','x64', 'amd64', 'AMD64'];            
+    is64bit : function is64Bit () {
+        const x64 = ['x86_64', 'x86-64', 'Win64','x64', 'amd64', 'AMD64'];
         for (const substr of x64) if (navigator.userAgent.indexOf(substr) >= 0) return true;
         return navigator.platform === 'Linux x86_64' || navigator.platform === 'MacIntel' || navigator.platform === 'Linux aarch64' ;
     }(),
@@ -48,12 +51,18 @@ const system = {
     screen: {
         width:         screen.width,
         height:        screen.height,
+        aspect:        screen.width / screen.height,
         availWidth:    screen.availWidth,
         availHeight:   screen.availHeight,
         colorDepth:    screen.colorDepth,
         pixelDepth:    screen.pixelDepth,
         left:          screen.left,
         top:           screen.top,
+        devicePixelRatio: window.devicePixelRatio,
+        'safe-area-inset-top':      getComputedStyle(document.documentElement).getPropertyValue('--sat'),
+        'safe-area-inset-right':    getComputedStyle(document.documentElement).getPropertyValue('--sar'),
+        'safe-area-inset-bottom':   getComputedStyle(document.documentElement).getPropertyValue('--sab'),
+        'safe-area-inset-left':     getComputedStyle(document.documentElement).getPropertyValue('--sal'),
     },
 
     Atomics:           typeof Atomics === 'object',
@@ -75,7 +84,7 @@ const system = {
             window.postMessage(mem, '*');
         } catch (e) {
             return false;
-        }   
+        }
         return true;
     }()),
 
@@ -100,7 +109,7 @@ const system = {
         }
     }()),
 
-    
+
     // function () {
     //     try {
     //         const storage = window.localStorage, x = '__storage_test__';
@@ -116,7 +125,7 @@ const system = {
     log () {
         const s = system;
         console.log(
-            'Info   :', 
+            'Info   :',
             navigator.hardwareConcurrency + ' Threads',
             'LS'           + (s.hasLocalStorage   ? '+' : '-'),
             'FS'           + (s.fullscreenEnabled ? '+' : '-'),
@@ -134,4 +143,6 @@ const system = {
 };
 
 system.log();
+window.caissa.onimport && window.caissa.onimport('System');
+
 export { system as default };

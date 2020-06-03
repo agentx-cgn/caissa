@@ -31,8 +31,6 @@ export default {
 
         }
 
-        document.addEventListener('dblclick', H.eat);
-
     },
 
     view ( vnode ) {
