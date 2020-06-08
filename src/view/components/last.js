@@ -3,7 +3,7 @@ import Component from './component';
 
 let dispatcher = null;
 
-const Last = Component.create('Debug', {
+const Last = Component.create('Last', {
 
     onregister (disp) {
         dispatcher = disp;
@@ -12,10 +12,10 @@ const Last = Component.create('Debug', {
         return m('div.last.dn');
     },
     onupdate ({attrs:{msecs}}) {
-        dispatcher.send({event: 'onafterupdates', msecs});
+        dispatcher.send({channel: 'onafterupdates', msecs});
     },
     oncreate ({attrs:{msecs}}) {
-        dispatcher.send({event: 'onafterupdates', msecs});
+        dispatcher.send({channel: 'onafterupdates', msecs});
     },
 
 });

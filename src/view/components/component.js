@@ -3,16 +3,18 @@ import { H } from '../services/helper';
 
 const freezer = [];
 
-const Dispatcher = {
+const Dispatcher = function (source) {
 
-    send (msg) {
-        freezer.forEach( comp => {
-            if (comp[msg.event] && typeof comp[msg.event] === 'function'){
-                comp[msg.event](msg);
-                // console.log('dispatcher.send', msg, 'to', comp.name);
-            }
-        });
-    },
+    return {
+        send (msg) {
+            freezer.forEach( comp => {
+                if (comp[msg.channel] && typeof comp[msg.channel] === 'function' && source !== comp.name){
+                    comp[msg.channel]({source, ...msg});
+                    // console.log('dispatcher.send', msg, 'to', comp.name, 'from', source);
+                }
+            });
+        },
+    };
 
 };
 
@@ -22,7 +24,7 @@ export default {
         let preventUpdates = false;
 
         if (typeof comp.onregister === 'function') {
-            comp.onregister(Dispatcher);
+            comp.onregister(Dispatcher(name));
         }
 
         const ice = H.deepCreateFreeze({
