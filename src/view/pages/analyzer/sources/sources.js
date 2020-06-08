@@ -1,7 +1,7 @@
 
 import Caissa    from '../../../caissa';
 import Providers from '../../../data/provider';
-import { TitleLeft, HeaderLeft, FlexList, FlexListEntry} from '../../../components/misc';
+import { TitleLeft, HeaderLeft, FlexList, FlexListEntry, GrowSpacer} from '../../../components/misc';
 
 const sources = {
     name:  'Sources',
@@ -44,6 +44,7 @@ const sources = {
                 }),
             ),
             m(HeaderLeft, 'Or download Online Games'),
+            m(GrowSpacer),
         ]);
     },
 

@@ -24,13 +24,13 @@ const Json =  {
 
 export default {
     name: 'System',
-    view ( {attrs : { module } } ) {
+    view ( vnode ) {
 
-        // const { module } = vnode.attrs;
+        const { module } = vnode.attrs;
 
         // reroute, if no module
         if (module === ':module' || module === undefined) {
-            Caissa.route('/system/:module/', {module: 'logs'}, {replace: true});
+            console.warn('system.nomodule', vnode.attrs, module);
             return;
         }
 

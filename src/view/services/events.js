@@ -4,6 +4,8 @@ import Caissa  from '../caissa';
 import System  from '../data/state';
 import History from '../services/history';
 
+// https://developer.mozilla.org/en-US/docs/Web/Events
+
 const Events = {
     listen () {
         document.addEventListener('selectionchange', Events.onselectionchange);

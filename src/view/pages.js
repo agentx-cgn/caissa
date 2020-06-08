@@ -1,7 +1,6 @@
 
 import Layout          from './layout';
 import Info            from './pages/help/help';
-// import Analyzer        from './pages/analyzer/analyzer';
 import Options         from './pages/analyzer/options';
 import Games           from './pages/analyzer/games/games';
 import Plays           from './pages/analyzer/plays/plays';

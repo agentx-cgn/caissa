@@ -8,6 +8,7 @@ import DB                from '../../../services/database';
 import State             from '../../../data/state';
 import Config            from '../../../data/config';
 import GamesList         from '../../../components/gameslist';
+import Component         from '../../../components/component';
 import Moves             from './moves';
 
 import { GameFlags, GameButtons } from './game-bars';
@@ -18,8 +19,8 @@ Object.assign(state, H.deepcopy(Config.gamestatetemplate));
 
 const fire = Dispatcher.connect({ name: 'game'});
 
-export default {
-    name: 'Game',
+const Game = Component.create('Game', {
+    onupdate() {},
     view( vnode ) {
 
         // const route = '/game/:turn/:uuid/';
@@ -79,4 +80,6 @@ export default {
         ]);
 
     },
-};
+});
+
+export default Game;

@@ -1,16 +1,13 @@
 import './layout.scss';
 
-import { H }        from '../view/services/helper';
+// import { H }        from '../view/services/helper';
 import Header       from './components/header/header';
 import Backdrop     from './components/backdrop';
 import Main         from './components/main';
+import Last        from './components/last';
+import Component    from './components/component';
 
-
-const layout = H.create({
-    name: 'Layout',
-
-
-    onupdate() {},
+const Layout = Component.create('Layout', {
     view( vnode ) {
 
         const navi  = vnode.attrs.page.navi;
@@ -19,13 +16,13 @@ const layout = H.create({
             m(Backdrop),
             m(Header, { navi }),
             m(Main, vnode.attrs, vnode.children),
+            m(Last, {msecs: Date.now()}),
         ]);
 
     },
 });
 
-window.caissa.onimport && window.caissa.onimport('Layout');
-export default layout;
+export default Layout;
 
 /*
 

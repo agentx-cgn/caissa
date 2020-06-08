@@ -9,11 +9,11 @@ const Navigation = H.create({
     view( vnode ) {
 
         const { navi } = vnode.attrs;
-        const clicker  = (href) => {
+        const clicker  = (route, params) => {
             return (e) => {
                 e.redraw = false;
                 Backdrop.hide();
-                Caissa.route(href);
+                Caissa.route(route, params);
                 $$('#toggle-mobile-menu').checked = false;
                 return H.eat(e);
             };
@@ -37,8 +37,11 @@ const Navigation = H.create({
 
             m('ul', [
                 ...Config.navigation.map( (item) => {
-                    const [href, child] = item;
-                    return m('li', {onclick: clicker(href), class: href.startsWith(navi) ? 'selected' : 'unselected'}, child);
+                    const [route, params, entry] = item;
+                    return m('li', {
+                        onclick: clicker(route, params),
+                        class: route.startsWith(navi) ? 'selected' : 'unselected'}, entry)
+                    ;
                 }),
                 // m('li.unselected', m('a.link', {target:'_blank', href: 'https://github.com/agentx-cgn/caissa'}, 'SOURCE')),
                 // m('li.unselected', m('a.link', {target:'_blank', href: 'https://caissa.js.org/'}, 'LIVE')),

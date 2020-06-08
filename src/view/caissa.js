@@ -22,27 +22,10 @@ const Caissa = {
             $$('.loader button.onstart').style.display = 'inline-block';
             $$('.loader button.reload').style.display  = 'inline-block';
         } else {
-            Caissa.onstart();
-        }
+            //TODO: delete nodes
+            $$('.loader').style.display   = 'none';
+            $$('body .backdrop').style.display = 'none';        }
         console.log(' ');
-    },
-
-    onstart () {
-        //TODO: delete nodes
-        $$('.loader').style.display   = 'none';
-        $$('body .backdrop').style.display = 'none';
-    },
-
-    previousContent () {
-        const prevEntry   = History.previous();
-        const prevContent = prevEntry ? prevEntry.children[1] : {name: ''};
-        return prevContent;
-    },
-
-    currentContent () {
-        const currEntry   = History.current();
-        const currContent = currEntry ? currEntry.children[1] : {name: ''};
-        return currContent;
     },
 
     route ( route, params={}, options={replace:false} ) {

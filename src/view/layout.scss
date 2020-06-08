@@ -45,6 +45,7 @@ nav {
 }
 
 div.page {
+    display: block;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
@@ -89,47 +90,46 @@ div.gm-bar-buttons {
     }
     div.slider {
         position: relative;
-        margin-left: calc(0px - 100vw);
+        // margin-left: calc(0px - 100vw);
         width: calc(3 * 100vw);
-        display: flex;
-        flex-direction: row;
+        display: block;
+        left: calc(0px - 100vw);
+        // flex-direction: row;
     }
     div.slide {
-        position: relative;
+        position: absolute;
         min-width: 100vw;
-        left: 0;
+        width: 100vw;
+        height: 100%;
         &.left {
+            left: 0;
             z-index: 12;
-            // background-color: red;
-            background-color: #888;
+            background-color: red;
+            // background-color: #888;
         }
         &.center {
+            left: 0;
             z-index: 10;
-            // background-color: green;
-            background-color: #888;
+            background-color: green;
+            // background-color: #888;
         }
         &.right {
+            left: 0;
             z-index: 12;
-            // background-color: blue;
-            background-color: #888;
+            background-color: blue;
+            // background-color: #888;
 
         }
-        &.transitionLeft {
+        &.transition {
             transition-property: transform;
             transition-duration: 400ms;
-            transition-timing-function: cubic-bezier(0.37, 1.08, 0.58, 0.99);
-            transition-delay: 10ms;
-            transform: translateX(-360px);
-            -webkit-transform: translateX(-360px);
+            // transition-timing-function: cubic-bezier(0.37, 1.08, 0.58, 0.99);
+            transition-timing-function: ease-out;
+            transition-delay: 0;
+            transform: translateX(360px) !important;
+            -webkit-transform: translateX(360px) !important;
         }
-        &.transitionRight {
-            transition-property: transform;
-            transition-duration: 400ms;
-            transition-timing-function: cubic-bezier(0.37, 1.08, 0.58, 0.99);
-            transition-delay: 10ms;
-            transform: translateX(360px);
-            -webkit-transform: translateX(360px);
-        }
+
     }
 }
 
@@ -146,9 +146,6 @@ div.gm-bar-buttons {
     div.chessboard {
         display: none;
     }
-    // section.section-center {
-    //     display: none;
-    // }
     div.slide {
         position: relative;
         min-width: 360px;

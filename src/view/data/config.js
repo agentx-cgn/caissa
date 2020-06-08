@@ -133,20 +133,16 @@ export default H.deepFreeze(H.create({
     playtemplates,
 
     navigation : [
-        ['/sources/',    'PGNS'],
-        ['/games/',      'GAMES'],  // loads imported games so far
-        ['/game/',       'GAME'],
-        ['/plays/',      'PLAY'],
-        ['/analyzer/',   'ANALYSE'],
-        ['/system/',     'SYSTEM'],
-        ['/options/',    'OPTIONS'],
-        ['/help/',       'HELP'],
+        ['/sources/',        {}, 'PGNS'],
+        ['/games/',          {}, 'GAMES'],  // loads imported games so far
+        ['/game/',           {}, 'GAME'],
+        ['/plays/',          {}, 'PLAY'],
+        ['/analyzer/',       {}, 'ANALYSE'],
+        ['/system/:module/', {module: 'system'}, 'SYSTEM'],
+        ['/options/',        {}, 'OPTIONS'],
+        ['/help/',           {}, 'HELP'],
 
-        // ['/logs/',       'LOGS'],
         // [`/info/${urls[1]}/`,   'INFO'],
-        // ['/options/',     m('i.fa.fa-cog', {})],
-        // ['/config',    'CONFIG'],
-        // ['/db',       'DB'],
         // ['/test',     'TEST'],
     ],
 
