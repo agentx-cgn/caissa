@@ -1,16 +1,16 @@
 
-import Layout          from './layout';
-import Help            from './pages/help/help';
-import Options         from './pages/options/options';
-import Games           from './pages/games/games';
-import Plays           from './pages/plays/plays';
-import Play            from './pages/play/play';
-import Board           from './pages/board/board';
-import Game            from './pages/game/game';
-import Sources         from './pages/sources/sources';
-import System          from './pages/system/system';
+import Layout          from '../layout';
+import Help            from '../pages/help/help';
+import Options         from '../pages/options/options';
+import Games           from '../pages/games/games';
+import Plays           from '../pages/plays/plays';
+import Play            from '../pages/play/play';
+import Board           from '../pages/board/board';
+import Game            from '../pages/game/game';
+import Sources         from '../pages/sources/sources';
+import System          from '../pages/system/system';
 // import {Nothing}       from './components/misc';
-import { H }           from './services/helper';
+import { H }           from '../services/helper';
 
 const pages  = H.create({
 

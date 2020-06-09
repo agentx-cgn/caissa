@@ -1,10 +1,10 @@
 
-import { H, $$ } from './services/helper';
-import History from './services/history';
-import Pages from './pages';
-import DB     from './services/database';
+import { H, $$ }   from './services/helper';
+import History     from './services/history';
+import Pages       from './data/pages';
+import DB          from './services/database';
 import { Nothing } from './components/misc';
-import Tools from './tools/tools';
+import Tools       from './tools/tools';
 
 const DEBUG = true;
 
