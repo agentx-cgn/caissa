@@ -12,6 +12,7 @@ const state = State.play;
 let isReady = false;
 
 const Play = Factory.create('Play', {
+
     onbeforeremove ( ) {
         isReady = false;
     },

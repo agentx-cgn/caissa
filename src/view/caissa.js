@@ -48,53 +48,51 @@ const Caissa = {
     },
 
     resolver (route, pageentry) {
-
-        const [layout, [content, section], page] = pageentry;
-
         return {
             onmatch ( params ) {
 
                 try {
                     redraws && console.log(' ');
-                    const target = Tools.interpolate(route, params);
+                    const target  = Tools.interpolate(route, params);
                     const current = History.isCurrent(target) ? 'current' : 'new';
                     DEBUG && console.log('%cCaissa.onmatch.in %s %s ', 'color:darkblue; font-weight: 800', target, current);
-                    History.prepare(route, params, {replace: false});
+                    History.prepare(route, params);
 
                 } catch (e) {console.log(JSON.stringify(e), e);}
 
             },
             render ( vnode ) {
 
-                const target = Tools.interpolate(route, vnode.attrs);
+                const content = pageentry[1];
+                const target  = Tools.interpolate(route, vnode.attrs);
                 const current = History.isCurrent(target) ? 'current' : 'new';
                 DEBUG && console.log('%cCaissa.render.in %s %s', 'color:darkorange; font-weight: 800', target, current);
 
-                History.finalize(route, {params: vnode.attrs, page, content});
-                const animate = History.canAnimate;
+                History.finalize(route, vnode.attrs, content);
 
-                return m(Caissa.comp, { animate, url: target, page, attrs: vnode.attrs}, [layout, content, section]);
+                return m(Caissa.comp, { route, params: vnode.attrs });
             },
         };
-
     },
 
     comp : Factory.create('Caissa', {
-        name: 'Caissa',
         view ( vnode ) {
 
-            const { animate, url, page, attrs} = vnode.attrs;
-            const [ layout ] = vnode.children;
+            const { route, params } = vnode.attrs;
+            const [ layout, content, section, page ] = Pages[route];
 
-            const animflag = animate ? 'animate' : 'still' ;
-            DEBUG && console.log('%cCaissa.view.in %s %s', 'color:darkgreen; font-weight: 800', url, animflag);
+            const target   = Tools.interpolate(route, params);
+            const animflag = History.canAnimate ? 'animate' : 'still' ;
+
+            DEBUG && console.log('%cCaissa.view.in %s %s', 'color:darkgreen; font-weight: 800', target, animflag);
 
             document.title = page.title;
 
+            // slider + board
             if (page.flags.includes(' sb ')) {
 
-                const [ contents, log ] = History.contents();
-                const [ left, center, right, anim] = contents;
+                const [ slides, log ] = History.slides();
+                const [ left, center, right, anim] = slides;
                 const sliderContent = [
                     m(left.content,   left.params),
                     m(center.content, center.params),
@@ -103,13 +101,12 @@ const Caissa = {
 
                 History.log();
                 console.log('VIEW', log);
-                // console.log('VIEW', contents);
+                // console.log('VIEW', slides);
 
                 return m(layout, {page, anim}, [ sliderContent, m(Nothing) ]);
 
             } else {
-                const [ layout, content, section ] = vnode.children;
-                return m(layout, { attrs }, [ content, section ]);
+                return m(layout, { route, params }, [ content, section ]);
 
             }
 

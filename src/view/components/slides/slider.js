@@ -105,7 +105,7 @@ const Slider = Factory.create('Slider', {
         updateMapping(reduce(vnode.children));
         console.table(mapping);
 
-        return m('div.slider', [
+        return m('div.slider.flex.flex-row', [
             m('div.slide.left',   {style: 'z-index: 12; transform: translateX(    0);'}, vnode.children[0]),
             m('div.slide.center', {style: 'z-index: 11; transform: translateX(360px);'}, vnode.children[1]),
             m('div.slide.right',  {style: 'z-index: 12; transform: translateX(720px);'}, vnode.children[2]),

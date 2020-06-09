@@ -1,7 +1,7 @@
 
 import './components.scss';
 
-import { H } from '../services/helper';
+import { H }     from '../services/helper';
 import Factory   from './factory';
 
 const Nothing = Factory.create('Nothing', {

@@ -3,30 +3,25 @@ import { Nothing } from '../components/misc';
 import Caissa      from '../caissa';
 import Tools       from '../tools/tools';
 
-function clearStack () {
-    while (stack.length){
-        stack.pop();
-    }
-}
-
 const DEBUG = true;
 
 const candidate = {};
-const stack = [];
-let pointer = NaN;
+const stack     = [];
+let pointer     = NaN;
 
-let backDetected = false;
-let foreDetected = false;
-let sameDetected = false;
-let replaceDetected = false;
-let popstateDetected = false;
-let hashchangeDetected = false;
-
+const detected  = {
+    back:       false,
+    fore:       false,
+    same:       false,
+    replace:    false,
+    popstate:   false,
+    hashchange: false,
+};
 
 const History = {
 
-    stack,
-    candidate,
+    stack, // needed in Header
+    // candidate,
     get pointer () {return pointer;},
 
     log () {
@@ -65,17 +60,17 @@ const History = {
      * there is always onpopstate and hashchange, except no hashchange if url is same
      */
     onhashchange (e) {
-        hashchangeDetected = true;
+        detected.hashchange = true;
         // console.log('history.onadresschange', e.type);
         return H.eat(e);
     },
     onpopstate (e) {
-        popstateDetected = true;
+        detected.popstate = true;
         // console.log('history.onadresschange', e.type);
         return H.eat(e);
     },
 
-    prepare (route, params, options) {
+    prepare (route, params={}, options={replace: false}) {
         /**
          *  called from onmatch/route,
          *  creates candidate on new route
@@ -94,47 +89,47 @@ const History = {
 
         // ignored, because already there
         } else if (stack[pointer] && stack[pointer].key === key) {
-            sameDetected = true;
+            detected.same = true;
             DEBUG && console.log('history.prepare.ignored.same', key);
 
         // route.set w/ replace
-        } else if (options.replace || replaceDetected) {
+        } else if (options.replace || detected.replace) {
             candidate[key] = { ...options };
-            replaceDetected = true;
+            detected.replace = true;
             DEBUG && console.log('history.prepare.replace', key, '=>', stack[pointer].key), H.shrink(options);
 
         // back from caissa
-        } else if (options.back || backDetected) {
-            backDetected = true;
+        } else if (options.back || detected.back) {
+            detected.back = true;
             DEBUG && console.log('history.prepare.back.found', key);
 
         // fore from caissa
-        } else if (options.fore || foreDetected) {
-            foreDetected = true;
+        } else if (options.fore || detected.fore) {
+            detected.fore = true;
             DEBUG && console.log('history.prepare.fore', key);
 
         // something changed addressbar
-        } else if (hashchangeDetected || popstateDetected) {
+        } else if (detected.hashchange || detected.popstate) {
 
             // assuming back
-            if (hashchangeDetected && stack[pointer -1] && stack[pointer -1].key === key){
-                backDetected = true;
+            if (detected.hashchange && stack[pointer -1] && stack[pointer -1].key === key){
+                detected.back = true;
                 DEBUG && console.log('history.prepare.urlChangeDetected.back', key);
 
             // assuming fore
-            } else if (hashchangeDetected && stack[pointer +1] && stack[pointer +1].key === key){
-                foreDetected = true;
+            } else if (detected.hashchange && stack[pointer +1] && stack[pointer +1].key === key){
+                detected.fore = true;
                 DEBUG && console.log('history.prepare.urlChangeDetected.fore', key);
 
             // assuming fore
-            } else if (!hashchangeDetected && popstateDetected){
-                sameDetected = true;
+            } else if (!detected.hashchange && detected.popstate){
+                detected.same = true;
                 DEBUG && console.log('history.prepare.urlChangeDetected.same', key);
 
             // start over
             } else {
                 candidate[key] = { ...options };
-                clearStack();
+                while (stack.length){ stack.pop(); }
                 DEBUG && console.log('history.prepare.urlChangeDetected.clear', key);
             }
 
@@ -144,21 +139,21 @@ const History = {
         }
     },
 
-    finalize (route, data) {
+    finalize (route, params, content) {
 
-        const key = Tools.interpolate(route, data.params);
+        const key = Tools.interpolate(route, params);
 
-        if (replaceDetected && candidate[key]) {
+        if (detected.replace && candidate[key]) {
             stack[pointer].key    = key;
-            stack[pointer].params = data.params;
+            stack[pointer].params = params;
             delete candidate[key];
             DEBUG && console.log('history.finalize.replace.done', key, '==', stack[pointer].key);
 
-        } else if (backDetected) {
+        } else if (detected.back) {
             pointer -= 1;
             DEBUG && console.log('history.finalize.back.done', stack[pointer]);
 
-        } else if (foreDetected) {
+        } else if (detected.fore) {
             pointer += 1;
             DEBUG && console.log('history.finalize.fore.done', stack[pointer]);
 
@@ -172,26 +167,20 @@ const History = {
                 const entry = stack.pop();
                 DEBUG && console.log('history.finalize.popped', pointer, stack.length, entry);
             }
-            pointer = stack.push(H.create({key, route, ...data})) -1;
+            pointer = stack.push(H.create({key, route, content})) -1;
             delete candidate[key];
             DEBUG && console.log('history.finalize.done', key, stack[pointer]);
         }
 
     },
     get canAnimate () {
-        return (
-            backDetected ? true :
-            foreDetected ? true :
-            sameDetected ? false :
-            replaceDetected ? false :
-            stack.length === 1 ? false :
-            true
-        );
+        return !( detected.same || detected.replace || stack.length === 1 );
     },
+
     /**
      * return three contents from history stack + needed animation
      */
-    contents () {
+    slides () {
 
         const noContent = H.create({content: Nothing, params: H.create()});
         let log, res;
@@ -211,20 +200,19 @@ const History = {
             log = collectNamesFrom(-1,   '=1=');
             res = collectContentFrom(-1, '=1=');
 
-        } else if (replaceDetected) {
+        } else if (detected.replace) {
             log = collectNamesFrom(-1,   '=r=');
             res = collectContentFrom(-1, '=r=');
-            // replaceDetected   = false;
 
-        } else if (sameDetected) {
+        } else if (detected.same) {
             log = collectNamesFrom(-1,   '=s=');
             res = collectContentFrom(-1, '=s=');
 
-        } else if (backDetected) {
+        } else if (detected.back) {
             log = collectNamesFrom(0,    '=b>');
             res = collectContentFrom(0,  '=b>');
 
-        } else if (foreDetected) {
+        } else if (detected.fore) {
             log = collectNamesFrom(-2,   '<f=');
             res = collectContentFrom(-2, '<f=');
 
@@ -236,12 +224,12 @@ const History = {
 
         // cleanup
         H.clear(candidate);
-        replaceDetected    = false;
-        backDetected       = false;
-        foreDetected       = false;
-        sameDetected       = false;
-        popstateDetected   = false;
-        hashchangeDetected = false;
+        detected.replace    = false;
+        detected.back       = false;
+        detected.fore       = false;
+        detected.same       = false;
+        detected.popstate   = false;
+        detected.hashchange = false;
 
         // urlChangeDetected = false;
 

@@ -15,7 +15,7 @@ const DEBUG = false;
 
 DEBUG && console.log('Info   :', 'Loaded imports after', Date.now() - window.t0, 'msecs', process.env.NODE_ENV);
 
-if (module.hot) { module.hot.accept(); }
+module.hot && module.hot.accept();
 
 window.H = H;
 window.caissa.system = System;
