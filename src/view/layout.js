@@ -4,7 +4,7 @@ import './layout.scss';
 import Header       from './components/header/header';
 import Backdrop     from './components/backdrop';
 import Main         from './components/main';
-import Last        from './components/last';
+import Last         from './components/last';
 import Component    from './components/component';
 
 const Layout = Component.create('Layout', {
@@ -14,9 +14,9 @@ const Layout = Component.create('Layout', {
 
         return m('div.layout', [
             m(Backdrop),
-            m(Header, { navi }),
-            m(Main, vnode.attrs, vnode.children),
-            m(Last, {msecs: Date.now()}),
+            m(Header,  { navi }),
+            m(Main,    vnode.attrs, vnode.children),
+            m(Last,    { msecs: Date.now() }),
         ]);
 
     },

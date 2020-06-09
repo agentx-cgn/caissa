@@ -6,11 +6,11 @@ const freezer = [];
 const Dispatcher = function (source) {
 
     return {
-        send (msg) {
+        send (channel, msg) {
             freezer.forEach( comp => {
-                if (comp[msg.channel] && typeof comp[msg.channel] === 'function' && source !== comp.name){
-                    comp[msg.channel]({source, ...msg});
-                    // console.log('dispatcher.send', msg, 'to', comp.name, 'from', source);
+                if (comp[channel] && typeof comp[channel] === 'function' && source !== comp.name){
+                    console.log('dispatcher.sending', msg, 'to', comp.name, 'from', source, 'over', channel);
+                    comp[channel]({ source, msg });
                 }
             });
         },
@@ -20,6 +20,8 @@ const Dispatcher = function (source) {
 
 export default {
     create (name, comp) {
+
+        //TODO: check for duplicates
 
         let preventUpdates = false;
 

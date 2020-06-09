@@ -109,18 +109,25 @@ const system = {
         }
     }()),
 
+    transitionEnd: (function () {
+        function transitionEndEventName() {
+            var i, el = document.createElement('div'),
+                transitions = {
+                    'transition':'transitionend',
+                    'OTransition':'otransitionend',  // oTransitionEnd in very old Opera
+                    'MozTransition':'transitionend',
+                    'WebkitTransition':'webkitTransitionEnd',
+                };
 
-    // function () {
-    //     try {
-    //         const storage = window.localStorage, x = '__storage_test__';
-    //         storage.setItem(x, x);
-    //         storage.removeItem(x);
-    //         return true;
-    //     } catch(e) {
-    //         return false;
-    //     }
-    //     return true;
-    // }(),
+            for (i in transitions) {
+                // eslint-disable-next-line no-prototype-builtins
+                if (transitions.hasOwnProperty(i) && el.style[i] !== undefined) {
+                    return transitions[i];
+                }
+            }
+        }
+        return transitionEndEventName();
+    })(),
 
     log () {
         const s = system;

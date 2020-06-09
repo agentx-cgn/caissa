@@ -12,10 +12,10 @@ const Last = Component.create('Last', {
         return m('div.last.dn');
     },
     onupdate ({attrs:{msecs}}) {
-        dispatcher.send({channel: 'onafterupdates', msecs});
+        dispatcher.send('onafterupdates', { msecs });
     },
     oncreate ({attrs:{msecs}}) {
-        dispatcher.send({channel: 'onafterupdates', msecs});
+        dispatcher.send('onafterupdates', { msecs });
     },
 
 });

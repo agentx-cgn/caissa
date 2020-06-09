@@ -1,6 +1,6 @@
 
 import { H }        from '../services/helper';
-import Slider       from './slider';
+import Slider       from './slides/slider';
 
 const Main = H.create({
     name: 'Main',
