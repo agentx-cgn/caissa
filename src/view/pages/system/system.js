@@ -6,7 +6,7 @@ import jsonSystem    from '../../data/system';
 import jsonConfig    from '../../data/config';
 import jsonState     from '../../data/state';
 import DB            from '../../services/database';
-import Component     from '../../components/component';
+import Factory       from '../../components/factory';
 import LogsViewer    from './renderer/renderLogs';
 import JsonViewer    from './renderer/renderJson';
 
@@ -21,7 +21,7 @@ const Json =  {
     },
 };
 
-const System = Component.create('System', {
+const System = Factory.create('System', {
     view ( vnode ) {
 
         const { module } = vnode.attrs;

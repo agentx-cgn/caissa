@@ -1,7 +1,6 @@
 import { $$ }    from '../../services/helper';
 import System    from '../../data/system';
-import Component from '../component';
-// import Slide     from './slide';
+import Factory   from '../factory';
 
 let
     anim,
@@ -65,7 +64,7 @@ function updateMapping (childs) {
 
 }
 
-const Slider = Component.create('Slider', {
+const Slider = Factory.create('Slider', {
     onafterupdates ( ) {
 
         // console.log('slide.onafterupdates');
@@ -106,7 +105,7 @@ const Slider = Component.create('Slider', {
         updateMapping(reduce(vnode.children));
         console.table(mapping);
 
-        return m('div.slider.flex.flex-row', [
+        return m('div.slider', [
             m('div.slide.left',   {style: 'z-index: 12; transform: translateX(    0);'}, vnode.children[0]),
             m('div.slide.center', {style: 'z-index: 11; transform: translateX(360px);'}, vnode.children[1]),
             m('div.slide.right',  {style: 'z-index: 12; transform: translateX(720px);'}, vnode.children[2]),

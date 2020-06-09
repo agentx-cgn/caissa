@@ -9,7 +9,7 @@ const Dispatcher = function (source) {
         send (channel, msg) {
             freezer.forEach( comp => {
                 if (comp[channel] && typeof comp[channel] === 'function' && source !== comp.name){
-                    console.log('dispatcher.sending', msg, 'to', comp.name, 'from', source, 'over', channel);
+                    // console.log('dispatcher.sending', msg, 'to', comp.name, 'from', source, 'over', channel);
                     comp[channel]({ source, msg });
                 }
             });
@@ -18,18 +18,16 @@ const Dispatcher = function (source) {
 
 };
 
-export default {
+const Factory = {
     create (name, comp) {
 
         //TODO: check for duplicates
 
         let preventUpdates = false;
 
-        if (typeof comp.onregister === 'function') {
-            comp.onregister(Dispatcher(name));
-        }
+        (typeof comp.onregister === 'function') && comp.onregister(Dispatcher(name));
 
-        const ice = H.deepCreateFreeze({
+        const ice = H.deepFreezeCreate({
             name,
             oncreate() {},
             onupdate() {},
@@ -57,6 +55,8 @@ export default {
         freezer.push(ice);
 
         return ice;
+
     },
 };
 
+export default Factory;

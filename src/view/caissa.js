@@ -5,6 +5,7 @@ import Pages       from './data/pages';
 import DB          from './services/database';
 import { Nothing } from './components/misc';
 import Tools       from './tools/tools';
+import Factory     from './components/factory';
 
 const DEBUG = true;
 
@@ -24,7 +25,8 @@ const Caissa = {
         } else {
             //TODO: delete nodes
             $$('.loader').style.display   = 'none';
-            $$('body .backdrop').style.display = 'none';        }
+            $$('body .backdrop').style.display = 'none';
+        }
         console.log(' ');
     },
 
@@ -51,13 +53,16 @@ const Caissa = {
 
         return {
             onmatch ( params ) {
-                redraws && console.log(' ');
-                const target = Tools.interpolate(route, params);
-                const current = History.isCurrent(target) ? 'current' : 'new';
-                DEBUG && console.log('%cCaissa.onmatch.in %s %s ', 'color:darkblue; font-weight: 800', target, current);
+
                 try {
+                    redraws && console.log(' ');
+                    const target = Tools.interpolate(route, params);
+                    const current = History.isCurrent(target) ? 'current' : 'new';
+                    DEBUG && console.log('%cCaissa.onmatch.in %s %s ', 'color:darkblue; font-weight: 800', target, current);
                     History.prepare(route, params, {replace: false});
+
                 } catch (e) {console.log(JSON.stringify(e), e);}
+
             },
             render ( vnode ) {
 
@@ -74,15 +79,8 @@ const Caissa = {
 
     },
 
-    comp : {
+    comp : Factory.create('Caissa', {
         name: 'Caissa',
-        // eslint-disable-next-line no-unused-vars
-        oncreate ( vnode ) {
-            // console.log('Info   :', 'caissa created after', Date.now() - window.t0, 'msecs', 'history.length', history.length);
-            false && DEBUG && console.log('caissa.oncreate', H.strip(vnode));
-            // true && console.log('CRET', History.childrenForUpdate());
-        },
-
         view ( vnode ) {
 
             const { animate, url, page, attrs} = vnode.attrs;
@@ -116,30 +114,12 @@ const Caissa = {
             }
 
         },
-        // eslint-disable-next-line no-unused-vars
-        onupdate ( vnode ) {
-            // if (History.candidate.replace) {
-            //     console.log('UPDT.ignored/replace');
 
-            // } else {
-            //     redraws += 1;
-            //     // console.log('UPDT', History.childrenForUpdate());
-            // }
-        },
-
-        // onbeforeupdate: function( newVnode, oldVnode ) {
-        //     // If this function is defined and returns false,
-        //     // Mithril prevents a diff from happening to the vnode, and consequently to the vnode's children.
-        //     // console.log('caissa.onbeforeupdate', newVnode, oldVnode);
-        //     return true;
-        // },
-
-    },
+    }),
 
 };
 
 const DefaultRoute = '/sources/';
 const Routes = H.transform(Pages, Caissa.resolver);
-window.caissa.onimport && window.caissa.onimport('Caissa');
 
 export { Caissa as default, Routes, DefaultRoute };

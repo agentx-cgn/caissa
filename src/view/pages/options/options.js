@@ -3,12 +3,12 @@ import './options.scss';
 
 import DB            from '../../services/database';
 import Forms         from '../../components/forms';
-import Component     from '../../components/component';
+import Factory       from '../../components/factory';
 import { TitleLeft } from '../../components/misc';
 
 let formgroups = Object.keys(DB.Options);
 
-const Options = Component.create('Options', {
+const Options = Factory.create('Options', {
 
     oncreate: function( /* vnode */ ) {
         formgroups = Object.keys(DB.Options);

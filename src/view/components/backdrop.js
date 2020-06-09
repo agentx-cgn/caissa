@@ -1,12 +1,12 @@
 
-import Component from '../components/component';
+import Factory   from './factory';
 
 const Backdrop = ( function () {
 
     let callback = null;
     let visible  = false;
 
-    return Component.create('Backdrop', {
+    return Factory.create('Backdrop', {
         show (cb) {
             callback = cb || null;
             visible  = true;

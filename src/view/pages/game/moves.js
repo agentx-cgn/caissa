@@ -1,6 +1,6 @@
 import Move      from './move';
 import State     from '../../data/state';
-import Component from '../../components/component';
+import Factory   from '../../components/factory';
 
 const state = State.game;
 
@@ -22,7 +22,7 @@ function renderMove (moves, idx) {
     });
 }
 
-const Moves = Component.create('Moves', {
+const Moves = Factory.create('Moves', {
 
     view ( ) {
         return m('div.gm-moves.viewport-y.flex-shrink', [

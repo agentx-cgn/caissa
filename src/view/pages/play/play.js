@@ -3,7 +3,7 @@ import DB         from '../../services/database';
 import State      from '../../data/state';
 import Config     from '../../data/config';
 import Clock      from '../../components/chessclock';
-import Component  from '../../components/component';
+import Factory    from '../../components/factory';
 import Controller from './play-controler';
 
 import {FlexList, TextLeft, Spacer}   from '../../components/misc';
@@ -11,7 +11,7 @@ import {FlexList, TextLeft, Spacer}   from '../../components/misc';
 const state = State.play;
 let isReady = false;
 
-const Play = Component.create('Play', {
+const Play = Factory.create('Play', {
     onbeforeremove ( ) {
         isReady = false;
     },

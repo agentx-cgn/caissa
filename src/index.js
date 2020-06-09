@@ -35,7 +35,7 @@ m.cls = (def = {}, sep = ' ', classes = '') => {
 };
 
 // Wire up mithril app to DOM
-const $root = document.body.querySelector('#root');
+const $root = document.body.querySelector('.root');
 m.route.prefix = '#!';
 m.route($root, DefaultRoute, Routes);
 

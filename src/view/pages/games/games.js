@@ -3,7 +3,7 @@ import Caissa        from '../../caissa';
 import State         from '../../data/state';
 import Providers     from '../../data/provider';
 import { H }         from '../../services/helper';
-import Component     from '../../components/component';
+import Factory       from '../../components/factory';
 import GamesList     from '../../components/gameslist';
 
 import {ListFilter, FlexListEntry, TitleLeft } from '../../components/misc';
@@ -12,7 +12,7 @@ const state = State.games;
 const read  = H.interprete;
 let filter  = '';
 
-const Games = Component.create('Games', {
+const Games = Factory.create('Games', {
     oninit ( vnode ) {
 
         const idx      = ~~vnode.attrs.idx;

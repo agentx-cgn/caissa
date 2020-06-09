@@ -5,9 +5,9 @@ import Header       from './components/header/header';
 import Backdrop     from './components/backdrop';
 import Main         from './components/main';
 import Last         from './components/last';
-import Component    from './components/component';
+import Factory      from './components/factory';
 
-const Layout = Component.create('Layout', {
+const Layout = Factory.create('Layout', {
     view( vnode ) {
 
         const navi  = vnode.attrs.page.navi;

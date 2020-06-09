@@ -2,9 +2,9 @@
 import Caissa    from '../../caissa';
 import Providers from '../../data/provider';
 import { TitleLeft, HeaderLeft, FlexList, FlexListEntry, GrowSpacer} from '../../components/misc';
-import Component    from '../../components/component';
+import Factory      from '../../components/factory';
 
-const Sources = Component.create('Sources', {
+const Sources = Factory.create('Sources', {
     view () {
         return m('div.page.sources', [
             m(TitleLeft, 'Choose a Game Collection'),

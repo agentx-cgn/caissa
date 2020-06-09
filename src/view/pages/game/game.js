@@ -7,7 +7,7 @@ import DB                from '../../services/database';
 import State             from '../../data/state';
 import Config            from '../../data/config';
 import GamesList         from '../../components/gameslist';
-import Component         from '../../components/component';
+import Factory           from '../../components/factory';
 import Moves             from './moves';
 
 import { GameFlags, GameButtons } from './game-bars';
@@ -18,7 +18,7 @@ Object.assign(state, H.deepcopy(Config.gamestatetemplate));
 
 const fire = Dispatcher.connect({ name: 'game'});
 
-const Game = Component.create('Game', {
+const Game = Factory.create('Game', {
     onupdate() {},
     view( vnode ) {
 

@@ -2,15 +2,15 @@
 import './components.scss';
 
 import { H } from '../services/helper';
-import Component from './component';
+import Factory   from './factory';
 
-const Nothing = Component.create('Nothing', {
+const Nothing = Factory.create('Nothing', {
     view ( ) {
         return m('div.nothing.dn');
     },
 });
 
-const Spacer = Component.create('Spacer', {
+const Spacer = Factory.create('Spacer', {
     view ( vnode ) {
         return m('div.spacer', vnode.attrs, m.trust('&nbsp;'));
     },

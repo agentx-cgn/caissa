@@ -4,7 +4,7 @@ import DB         from '../../services/database';
 import Forms      from '../../components/forms';
 import Tools      from '../../tools/tools';
 import Config     from '../../data/config';
-import Component  from '../../components/component';
+import Factory    from '../../components/factory';
 
 import {
     Nothing,
@@ -36,7 +36,7 @@ Config.playtemplates.forEach( template =>  {
 
 });
 
-const Plays = Component.create('Plays', {
+const Plays = Factory.create('Plays', {
     view ( vnode ) {
 
         const { mode } = vnode.attrs;

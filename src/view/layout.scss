@@ -89,12 +89,10 @@ div.gm-bar-buttons {
         display: none;
     }
     div.slider {
-        position: relative;
-        // margin-left: calc(0px - 100vw);
-        width: calc(3 * 100vw);
         display: block;
+        position: relative;
+        width: calc(3 * 100vw);
         left: calc(0px - 100vw);
-        // flex-direction: row;
     }
     div.slide {
         position: absolute;

@@ -1,7 +1,7 @@
 
-import Component     from '../../components/component';
+import Factory       from '../../components/factory';
 
-const Help = Component.create('Help', {
+const Help = Factory.create('Help', {
     view ( vnode) {
 
         let { url } = vnode.attrs;

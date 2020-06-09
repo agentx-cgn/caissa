@@ -1,11 +1,11 @@
 
 import Caissa from '../caissa';
-import Component from './component';
+import Factory   from './factory';
 import DB           from '../services/database';
 import { FlexList } from './misc';
 
 // turn becomes plycount later
-const GamesList = Component.create('GamesList', {
+const GamesList = Factory.create('GamesList', {
     view ( vnode ) {
         return m(FlexList, {class: 'games-list'},
             vnode.attrs.games.map( game => m(GameEntry, { game, onclick: (e) => {
@@ -30,7 +30,7 @@ const GamesList = Component.create('GamesList', {
 // round:      '',
 // result:     '',
 
-const GameEntry = Component.create('GameEntry', {
+const GameEntry = Factory.create('GameEntry', {
     view ( vnode ) {
 
         const { game, onclick } = vnode.attrs;

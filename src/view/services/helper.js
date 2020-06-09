@@ -23,7 +23,7 @@ const H = {
         return H.freeze(H.create(obj));
     },
 
-    deepCreateFreeze () {
+    deepFreezeCreate () {
 
         const obj = !arguments.length ? {} : Object.assign.apply(null, arguments);
         const propNames = Object.getOwnPropertyNames(obj);

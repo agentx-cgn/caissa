@@ -4,9 +4,9 @@ import screenfull from 'screenfull';
 import Navigation from './navigation';
 import System     from '../../data/system';
 import History    from '../../services/history';
-import Component  from '../../components/component';
+import Factory    from '../factory';
 
-const Header = Component.create('Header', {
+const Header = Factory.create('Header', {
     view( vnode ) {
 
         const navi    = vnode.attrs.navi;

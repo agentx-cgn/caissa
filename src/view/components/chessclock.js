@@ -1,7 +1,7 @@
 // TODO: realize other timecontrols w/ time budgets per player
 
 import { H } from '../services/helper';
-import Component from '../components/component';
+import Factory   from './factory';
 
 const clock = (function () {
 
@@ -91,7 +91,7 @@ const clock = (function () {
             return H.msec2HMSm(total);
         },
         comp () {
-            return Component.create({
+            return Factory.create({
                 name: 'Chessclock',
                 oncreate ( vnode ) {
                     const { player } = vnode.attrs;

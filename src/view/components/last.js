@@ -1,9 +1,9 @@
 
-import Component from './component';
+import Factory   from './factory';
 
 let dispatcher = null;
 
-const Last = Component.create('Last', {
+const Last = Factory.create('Last', {
 
     onregister (disp) {
         dispatcher = disp;
