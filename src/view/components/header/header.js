@@ -1,13 +1,12 @@
 import './header.scss';
 
-import Navigation from './navigation';
 import screenfull from 'screenfull';
+import Navigation from './navigation';
 import System     from '../../data/system';
 import History    from '../../services/history';
-// import Events     from '../../services/events';
+import Component  from '../../components/component';
 
-export default {
-    name: 'Header',
+const Header = Component.create('Header', {
     view( vnode ) {
 
         const navi    = vnode.attrs.navi;
@@ -35,4 +34,6 @@ export default {
             m('i.navi.fa.fa-expand-arrows-alt',     {onclick: toggle}),
         ]);
     },
-};
+});
+
+export default Header;

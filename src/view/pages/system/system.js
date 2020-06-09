@@ -1,19 +1,18 @@
 
 import './system.scss';
 
-import Caissa    from '../../caissa';
-import System    from '../../data/system';
-import Config    from '../../data/config';
-import State     from '../../data/state';
-import DB        from '../../services/database';
-
-import LogsViewer from './renderer/renderLogs';
-import JsonViewer from './renderer/renderJson';
+import Caissa        from '../../caissa';
+import jsonSystem    from '../../data/system';
+import jsonConfig    from '../../data/config';
+import jsonState     from '../../data/state';
+import DB            from '../../services/database';
+import Component     from '../../components/component';
+import LogsViewer    from './renderer/renderLogs';
+import JsonViewer    from './renderer/renderJson';
 
 const Json =  {
     name: 'Json',
     view ( {attrs : { tree } } ) {
-        // const tree = vnode.attrs.tree;
         return m('div.w-100.bg-eee.overflow-y-scroll.h-100', [
             m('div.f5.fior', { class: 'json-tree'}, [
                 m(JsonViewer, { tree, options: { collapseAfter: 1 } }),
@@ -22,8 +21,7 @@ const Json =  {
     },
 };
 
-export default {
-    name: 'System',
+const System = Component.create('System', {
     view ( vnode ) {
 
         const { module } = vnode.attrs;
@@ -34,10 +32,10 @@ export default {
             return;
         }
 
-        const Component = (
-            module === 'config' ? m(Json, {tree: Config}) :
-            module === 'system' ? m(Json, {tree: System}) :
-            module === 'state'  ? m(Json, {tree: State})  :
+        const Module = (
+            module === 'config' ? m(Json, {tree: jsonConfig}) :
+            module === 'system' ? m(Json, {tree: jsonSystem}) :
+            module === 'state'  ? m(Json, {tree: jsonState})  :
             module === 'db'     ? m(Json, {tree: DB.all()})  :
             m(LogsViewer)
         );
@@ -55,9 +53,11 @@ export default {
                     }),
                 ),
             ]),
-            Component,
+            Module,
         ]);
 
     },
 
-};
+});
+
+export default System;

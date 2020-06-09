@@ -1,7 +1,7 @@
-import Config     from '../../../data/config';
-import State      from '../../../data/state';
-import { H }      from '../../../services/helper';
-import Caissa from '../../../caissa';
+import Config  from '../../../data/config';
+import State   from '../../../data/state';
+import { H }   from '../../../services/helper';
+import Caissa  from '../../../caissa';
 
 const state = State.game;
 
@@ -28,9 +28,10 @@ const ply = {
 
         const bg        = move.turn !== state.game.turn ? '.bg-transparent' : '.bg-89b';
         const style     = 'color:' + Config.flagColors[player][move.flags];
+        const width     = calcWidth(move);
+
         const piece     = Config.fontPieces[move.piece];
 
-        const width     = calcWidth(move);
         const onclick   = (e) => {
             e.redraw = false;
             Caissa.route('/game/:turn/:uuid/', {turn: move.turn, uuid: state.game.uuid}, { replace: true });

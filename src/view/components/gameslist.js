@@ -1,26 +1,25 @@
 
 import Caissa from '../caissa';
-
+import Component from './component';
 import DB           from '../services/database';
 import { FlexList } from './misc';
 
 // turn becomes plycount later
-const GamesList = {
-    name: 'Gameslist',
+const GamesList = Component.create('GamesList', {
     view ( vnode ) {
         return m(FlexList, {class: 'games-list'},
             vnode.attrs.games.map( game => m(GameEntry, { game, onclick: (e) => {
                 e.redraw = false;
                 const dbgame = DB.Games.get(game.uuid);
                 if ( dbgame ) {
-                    Caissa.route('/game/:turn/:uuid/', {uuid: game.uuid, turn: dbgame.turn});
+                    Caissa.route('/game/:turn/:uuid/', {uuid: dbgame.uuid, turn: dbgame.turn});
                 } else {
                     Caissa.route('/game/:turn/:uuid/', {uuid: DB.Games.create(game).uuid});
                 }
             }})),
         );
     },
-};
+});
 
 // STR (Seven Tag Roster)
 // white:      'White',        // name of white player
@@ -31,8 +30,7 @@ const GamesList = {
 // round:      '',
 // result:     '',
 
-const GameEntry = {
-    name: 'GameEntry',
+const GameEntry = Component.create('GameEntry', {
     view ( vnode ) {
 
         const { game, onclick } = vnode.attrs;
@@ -60,6 +58,6 @@ const GameEntry = {
 
     },
 
-};
+});
 
 export default GamesList;

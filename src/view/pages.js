@@ -1,13 +1,13 @@
 
 import Layout          from './layout';
 import Info            from './pages/help/help';
-import Options         from './pages/analyzer/options';
+import Options         from './pages/options/options';
 import Games           from './pages/analyzer/games/games';
 import Plays           from './pages/analyzer/plays/plays';
 import Play            from './pages/analyzer/play/play';
 import Board           from './pages/analyzer/board/board';
 import Game            from './pages/analyzer/game/game';
-import Sources         from './pages/analyzer/sources/sources';
+import Sources         from './pages/sources/sources';
 import System          from './pages/system/system';
 // import {Nothing}       from './components/misc';
 import { H }           from './services/helper';
@@ -34,5 +34,4 @@ const pages  = H.create({
 
 });
 
-window.caissa.onimport && window.caissa.onimport('Pages');
 export default pages;

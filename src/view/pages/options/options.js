@@ -1,14 +1,15 @@
 
 import './options.scss';
 
-import DB         from '../../services/database';
-import Forms      from '../../components/forms';
+import DB            from '../../services/database';
+import Forms         from '../../components/forms';
+import Component     from '../../components/component';
 import { TitleLeft } from '../../components/misc';
 
 let formgroups = Object.keys(DB.Options);
 
-export default {
-    name: 'Options',
+const Options = Component.create('Options', {
+
     oncreate: function( /* vnode */ ) {
         formgroups = Object.keys(DB.Options);
     },
@@ -35,7 +36,9 @@ export default {
         ]);
     },
 
-};
+});
+
+export default Options;
 
 /*
 

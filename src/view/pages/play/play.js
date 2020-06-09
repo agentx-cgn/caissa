@@ -1,28 +1,17 @@
 
 import DB         from '../../../services/database';
-// import Dispatcher from '../../../globals/dispatcher';
-// import Pool       from '../../../globals/engine/pool';
 import State      from '../../../data/state';
 import Config     from '../../../data/config';
 import Clock      from '../../../components/chessclock';
-import {FlexList, TextLeft, Spacer}   from '../../../components/misc';
-
-// import Chess      from 'chess.js';
-// import { H } from '../../../globals/helper';
+import Component  from '../../../components/component';
 import Controller from './play-controler';
 
+import {FlexList, TextLeft, Spacer}   from '../../../components/misc';
 
 const state = State.play;
 let isReady = false;
 
-// const fire = Dispatcher.connect({ name: 'play',
-
-// });
-
-
-
-export default {
-    name: 'Play',
+const Play = Component.create('Play', {
     onbeforeremove ( ) {
         isReady = false;
     },
@@ -63,4 +52,6 @@ export default {
         );
     },
 
-};
+});
+
+export default Play;

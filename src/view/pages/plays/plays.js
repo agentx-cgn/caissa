@@ -5,6 +5,7 @@ import DB         from '../../../services/database';
 import Forms      from '../../../components/forms';
 import Tools      from '../../../tools/tools';
 import Config     from '../../../data/config';
+import Component  from '../../../components/component';
 
 import {
     Nothing,
@@ -36,8 +37,7 @@ Config.playtemplates.forEach( template =>  {
 
 });
 
-export default {
-    name: 'Plays',
+const Plays = Component.create('Plays', {
     view ( vnode ) {
 
         const { mode } = vnode.attrs;
@@ -87,4 +87,6 @@ export default {
 
     },
 
-};
+});
+
+export default Plays;

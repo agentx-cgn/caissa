@@ -1,10 +1,10 @@
 
-import Caissa    from '../../../caissa';
-import Providers from '../../../data/provider';
-import { TitleLeft, HeaderLeft, FlexList, FlexListEntry, GrowSpacer} from '../../../components/misc';
+import Caissa    from '../../caissa';
+import Providers from '../../data/provider';
+import { TitleLeft, HeaderLeft, FlexList, FlexListEntry, GrowSpacer} from '../../components/misc';
+import Component    from '../../components/component';
 
-const sources = {
-    name:  'Sources',
+const Sources = Component.create('Sources', {
     view () {
         return m('div.page.sources', [
             m(TitleLeft, 'Choose a Game Collection'),
@@ -47,8 +47,6 @@ const sources = {
             m(GrowSpacer),
         ]);
     },
+});
 
-};
-
-window.caissa.onimport && window.caissa.onimport('Sources');
-export default sources;
+export default Sources;

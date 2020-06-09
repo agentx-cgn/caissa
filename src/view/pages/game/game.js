@@ -1,6 +1,5 @@
 import './game.scss';
 
-// import Caissa            from '../../../caissa';
 import Tools             from '../../../tools/tools';
 import { H }             from '../../../services/helper';
 import Dispatcher        from '../../../services/dispatcher';

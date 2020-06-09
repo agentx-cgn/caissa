@@ -1,5 +1,4 @@
 
-// import { H } from '../services/helper';
 import Component from '../components/component';
 
 const Backdrop = ( function () {
