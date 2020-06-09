@@ -1,12 +1,12 @@
 
-import Caissa        from '../../../caissa';
-import State         from '../../../data/state';
-import Providers     from '../../../data/provider';
-import { H }         from '../../../services/helper';
-import Component     from '../../../components/component';
-import GamesList     from '../../../components/gameslist';
+import Caissa        from '../../caissa';
+import State         from '../../data/state';
+import Providers     from '../../data/provider';
+import { H }         from '../../services/helper';
+import Component     from '../../components/component';
+import GamesList     from '../../components/gameslist';
 
-import {ListFilter, FlexListEntry, TitleLeft } from '../../../components/misc';
+import {ListFilter, FlexListEntry, TitleLeft } from '../../components/misc';
 
 const state = State.games;
 const read  = H.interprete;

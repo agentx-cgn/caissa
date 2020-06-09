@@ -1,12 +1,12 @@
 
 import Layout          from './layout';
-import Info            from './pages/help/help';
+import Help            from './pages/help/help';
 import Options         from './pages/options/options';
-import Games           from './pages/analyzer/games/games';
-import Plays           from './pages/analyzer/plays/plays';
-import Play            from './pages/analyzer/play/play';
-import Board           from './pages/analyzer/board/board';
-import Game            from './pages/analyzer/game/game';
+import Games           from './pages/games/games';
+import Plays           from './pages/plays/plays';
+import Play            from './pages/play/play';
+import Board           from './pages/board/board';
+import Game            from './pages/game/game';
 import Sources         from './pages/sources/sources';
 import System          from './pages/system/system';
 // import {Nothing}       from './components/misc';
@@ -29,8 +29,8 @@ const pages  = H.create({
     '/system/':           [Layout, [ System         ], { navi: '/system/',   flags: ' sb ', title: 'System %'}   ],
     '/system/:module/':   [Layout, [ System         ], { navi: '/system/',   flags: ' sb ', title: ''}           ],
 
-    '/info/':             [Layout, [ Info           ], { navi: '/info/',     flags: ' fw ', title: ''}           ],
-    '/info/:url/':        [Layout, [ Info           ], { navi: '/info/',     flags: ' fw ', title: ''}           ],
+    '/help/':             [Layout, [ Help           ], { navi: '/help/',     flags: ' fw ', title: 'Help'}        ],
+    '/help/:url/':        [Layout, [ Help           ], { navi: '/help/',     flags: ' fw ', title: 'Help'}        ],
 
 });
 

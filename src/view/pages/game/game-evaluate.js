@@ -1,9 +1,8 @@
 
-import DB                  from '../../../services/database';
-import { H }               from '../../../services/helper';
-import System              from '../../../data/system';
-// import Logger            from '../../../globals/logger';
-import Pool                from '../../../services/engine/pool';
+import DB                  from '../../services/database';
+import { H }               from '../../services/helper';
+import System              from '../../data/system';
+import Pool                from '../../services/engine/pool';
 import { GameProgressBar } from '../game/game-bars';
 
 export default function evaluate (state) {

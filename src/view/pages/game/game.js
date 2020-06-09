@@ -1,17 +1,17 @@
 import './game.scss';
 
-import Tools             from '../../../tools/tools';
-import { H }             from '../../../services/helper';
-import Dispatcher        from '../../../services/dispatcher';
-import DB                from '../../../services/database';
-import State             from '../../../data/state';
-import Config            from '../../../data/config';
-import GamesList         from '../../../components/gameslist';
-import Component         from '../../../components/component';
+import Tools             from '../../tools/tools';
+import { H }             from '../../services/helper';
+import Dispatcher        from '../../services/dispatcher';
+import DB                from '../../services/database';
+import State             from '../../data/state';
+import Config            from '../../data/config';
+import GamesList         from '../../components/gameslist';
+import Component         from '../../components/component';
 import Moves             from './moves';
 
 import { GameFlags, GameButtons } from './game-bars';
-import { Spacer, GrowSpacer, TitleLeft, HeaderCentered, TextCenter} from './../../../components/misc';
+import { Spacer, GrowSpacer, TitleLeft, HeaderCentered, TextCenter} from '../../components/misc';
 
 const state = State.game;
 Object.assign(state, H.deepcopy(Config.gamestatetemplate));

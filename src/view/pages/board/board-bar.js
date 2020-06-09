@@ -1,11 +1,9 @@
 
-import State        from '../../../data/state';
-import Clock        from '../../../components/chessclock';
-import Tools        from '../../../tools/tools';
-// import Config       from '../../../data/config';
+import State        from '../../data/state';
+import Clock        from '../../components/chessclock';
+import Tools        from '../../tools/tools';
 
 const state = State.board;
-
 
 const BoardBar = {
     onupdate () {},

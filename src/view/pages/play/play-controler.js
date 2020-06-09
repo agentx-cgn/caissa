@@ -1,9 +1,9 @@
 
 import Chess        from 'chess.js';
-import Clock        from '../../../components/chessclock';
-import Pool         from '../../../services/engine/pool';
-import Dispatcher   from '../../../services/dispatcher';
-import { H }        from '../../../services/helper';
+import Clock        from '../../components/chessclock';
+import Pool         from '../../services/engine/pool';
+import Dispatcher   from '../../services/dispatcher';
+import { H }        from '../../services/helper';
 
 const fire = Dispatcher.connect({ name: 'play-controller',
 
@@ -43,9 +43,9 @@ const controller = {
 
             slots[0].name = 'white';
             slots[1].name = 'black';
-    
+
             fire('board', 'fen', [ controller.chess.fen() ]);
-    
+
             Clock.start(timecontrol);
             Clock.over = (whitetime, blacktime) => {
                 controller.finish('play.time.over', whitetime, blacktime);
@@ -65,14 +65,14 @@ const controller = {
 
     },
     validates (result) {
-        
-        
+
+
         const move = result.bestmove;
         const valid = controller.chess.move(move, { sloppy: true });
 
         if (controller.chess.game_over()) {
             return controller.finish('game.over', valid);
-        
+
         } else if (!valid) {
             if (move === '(none)'){
                 return controller.finish('game.over', move);
@@ -83,14 +83,14 @@ const controller = {
         }
 
         fire('board', 'fen', [ controller.chess.fen() ]);
-        
+
         return controller.process;
 
     },
     white:{
         engine: null,
         async tomove () {
-            
+
             await H.sleep(1000);
             await controller.white.engine.position(controller.chess.fen());
             const result = await controller.white.engine.go({depth: 4});
@@ -109,7 +109,7 @@ const controller = {
             await H.sleep(1000);
             await controller.black.engine.position(controller.chess.fen());
             const result = await controller.black.engine.go({depth: 4});
-            
+
             if (controller.validates(result)){
                 Clock.blackclick();
                 controller.white.tomove();

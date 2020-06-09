@@ -1,7 +1,7 @@
-import Config  from '../../../data/config';
-import State   from '../../../data/state';
-import { H }   from '../../../services/helper';
-import Caissa  from '../../../caissa';
+import Config  from '../../data/config';
+import State   from '../../data/state';
+import { H }   from '../../services/helper';
+import Caissa  from '../../caissa';
 
 const state = State.game;
 

@@ -1,11 +1,11 @@
 
 import Chess        from  'chess.js';
-import { Chessboard, COLOR } from '../../../../extern/cm-chessboard/Chessboard';
-import { H }        from '../../../services/helper';
-import State        from '../../../data/state';
-import Config       from '../../../data/config';
-import Dispatcher   from '../../../services/dispatcher';
-import Tools        from '../../../tools/tools';
+import { Chessboard, COLOR } from '../../../extern/cm-chessboard/Chessboard';
+import { H }        from '../../services/helper';
+import State        from '../../data/state';
+import Config       from '../../data/config';
+import Dispatcher   from '../../services/dispatcher';
+import Tools        from '../../tools/tools';
 import inputHandler from './board-input';
 
 const state = State.board;

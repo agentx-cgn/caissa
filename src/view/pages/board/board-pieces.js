@@ -1,8 +1,8 @@
 
 import interact from 'interactjs';
 
-import Dispatcher from '../../../globals/dispatcher';
-import Tools      from './../../../tools/tools';
+import Dispatcher from '../../globals/dispatcher';
+import Tools      from '../../tools/tools';
 
 const fire = Dispatcher.connect({name: 'board-pieces'}, false);
 

@@ -1,6 +1,7 @@
 
-const info = {
-    name: 'Info',
+import Component     from '../../components/component';
+
+const Help = Component.create('Help', {
     view ( vnode) {
 
         let { url } = vnode.attrs;
@@ -11,6 +12,6 @@ const info = {
         return m('iframe.w-100.h-100', {src: 'https://en.wikipedia.org/w/index.php?title=Gamergate_controversy&diff=650003294&oldid=649972067', style: 'border:0; padding:0'});
 
     },
-};
+});
 
-export { info as default };
+export { Help as default };

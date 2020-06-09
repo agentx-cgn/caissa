@@ -1,12 +1,12 @@
 
-import DB         from '../../../services/database';
-import State      from '../../../data/state';
-import Config     from '../../../data/config';
-import Clock      from '../../../components/chessclock';
-import Component  from '../../../components/component';
+import DB         from '../../services/database';
+import State      from '../../data/state';
+import Config     from '../../data/config';
+import Clock      from '../../components/chessclock';
+import Component  from '../../components/component';
 import Controller from './play-controler';
 
-import {FlexList, TextLeft, Spacer}   from '../../../components/misc';
+import {FlexList, TextLeft, Spacer}   from '../../components/misc';
 
 const state = State.play;
 let isReady = false;

@@ -1,8 +1,8 @@
 
-import Caissa       from '../../../caissa';
-import { COLOR }    from '../../../../extern/cm-chessboard/Chessboard';
-import { H, $$ }    from '../../../services/helper';
-import State        from '../../../data/state';
+import Caissa       from '../../caissa';
+import { COLOR }    from '../../../extern/cm-chessboard/Chessboard';
+import { H, $$ }    from '../../services/helper';
+import State        from '../../data/state';
 import evaluate     from './game-evaluate';
 
 const state = State.game;

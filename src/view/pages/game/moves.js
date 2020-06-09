@@ -1,6 +1,6 @@
-import Move   from './move';
-import State  from '../../../data/state';
-import Component from '../../../components/component';
+import Move      from './move';
+import State     from '../../data/state';
+import Component from '../../components/component';
 
 const state = State.game;
 

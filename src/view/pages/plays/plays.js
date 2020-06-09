@@ -1,11 +1,10 @@
 
-import Caissa     from '../../../caissa';
-import DB         from '../../../services/database';
-// import { H }      from '../../../services/helper';
-import Forms      from '../../../components/forms';
-import Tools      from '../../../tools/tools';
-import Config     from '../../../data/config';
-import Component  from '../../../components/component';
+import Caissa     from '../../caissa';
+import DB         from '../../services/database';
+import Forms      from '../../components/forms';
+import Tools      from '../../tools/tools';
+import Config     from '../../data/config';
+import Component  from '../../components/component';
 
 import {
     Nothing,
@@ -14,7 +13,7 @@ import {
     FlexListShrink,
     FixedList,
     FlexListEntry,
-    FlexListPlayEntry } from '../../../components/misc';
+    FlexListPlayEntry } from '../../components/misc';
 
 const forms = {};
 
