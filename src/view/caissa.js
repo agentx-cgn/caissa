@@ -79,17 +79,17 @@ const Caissa = {
         view ( vnode ) {
 
             const { route, params } = vnode.attrs;
-            const [ layout, content, section, page ] = Pages[route];
+            const [ layout, content, section, pagedata ] = Pages[route];
 
             const target   = Tools.interpolate(route, params);
             const animflag = History.canAnimate ? 'animate' : 'still' ;
 
             DEBUG && console.log('%cCaissa.view.in %s %s', 'color:darkgreen; font-weight: 800', target, animflag);
 
-            document.title = page.title;
+            document.title = pagedata.title;
 
             // slider + board
-            if (page.flags.includes(' sb ')) {
+            if (pagedata.flags.includes(' sb ')) {
 
                 const [ slides, log ] = History.slides();
                 const [ left, center, right, anim] = slides;
@@ -103,7 +103,7 @@ const Caissa = {
                 console.log('VIEW', log);
                 // console.log('VIEW', slides);
 
-                return m(layout, {page, anim}, [ sliderContent, m(Nothing) ]);
+                return m(layout, { pagedata, anim }, [ sliderContent, m(Nothing) ]);
 
             } else {
                 return m(layout, { route, params }, [ content, section ]);

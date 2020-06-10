@@ -1,9 +1,8 @@
 
-import { H }        from '../services/helper';
-import Slider       from './slides/slider';
+import Factory  from './factory';
+import Slider   from './slides/slider';
 
-const Main = H.create({
-    name: 'Main',
+const Main = Factory.create('Main', {
 
     // https://mithril.js.org/route.html#advanced-component-resolution
     // oninit() {},
@@ -13,10 +12,10 @@ const Main = H.create({
     view( vnode ) {
 
         const anim  = vnode.attrs.anim;
-        const flags = vnode.attrs.page.flags.trim();
+        const flags = vnode.attrs.pagedata.flags.trim();
         const [ childrens, section] = vnode.children;
 
-        return m('main.bg-fff',
+        return m('main',
             // slider [ + board]
             flags === 'sb'
                 ? [
@@ -29,5 +28,4 @@ const Main = H.create({
     },
 });
 
-window.caissa.onimport && window.caissa.onimport('Main');
 export default Main;

@@ -10,7 +10,7 @@ import Factory      from './components/factory';
 const Layout = Factory.create('Layout', {
     view( vnode ) {
 
-        const navi  = vnode.attrs.page.navi;
+        const navi  = vnode.attrs.pagedata.navi;
 
         return m('div.layout', [
             m(Backdrop),

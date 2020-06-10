@@ -150,6 +150,5 @@ const system = {
 };
 
 system.log();
-window.caissa.onimport && window.caissa.onimport('System');
 
 export { system as default };

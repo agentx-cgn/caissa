@@ -1,30 +1,26 @@
 
 import Factory   from './factory';
+import { $$ }    from '../services/helper';
 
-const Backdrop = ( function () {
+let callback = null;
 
-    let callback = null;
-    let visible  = false;
+const Backdrop = Factory.create('Backdrop', {
 
-    return Factory.create('Backdrop', {
-        show (cb) {
-            callback = cb || null;
-            visible  = true;
-        },
-        hide () {
-            visible = false;
-        },
-        view () {
-            return !visible
-                ? m('back-drop')
-                : m('back-drop.visible', { onclick: () => {
-                    visible = false;
-                    callback && callback();
-                }})
-            ;
-        },
-    });
+    show (cb) {
+        $$('back-drop').classList.add('visible');
+        callback = cb || null;
+    },
+    hide () {
+        $$('back-drop').classList.remove('visible');
+    },
+    view () {
+        return m('back-drop', { onclick: (e) => {
+            e.redraw = false;
+            Backdrop.hide();
+            callback && callback();
+        }});
+    },
 
-}());
+});
 
 export default Backdrop;

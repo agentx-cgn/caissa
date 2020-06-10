@@ -85,5 +85,4 @@ const Events = {
     }
 }());
 
-window.caissa.onimport && window.caissa.onimport('Events');
 export { Events as default };

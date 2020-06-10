@@ -231,11 +231,8 @@ const History = {
         detected.popstate   = false;
         detected.hashchange = false;
 
-        // urlChangeDetected = false;
-
         return [ res, log ];
     },
 
 };
-window.caissa.onimport && window.caissa.onimport('History');
 export default History;
