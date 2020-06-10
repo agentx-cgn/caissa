@@ -8,38 +8,44 @@ import GamesList     from '../../components/gameslist';
 
 import {ListFilter, FlexListEntry, TitleLeft } from '../../components/misc';
 
+const DEBUG = false;
+
 const state = State.games;
 const read  = H.interprete;
 let filter  = '';
 
 const Games = Factory.create('Games', {
+
     oninit ( vnode ) {
 
-        const idx      = ~~vnode.attrs.idx;
+        const idx      = ~~vnode.attrs.params.idx;
         const provider = Providers.list.find( p => p.idx === idx );
-        false && console.log('games.oninit', idx, provider.caption);
+
+        DEBUG && console.log('games.oninit', idx, provider.caption);
 
         // probably direct hit from nowhere
         if ( !provider.games.length ) {
             provider.fetch()
                 .then( () => {
-                    false && console.log('games.oninit.loaded', idx, provider.games.length);
+                    DEBUG && console.log('games.oninit.loaded', idx, provider.games.length);
                     provider.progress = 0;
                     // m.redraw();
                 })
             ;
         } else {
-            false && console.log('games.oninit.cachehit', idx, provider.caption);
+            DEBUG && console.log('games.oninit.cachehit', idx, provider.caption);
         }
 
     },
 
     view ( vnode ) {
 
+        const { className, style } = vnode.attrs;
+
         const  idx = (
-            vnode.attrs.idx === ':idx' && state.idx === undefined ? undefined :
-            vnode.attrs.idx === ':idx' && state.idx !== undefined ? state.idx :
-            ~~vnode.attrs.idx
+            vnode.attrs.params.idx === ':idx' && state.idx === undefined ? undefined :
+            vnode.attrs.params.idx === ':idx' && state.idx !== undefined ? state.idx :
+            ~~vnode.attrs.params.idx
         );
 
         const provider = idx !== undefined ? Providers.list.find( p => p.idx === idx ) : undefined;
@@ -62,7 +68,7 @@ const Games = Factory.create('Games', {
                 })
             ;
 
-            return m('div.page.games', m(FlexListEntry, [
+            return m('div.page.games', { className, style }, m(FlexListEntry, [
 
                 m('img.source-icon', {src: provider.icon}),
                 m('div.source-caption.f4',      provider.caption),
@@ -89,7 +95,7 @@ const Games = Factory.create('Games', {
                     :  true;
             });
 
-            return m('div.page.games', [
+            return m('div.page.games', { className, style }, [
 
                 m(TitleLeft, filter.length
                     ? read(provider.header)

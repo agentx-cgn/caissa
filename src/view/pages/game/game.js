@@ -22,13 +22,15 @@ const Game = Factory.create('Game', {
     onupdate() {},
     view( vnode ) {
 
+        const { className, style } = vnode.attrs;
+
         // const route = '/game/:turn/:uuid/';
-        let uuid  = vnode.attrs.uuid === ':uuid' ? undefined :   vnode.attrs.uuid;
-        let turn  = vnode.attrs.turn === ':turn' ? undefined : ~~vnode.attrs.turn;
+        let uuid  = vnode.attrs.params.uuid === ':uuid' ? undefined :   vnode.attrs.params.uuid;
+        let turn  = vnode.attrs.params.turn === ':turn' ? undefined : ~~vnode.attrs.params.turn;
 
         // there is nothing, show DB List
         if (!uuid && !state.game.uuid) {
-            return m('div.page.game', [
+            return m('div.page.game', { className, style }, [
                 m(TitleLeft, 'Recent Games (DB)'),
                 m(GamesList, { games: DB.Games.list() }),
             ]);
@@ -67,7 +69,7 @@ const Game = Factory.create('Game', {
         // TODO: use {order: x} to swap Flags & Buttons on collapsed
         // https://developer.mozilla.org/en-US/docs/Web/CSS/order
 
-        return m('div.page.game', [
+        return m('div.page.game', { className, style }, [
             m(GameButtons),
             m(HeaderCentered, {class: 'gm-players'}, m.trust(players)),
             m(Moves),

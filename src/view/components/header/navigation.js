@@ -1,14 +1,16 @@
 
+import {ConfigPages}  from '../../data/config-pages';
+import Factory      from '../../components/factory';
 import Config       from '../../data/config';
 import { H, $$ }    from '../../services/helper';
 import Caissa       from '../../caissa';
 import Backdrop     from '../backdrop';
 
-const Navigation = H.create({
-    name: 'Navigation',
-    view( vnode ) {
+const Navigation = Factory.create('Navigation', {
 
-        const { navi } = vnode.attrs;
+    view( {attrs: {route}} ) {
+
+        const navi     = ConfigPages[route].navi;
         const clicker  = (route, params) => {
             return (e) => {
                 e.redraw = false;
@@ -36,8 +38,8 @@ const Navigation = H.create({
             }}),
 
             m('ul', [
-                ...Config.navigation.map( (item) => {
-                    const [route, params, entry] = item;
+                ...Config.navigation.map( ([route, params, entry]) => {
+                    // const [route, params, entry] = item;
                     return m('li', {
                         onclick: clicker(route, params),
                         class: route.startsWith(navi) ? 'selected' : 'unselected'}, entry)

@@ -1,12 +1,16 @@
 
 import Caissa    from '../../caissa';
 import Providers from '../../data/provider';
+import Factory   from '../../components/factory';
 import { TitleLeft, HeaderLeft, FlexList, FlexListEntry, GrowSpacer} from '../../components/misc';
-import Factory      from '../../components/factory';
 
 const Sources = Factory.create('Sources', {
-    view () {
-        return m('div.page.sources', [
+
+    view ( vnode ) {
+
+        const { className, style } = vnode.attrs;
+
+        return m('div.page.sources', { className, style }, [
             m(TitleLeft, 'Choose a Game Collection'),
             m(FlexList,
                 Providers.list.map( provider => {

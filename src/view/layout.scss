@@ -89,7 +89,7 @@ div.gm-bar-buttons {
     div.chessboard {
         display: none;
     }
-    div.slider {
+    div.pages {
         display: block;
         position: relative;
         width: calc(3 * 100vw);
@@ -137,7 +137,7 @@ div.gm-bar-buttons {
         width: 360px; // was 360px
         margin: 0 auto;
     }
-    div.slider {
+    div.pages {
         position: relative;
         width: 360px;
         overflow: hidden;
@@ -159,8 +159,6 @@ div.gm-bar-buttons {
         }
     }
 }
-
-
 
 @media only screen and (orientation:portrait) {
 

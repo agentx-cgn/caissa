@@ -132,6 +132,10 @@ export default H.deepFreeze(H.create({
 
     playtemplates,
 
+    pagecache: {
+        size: 5,
+    },
+
     navigation : [
         ['/sources/',        {}, 'PGNS'],
         ['/games/',          {}, 'GAMES'],  // loads imported games so far

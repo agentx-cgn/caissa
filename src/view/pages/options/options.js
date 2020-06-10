@@ -13,9 +13,12 @@ const Options = Factory.create('Options', {
     oncreate: function( /* vnode */ ) {
         formgroups = Object.keys(DB.Options);
     },
-    view ( /* vnode */ ) {
+    view ( vnode ) {
         // TODO: think about auto save, with monkeypatching onchanges/oninput
-        return m('div.page.options', [
+
+        const { className, style } = vnode.attrs;
+
+        return m('div.page.options', { className, style }, [
 
             m(TitleLeft, 'Options'),
             m('div.mv1.ph3.w-100',

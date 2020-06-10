@@ -12,7 +12,10 @@ import System          from '../pages/system/system';
 // import {Nothing}       from './components/misc';
 import { H }           from '../services/helper';
 
-const Pages  = H.create({
+
+// const CompPages = [Sources, Games, Game, Plays, Play, Options, System];
+const CompPages = [Sources, Games, Game, Options, System];
+const ConfigPages  = H.create({
 
     // Route                Layout  Content  Section         Navigation Feedback  Flags          Title
     '/sources/':          [ Layout, Sources, Board , { navi: '/sources/',  flags: ' sb ', title: 'Sources'}    ],
@@ -34,4 +37,7 @@ const Pages  = H.create({
 
 });
 
-export default Pages;
+export {
+    ConfigPages,
+    CompPages,
+};

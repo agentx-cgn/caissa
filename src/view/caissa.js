@@ -1,11 +1,11 @@
 
-import { H, $$ }   from './services/helper';
-import History     from './services/history';
-import Pages       from './data/pages';
-import DB          from './services/database';
-import { Nothing } from './components/misc';
-import Tools       from './tools/tools';
-import Factory     from './components/factory';
+import { H, $$ }     from './services/helper';
+import History       from './services/history';
+import {ConfigPages}   from './data/config-pages';
+import DB            from './services/database';
+// import { Nothing } from './components/misc';
+import Tools         from './tools/tools';
+import Factory       from './components/factory';
 
 const DEBUG = true;
 
@@ -35,7 +35,7 @@ const Caissa = {
         console.log(' ');
         DEBUG && console.log('%cCaissa.route.in %s %s %s', 'color:darkred; font-weight: 800', route, H.shrink(params), H.shrink(options) );
 
-        const page = Pages[route];
+        const page = ConfigPages[route];
 
         if (page) {
             History.prepare(route, params, options);
@@ -79,7 +79,7 @@ const Caissa = {
         view ( vnode ) {
 
             const { route, params } = vnode.attrs;
-            const [ layout, content, section, pagedata ] = Pages[route];
+            const [ Layout, Content, Section, pagedata ] = ConfigPages[route];
 
             const target   = Tools.interpolate(route, params);
             const animflag = History.canAnimate ? 'animate' : 'still' ;
@@ -88,27 +88,29 @@ const Caissa = {
 
             document.title = pagedata.title;
 
-            // slider + board
-            if (pagedata.flags.includes(' sb ')) {
+            return m(Layout, { route, params }, [ Content, Section ]);
 
-                const [ slides, log ] = History.slides();
-                const [ left, center, right, anim] = slides;
-                const sliderContent = [
-                    m(left.content,   left.params),
-                    m(center.content, center.params),
-                    m(right.content,  right.params),
-                ];
+            // // slider + board
+            // if (pagedata.flags.includes(' sb ')) {
 
-                History.log();
-                console.log('VIEW', log);
-                // console.log('VIEW', slides);
+            //     const [ slides, log ] = History.slides();
+            //     const [ left, center, right, anim] = slides;
+            //     const sliderContent = [
+            //         m(left.content,   left.params),
+            //         m(center.content, center.params),
+            //         m(right.content,  right.params),
+            //     ];
 
-                return m(layout, { pagedata, anim }, [ sliderContent, m(Nothing) ]);
+            //     History.log();
+            //     console.log('VIEW', log);
+            //     // console.log('VIEW', slides);
 
-            } else {
-                return m(layout, { route, params }, [ content, section ]);
+            //     return m(layout, { pagedata, anim }, [ sliderContent, m(Nothing) ]);
 
-            }
+            // } else {
+            //     return m(layout, { route, params }, [ content, section ]);
+
+            // }
 
         },
 
@@ -117,6 +119,6 @@ const Caissa = {
 };
 
 const DefaultRoute = '/sources/';
-const Routes = H.transform(Pages, Caissa.resolver);
+const Routes = H.transform(ConfigPages, Caissa.resolver);
 
 export { Caissa as default, Routes, DefaultRoute };

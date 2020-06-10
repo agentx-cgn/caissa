@@ -41,6 +41,12 @@ const History = {
     get current () {
         return !stack.length  ? '' : stack[pointer].key;
     },
+    get canBack () {
+        return !isNaN(History.pointer) && History.pointer > 0;
+    },
+    get canFore () {
+        return !isNaN(History.pointer) && History.pointer < History.stack.length -1;
+    },
 
     // comes from UI
     onback (e) {
@@ -68,6 +74,14 @@ const History = {
         detected.popstate = true;
         // console.log('history.onadresschange', e.type);
         return H.eat(e);
+    },
+
+    recent (amount) {
+        return stack
+            .map(entry => entry.content)
+            .slice(-amount)
+        ;
+
     },
 
     prepare (route, params={}, options={replace: false}) {
@@ -167,7 +181,7 @@ const History = {
                 const entry = stack.pop();
                 DEBUG && console.log('history.finalize.popped', pointer, stack.length, entry);
             }
-            pointer = stack.push(H.create({key, route, content})) -1;
+            pointer = stack.push(H.create({key, route, params, content})) -1;
             delete candidate[key];
             DEBUG && console.log('history.finalize.done', key, stack[pointer]);
         }
@@ -182,7 +196,7 @@ const History = {
      */
     slides () {
 
-        const noContent = H.create({content: Nothing, params: H.create()});
+        const noContent = H.create({content: Nothing, route: '', params: H.create()});
         let log, res;
 
         function collectNamesFrom(start, dir) {
