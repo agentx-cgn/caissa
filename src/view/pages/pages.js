@@ -10,28 +10,9 @@ import touchSlider    from './toucher';
 
 let
     anim,
-    endEvent = System.transitionEnd
+    endEvent = System.transitionEnd,
+    transLeft, transCenter, transRight
 ;
-
-/*
-
-    view must always be correct because of redraws, filter or something
-    view : from History:                Center          zIndex 11
-    view :                        Left          Right   zIndex 12
-
-    onupdate                      Left  Center  Right
-
-    onafterupdates => animate
-                            <=    Left  Center          zIndex 11
-                                        Right           zIndex 12
-                            =>          Center          zIndex 11
-                                        Left    Right   zIndex 12
-    onafteranimate =>
-
-    click or swipe
-
- */
-
 
 const Pages = Factory.create('Pages', {
 
@@ -62,6 +43,16 @@ const Pages = Factory.create('Pages', {
         // keep this
         anim = animation;
 
+        if (innerWidth <= 360){
+            transLeft   = 'translateX(    0);';
+            transCenter = 'translateX( 100vw );';
+            transRight  = 'translateX( calc(2*100vw) );';
+        } else {
+            transLeft   = 'translateX(    0);';
+            transCenter = 'translateX( 360px );';
+            transRight  = 'translateX( 720px );';
+        }
+
         return m('div.pages', {}, CompPages.map( Comp => {
 
             const isLeft   = left.content   === Comp;
@@ -73,13 +64,13 @@ const Pages = Factory.create('Pages', {
 
             return (
                 isLeft   ? m(left.content,   {route: left.route,   params: left.params,
-                    className: 'slide left',   style: 'z-index: 12; transform: translateX(    0);'}) :
+                    className: 'slide left',   style: 'z-index: 12; transform: ' + transLeft}) :
 
                 isCenter ? m(center.content, {route: center.route, params: center.params,
-                    className: 'slide center', style: 'z-index: 11; transform: translateX(360px);'}) :
+                    className: 'slide center', style: 'z-index: 11; transform: ' + transCenter}) :
 
                 isRight  ? m(right.content,  {route: right.route,   params: right.params,
-                    className: 'slide right',  style: 'z-index: 12; transform: translateX(720px);'}) :
+                    className: 'slide right',  style: 'z-index: 12; transform: ' + transRight}) :
 
                 isCached ? m(Comp,           {route: '', params: {}, className: 'dn' }):
 
@@ -105,8 +96,8 @@ const Pages = Factory.create('Pages', {
         });
 
         if (anim === '=1=' || anim === '=r=' || anim === '=s=') {
-            $Left  && ( $Left.style.transform  = 'translateX(0)' );
-            $Right && ( $Right.style.transform = 'translateX(720px)' );
+            $Left  && ( $Left.style.transform  = transLeft);  //'translateX(0)' );
+            $Right && ( $Right.style.transform = transRight); //'translateX(720px)' );
 
         } else if (anim === '=b>') {
             $Right &&  ( $Right.style.zIndex = 10 );
@@ -139,25 +130,25 @@ function onafteranimate( ) {
 
     if (anim === '=1=' || anim === '=r=' || anim === '=s=') {
 
-        $Left.style.transform  = 'translateX(0)';
-        $Right.style.transform = 'translateX(720px)';
+        $Left.style.transform  = transLeft;  //'translateX(0)';
+        $Right.style.transform = transRight; //'translateX(720px)';
         // touchSlider.go($Left, $Center, $Right);
 
     } else if (anim === '<c=' || anim === '<f=') {
 
-        $Left && ( $Left.style.transform  = 'translateX(0)' );
+        $Left && ( $Left.style.transform  = transLeft); //'translateX(0)' );
 
         $Right.removeEventListener(endEvent, onafteranimate);
         $Right.classList.remove('slide-transition');
-        $Right.style.transform = 'translateX(360px)';
+        $Right.style.transform = transCenter; //'translateX(360px)';
 
     } else if (anim === '=b>') {
 
-        $Right && ( $Right.style.transform = 'translateX(720px)' );
+        $Right && ( $Right.style.transform = transRight); //'translateX(720px)' );
 
         $Left.removeEventListener(endEvent, onafteranimate);
         $Left.classList.remove('slide-transition');
-        $Left.style.transform  = 'translateX(360px)';
+        $Left.style.transform  = transCenter; //'translateX(360px)';
 
     }
 
