@@ -54,6 +54,7 @@ const Games = Factory.create('Games', {
         state.idx = idx;
 
         // There is nothing, reroute to idx = 0
+        //TODO: rethink reroute
         if (provider === undefined && idx === undefined) {
             Caissa.route('/games/:idx/', {idx: 0}, {replace: true});
 
@@ -103,7 +104,8 @@ const Games = Factory.create('Games', {
                 ),
 
                 m(ListFilter, { oninput : (e) => {
-                    filter = e.target.value.toLowerCase();}, // && m.redraw(),
+                    //TODO: rethink this, triggers and needs redraw!
+                    filter = e.target.value.toLowerCase();},
                 }),
 
                 m(GamesList, { games }),

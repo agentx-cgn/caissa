@@ -31,7 +31,7 @@ const Factory = {
             name,
             oncreate() {},
             onupdate() {},
-            onremove() {console.log(name, 'onremove');},
+            // onremove() {console.log(name, 'onremove');},
             onbeforeupdate( /* vnode, old */) {
 
                 // https://mithril.js.org/lifecycle-methods.html#onbeforeupdate

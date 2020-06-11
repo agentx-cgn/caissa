@@ -24,7 +24,7 @@ const Json =  {
 const System = Factory.create('System', {
     view ( vnode ) {
 
-        const { module, className, style } = vnode.attrs;
+        const { params: { module }, className, style } = vnode.attrs;
 
         // reroute, if no module
         if (module === ':module' || module === undefined) {
@@ -45,7 +45,7 @@ const System = Factory.create('System', {
             Caissa.route('/system/:module/', { module }, {replace: true});
         };
 
-        return m('div.page.system.bg-eee', { className, style }, [
+        return m('div.page.system', { className, style }, [
             m('div.systemmenu.bg-ddd.w-100', [
                 m('ul.flex.flex-row.ml2',
                     'System Config State DB Logs'.split(' ').map( mod => {

@@ -4,6 +4,7 @@ import { H, $$ }   from '../services/helper';
 
 const Tools = {
 
+    // m.buildPathname
     interpolate (route, params) {
         let target = route;
         H.each(params, (key, val) => {

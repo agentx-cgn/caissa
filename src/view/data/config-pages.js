@@ -9,7 +9,7 @@ import Board           from '../pages/board/board';
 import Game            from '../pages/game/game';
 import Sources         from '../pages/sources/sources';
 import System          from '../pages/system/system';
-// import {Nothing}       from './components/misc';
+import {Nothing}       from '../components/misc';
 import { H }           from '../services/helper';
 
 
@@ -18,22 +18,22 @@ const CompPages = [Sources, Games, Game, Options, System];
 const ConfigPages  = H.create({
 
     // Route                Layout  Content  Section         Navigation Feedback  Flags          Title
-    '/sources/':          [ Layout, Sources, Board , { navi: '/sources/',  flags: ' sb ', title: 'Sources'}    ],
-    '/games/':            [ Layout, Games,   Board , { navi: '/games/',    flags: ' sb ', title: 'Games'}      ],
-    '/games/:idx/':       [ Layout, Games,   Board , { navi: '/games/',    flags: ' sb ', title: 'Games %s'}   ],
-    '/game/':             [ Layout, Game,    Board , { navi: '/game/',     flags: ' sb ', title: 'Games'}      ],
-    '/game/:turn/:uuid/': [ Layout, Game,    Board , { navi: '/game/',     flags: ' sb ', title: 'Game %s'}    ],
-    '/plays/':            [ Layout, Plays,   Board , { navi: '/plays/',    flags: ' sb ', title: 'Plays'}      ],
-    '/plays/:mode/':      [ Layout, Plays,   Board , { navi: '/plays/',    flags: ' sb ', title: 'Plays'}      ],
-    '/play/:uuid/':       [ Layout, Play,    Board , { navi: '/play/',     flags: ' sb ', title: 'Plays %s'}   ],
-    '/analyzer/:fen/':    [ Layout, Game,    Board , { navi: '/analyzer/', flags: ' sb ', title: 'Analyzer'}   ],
-    '/options/':          [ Layout, Options, Board , { navi: '/options/',  flags: ' sb ', title: 'Options'}    ],
+    '/sources/':          [ Layout, Sources, Board ,  { navi: '/sources/',  flags: ' sb ', title: 'Sources'}    ],
+    '/games/':            [ Layout, Games,   Board ,  { navi: '/games/',    flags: ' sb ', title: 'Games'}      ],
+    '/games/:idx/':       [ Layout, Games,   Board ,  { navi: '/games/',    flags: ' sb ', title: 'Games %s'}   ],
+    '/game/':             [ Layout, Game,    Board ,  { navi: '/game/',     flags: ' sb ', title: 'Games'}      ],
+    '/game/:turn/:uuid/': [ Layout, Game,    Board ,  { navi: '/game/',     flags: ' sb ', title: 'Game %s'}    ],
+    '/plays/':            [ Layout, Plays,   Board ,  { navi: '/plays/',    flags: ' sb ', title: 'Plays'}      ],
+    '/plays/:mode/':      [ Layout, Plays,   Board ,  { navi: '/plays/',    flags: ' sb ', title: 'Plays'}      ],
+    '/play/:uuid/':       [ Layout, Play,    Board ,  { navi: '/play/',     flags: ' sb ', title: 'Plays %s'}   ],
+    '/analyzer/:fen/':    [ Layout, Game,    Board ,  { navi: '/analyzer/', flags: ' sb ', title: 'Analyzer'}   ],
+    '/options/':          [ Layout, Options, Board ,  { navi: '/options/',  flags: ' sb ', title: 'Options'}    ],
 
-    '/system/':           [ Layout, System         , { navi: '/system/',   flags: ' sb ', title: 'System %'}   ],
-    '/system/:module/':   [ Layout, System         , { navi: '/system/',   flags: ' sb ', title: ''}           ],
+    '/system/':           [ Layout, System,  Nothing, { navi: '/system/',   flags: ' sb ', title: 'System'}   ],
+    '/system/:module/':   [ Layout, System,  Nothing, { navi: '/system/',   flags: ' sb ', title: 'System %s'}           ],
 
-    '/help/':             [ Layout, Help           , { navi: '/help/',     flags: ' fw ', title: 'Help'}        ],
-    '/help/:url/':        [ Layout, Help           , { navi: '/help/',     flags: ' fw ', title: 'Help'}        ],
+    '/help/':             [ Layout, Help,    Nothing, { navi: '/help/',     flags: ' fw ', title: 'Help'}        ],
+    '/help/:url/':        [ Layout, Help,    Nothing, { navi: '/help/',     flags: ' fw ', title: 'Help'}        ],
 
 });
 

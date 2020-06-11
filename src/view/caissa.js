@@ -4,7 +4,7 @@ import History       from './services/history';
 import {ConfigPages}   from './data/config-pages';
 import DB            from './services/database';
 // import { Nothing } from './components/misc';
-import Tools         from './tools/tools';
+// import Tools         from './tools/tools';
 import Factory       from './components/factory';
 
 const DEBUG = true;
@@ -53,7 +53,7 @@ const Caissa = {
 
                 try {
                     redraws && console.log(' ');
-                    const target  = Tools.interpolate(route, params);
+                    const target  = m.buildPathname(route, params);
                     const current = History.isCurrent(target) ? 'current' : 'new';
                     DEBUG && console.log('%cCaissa.onmatch.in %s %s ', 'color:darkblue; font-weight: 800', target, current);
                     History.prepare(route, params);
@@ -64,7 +64,7 @@ const Caissa = {
             render ( vnode ) {
 
                 const content = pageentry[1];
-                const target  = Tools.interpolate(route, vnode.attrs);
+                const target  = m.buildPathname(route, vnode.attrs);
                 const current = History.isCurrent(target) ? 'current' : 'new';
                 DEBUG && console.log('%cCaissa.render.in %s %s', 'color:darkorange; font-weight: 800', target, current);
 
@@ -81,7 +81,7 @@ const Caissa = {
             const { route, params } = vnode.attrs;
             const [ Layout, Content, Section, pagedata ] = ConfigPages[route];
 
-            const target   = Tools.interpolate(route, params);
+            const target   = m.buildPathname(route, params);
             const animflag = History.canAnimate ? 'animate' : 'still' ;
 
             DEBUG && console.log('%cCaissa.view.in %s %s', 'color:darkgreen; font-weight: 800', target, animflag);

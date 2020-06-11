@@ -1,16 +1,36 @@
 
-import { $$ }   from '../services/helper';
-import Factory     from '../components/factory';
-import { Nothing } from '../components/misc';
-import { CompPages } from '../data/config-pages';
-import History     from '../services/history';
-import System      from '../data/system';
-import Config      from '../data/config';
+import { $$, $$$ }    from '../services/helper';
+import History        from '../services/history';
+import Factory        from '../components/factory';
+import { Nothing }    from '../components/misc';
+import { CompPages }  from '../data/config-pages';
+import System         from '../data/system';
+import Config         from '../data/config';
+import touchSlider    from './toucher';
 
 let
     anim,
-    endevent = System.transitionEnd
+    endEvent = System.transitionEnd
 ;
+
+/*
+
+    view must always be correct because of redraws, filter or something
+    view : from History:                Center          zIndex 11
+    view :                        Left          Right   zIndex 12
+
+    onupdate                      Left  Center  Right
+
+    onafterupdates => animate
+                            <=    Left  Center          zIndex 11
+                                        Right           zIndex 12
+                            =>          Center          zIndex 11
+                                        Left    Right   zIndex 12
+    onafteranimate =>
+
+    click or swipe
+
+ */
 
 
 const Pages = Factory.create('Pages', {
@@ -21,6 +41,15 @@ const Pages = Factory.create('Pages', {
     // slides from history are positioned and possibly animated
     // Nothing is shown for pages not in cache
 
+    oninit () {
+        touchSlider.listen();
+    },
+    onbeforeupdate () {
+        touchSlider.pause();
+    },
+    onremove () {
+        touchSlider.remove();
+    },
     view ( ) {
 
         const [ slides, log ] = History.slides();
@@ -29,21 +58,18 @@ const Pages = Factory.create('Pages', {
 
         History.log();
         console.log('pages', log);
-        // console.log('pages', slides);
 
+        // keep this
         anim = animation;
 
-
-        // return m('div.pages', {}, H.map(ConfigPages, (route, pagedata) => {
         return m('div.pages', {}, CompPages.map( Comp => {
 
-            // const Page     = pagedata[1];
             const isLeft   = left.content   === Comp;
             const isCenter = center.content === Comp;
             const isRight  = right.content  === Comp;
             const isCached = cache.includes(Comp);
 
-            Comp.preventUpdates = !(isLeft || isCenter || isRight);
+            // Comp.preventUpdates = !(isLeft || isCenter || isRight);
 
             return (
                 isLeft   ? m(left.content,   {route: left.route,   params: left.params,
@@ -66,8 +92,9 @@ const Pages = Factory.create('Pages', {
 
     onafterupdates () {
 
-        const $Left  = $$('div.slide.left');
-        const $Right = $$('div.slide.right');
+        const $Left   = $$('div.slide.left');
+        // const $Center = $$('div.slide.center');
+        const $Right  = $$('div.slide.right');
 
         console.log('pages.onafterupdates', anim, !!$Left, !!$Right);
 
@@ -82,46 +109,45 @@ const Pages = Factory.create('Pages', {
             $Right && ( $Right.style.transform = 'translateX(720px)' );
 
         } else if (anim === '=b>') {
-            // console.log('slide.onafterupdates', anim, $Left.style.left, getComputedStyle($Left).transform);
             $Right &&  ( $Right.style.zIndex = 10 );
             $Left.style.zIndex  = 12;
-            $Left.addEventListener(endevent, onTransitionEnd);
-            // setTimeout(onTransitionEnd, 600);
+            $Left.addEventListener(endEvent, onafteranimate);
             $Left.classList.add('slide-transition');
 
         } else if (anim === '<c=' || anim === '<f=') {
-            // console.log('slide.onafterupdates', anim, $Right.style.left, getComputedStyle($Right).transform);
             $Left  && ( $Left.style.zIndex  = 10 );
             $Right && ( $Right.style.zIndex = 12 );
-            $Right.addEventListener(endevent, onTransitionEnd);
-            // setTimeout(onTransitionEnd, 600);
+            $Right.addEventListener(endEvent, onafteranimate);
             $Right.classList.add('slide-transition');
 
         } else {
-            console.log('wtf');
+            console.log('pages.onafterupdates.unknown anim', anim);
 
         }
+
     },
 
 });
 
-function onTransitionEnd( ) {
+function onafteranimate( ) {
 
-    console.log('pages.onTransitionEnd.in', anim);
+    console.log('%cpages.onafteranimate.in %s', {color: 'green'}, anim);
 
-    const $Left  = $$('div.slide.left');
-    const $Right = $$('div.slide.right');
+    const $Left   = $$('div.slide.left');
+    // const $Center = $$('div.slide.center');
+    const $Right  = $$('div.slide.right');
 
     if (anim === '=1=' || anim === '=r=' || anim === '=s=') {
 
         $Left.style.transform  = 'translateX(0)';
         $Right.style.transform = 'translateX(720px)';
+        // touchSlider.go($Left, $Center, $Right);
 
     } else if (anim === '<c=' || anim === '<f=') {
 
         $Left && ( $Left.style.transform  = 'translateX(0)' );
 
-        $Right.removeEventListener(endevent, onTransitionEnd);
+        $Right.removeEventListener(endEvent, onafteranimate);
         $Right.classList.remove('slide-transition');
         $Right.style.transform = 'translateX(360px)';
 
@@ -129,17 +155,20 @@ function onTransitionEnd( ) {
 
         $Right && ( $Right.style.transform = 'translateX(720px)' );
 
-        $Left.removeEventListener(endevent, onTransitionEnd);
+        $Left.removeEventListener(endEvent, onafteranimate);
         $Left.classList.remove('slide-transition');
         $Left.style.transform  = 'translateX(360px)';
 
     }
 
-    // console.log('right', $Right.style.left, getComputedStyle($Right).transform);
-    // console.log('left',  $Left.style.left,  getComputedStyle($Left).transform);
+    // preventUpdates forces this
+    $$$('div.slide.dn').forEach( slide => slide.classList.remove('left', 'center', 'right'));
 
-    console.log('pages.onTransitionEnd.out', anim);
+    console.log('pages.onafteranimate.out', anim);
+    console.log('');
     anim = '';
+
+    m.redraw();
 
 }
 

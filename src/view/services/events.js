@@ -6,11 +6,14 @@ import History from '../services/history';
 
 // https://developer.mozilla.org/en-US/docs/Web/Events
 
+let deferredPrompt;
+
 const Events = {
     listen () {
+        document.addEventListener('beforeinstallprompt', Events.onbeforeinstallprompt);
         document.addEventListener('selectionchange', Events.onselectionchange);
-        document.addEventListener('swiped-right',    Events.onswipeback);
-        document.addEventListener('swiped-left',     Events.onswipefore);
+        // document.addEventListener('swiped-right',    Events.onswipeback);
+        // document.addEventListener('swiped-left',     Events.onswipefore);
         document.addEventListener('dblclick',        H.eat);
 
         window.addEventListener('load',              Caissa.onload);
@@ -22,6 +25,34 @@ const Events = {
         window.addEventListener('hashchange',        History.onhashchange);
         // window.addEventListener('pagehide',          Events.onpagehide);
         // window.addEventListener('pageshow',          Events.onpageshow);
+    },
+    onbeforeinstallprompt (e) {
+
+        const addBtn = document.querySelector('.a2hs-button');
+        // Prevent Chrome 67 and earlier from automatically showing the prompt
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        deferredPrompt = e;
+        // Update UI to notify the user they can add to home screen
+        addBtn.style.display = 'block';
+
+        addBtn.addEventListener('click', () => {
+            // hide our user interface that shows our A2HS button
+            addBtn.style.display = 'none';
+            // Show the prompt
+            deferredPrompt.prompt();
+            // Wait for the user to respond to the prompt
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted the A2HS prompt');
+                } else {
+
+                    console.log('User dismissed the A2HS prompt');
+                }
+                deferredPrompt = null;
+            });
+        });
+
     },
     onpagehide () {
         // https://developer.mozilla.org/en-US/docs/Web/API/Window/pagehide_event
@@ -44,7 +75,7 @@ const Events = {
     },
     onselectionchange () {
         // const selection = document.getSelection();
-        // console.log('Info   :', 'Selection', selection);
+        console.log('Selection', document.getSelection());
     },
     onpopstate () {
         true && console.log('onpopstate');

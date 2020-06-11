@@ -1,7 +1,7 @@
 import { H }       from './helper';
 import { Nothing } from '../components/misc';
 import Caissa      from '../caissa';
-import Tools       from '../tools/tools';
+// import Tools       from '../tools/tools';
 
 const DEBUG = true;
 
@@ -90,7 +90,7 @@ const History = {
          *  creates candidate on new route
          *  lots of special cases
         */
-        const key = Tools.interpolate(route, params);
+        const key = m.buildPathname(route, params);
 
         // fresh stack, e.g. after reload
         if (isNaN(pointer)) {
@@ -155,13 +155,18 @@ const History = {
 
     finalize (route, params, content) {
 
-        const key = Tools.interpolate(route, params);
+        const key = m.buildPathname(route, params);
 
         if (detected.replace && candidate[key]) {
             stack[pointer].key    = key;
             stack[pointer].params = params;
             delete candidate[key];
             DEBUG && console.log('history.finalize.replace.done', key, '==', stack[pointer].key);
+
+        // happens on m.redraw()
+        } else if (detected.same || (stack[pointer] && stack[pointer].key === key)) {
+            detected.same = true;
+            DEBUG && console.log('history.finalize.same.done', stack[pointer]);
 
         } else if (detected.back) {
             pointer -= 1;
