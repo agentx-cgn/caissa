@@ -1,7 +1,7 @@
 
 import { H } from '../services/helper';
 
-const DEBUG = true;
+const DEBUG = false;
 const freezer = [];
 
 const Dispatcher = function (source) {
