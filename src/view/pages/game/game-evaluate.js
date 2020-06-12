@@ -1,4 +1,5 @@
 
+import Caissa              from '../../caissa';
 import DB                  from '../../services/database';
 import { H }               from '../../services/helper';
 import System              from '../../data/system';
@@ -38,8 +39,10 @@ export default function evaluate (state) {
         counter += 1;
         updateProgress(smallStep);
         state.score.maxcp = Math.abs(move.cp) > state.score.maxcp ? move.cp : state.score.maxcp;
-        if(!(divisor % counter)){m.redraw();}
-        // console.log(move.cp, state.score.maxcp);
+        if(!(divisor % counter)){
+            //TODO: use dom
+            Caissa.redraw();
+        }
     };
     const finish = slots => {
 
@@ -48,7 +51,7 @@ export default function evaluate (state) {
 
         slots.forEach( slot => slot.idle = true );
         GameProgressBar.render(0);
-        m.redraw();
+        Caissa.redraw();
 
         console.log('game.evaluator.finish',
             state.moves.length, 'moves in',

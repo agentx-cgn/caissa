@@ -21,14 +21,14 @@ const Header = Factory.create('Header', {
             // m('i.navi.f3.fa.fa-angle-left',            {onclick: swipeFore}),
             // m('i.navi.f3.fa.fa-angle-right',           {onclick: swipeBack}),
             History.canBack
-                ? m('i.navi.fa.fa-angle-left',      {onclick: History.onback})
-                : m('i.navi.fa'),
+                ? m('i.navi.fa.fa-angle-left', {onclick: History.onback})
+                : m('i.navi.fa.fa-angle-left.ctrans'),
             History.canFore
-                ? m('i.navi.fa.fa-angle-right',     {onclick: History.onfore})
-                : m('i.navi.fa'),
+                ? m('i.navi.fa.fa-angle-right', {onclick: History.onfore})
+                : m('i.navi.fa.fa-angle-right.ctrans'),
 
-            m('i.navi.fa.fa-retweet',               {onclick: reload}),
-            m('i.navi.fa.fa-expand-arrows-alt',     {onclick: toggle}),
+            m('i.navi.fa.fa-retweet',           {onclick: reload}),
+            m('i.navi.fa.fa-expand-arrows-alt', {onclick: toggle}),
         ]);
     },
 });

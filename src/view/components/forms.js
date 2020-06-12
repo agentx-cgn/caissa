@@ -1,6 +1,7 @@
 
 import { FormGroups }  from '../data/form-groups';
-import { H }  from '../services/helper';
+import { H }           from '../services/helper';
+import Factory         from './factory';
 
 const read = H.interprete;
 
@@ -24,10 +25,8 @@ const TimeStamp = function () {
 
 function renderFormGroup (group)  {
 
-    // console.log('renderFormGroup', group);
-
     return m('[', [
-        m('div.group-title.sair', group.title),
+        m('div.group.title.sair', group.title),
         ...group.controls
             .sort( (a, b) => a.sort - b.sort)
             .filter (control => control.active)
@@ -184,13 +183,12 @@ function renderGroupControl (control) {
 
 }
 
-export default {
-    'name': 'Forms',
+const Forms = Factory.create('Forms', {
     view( vnode ) {
 
         const { formdata } = vnode.attrs;
 
-        return m('div.bg-eee', vnode.attrs,
+        return m('div.forms', vnode.attrs,
             FormGroups(formdata)
                 .filter(
                     form => form.group === formdata.group,
@@ -201,4 +199,6 @@ export default {
         );
 
     },
-};
+});
+
+export default Forms;

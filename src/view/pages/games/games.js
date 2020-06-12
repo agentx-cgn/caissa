@@ -29,7 +29,7 @@ const Games = Factory.create('Games', {
                 .then( () => {
                     DEBUG && console.log('games.oninit.loaded', idx, provider.games.length);
                     provider.progress = 0;
-                    // m.redraw();
+                    // Caissa.redraw();
                 })
             ;
         } else {
@@ -65,7 +65,7 @@ const Games = Factory.create('Games', {
                 .then( () => {
                     provider.progress = 0;
                     // NEEDED ???
-                    // m.redraw();
+                    // Caissa.redraw();
                 })
             ;
 

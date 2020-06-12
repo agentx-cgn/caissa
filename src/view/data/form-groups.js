@@ -13,7 +13,7 @@ import System from './system';
  *
  *  EVENTS:
  *  onchange : select, checkbox // after user committed
- *  oninput  : all other
+ *  oninput  : all other, specially type text
  * */
 
 
@@ -132,6 +132,7 @@ const FormGroups = function ( formdata ) {
                         placeholder: 'your name',
                         onchange: (e) => {
                             formdata.name = e.target.value;
+                            formdata.autosubmit && formdata.submit();
                         },
                     },
                 } ],

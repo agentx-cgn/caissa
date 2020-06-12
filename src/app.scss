@@ -118,6 +118,9 @@ input:focus {
 .c156      { color: #156; }
 .cfe6      { color: #fe6} ;
 
+.btb20      {background-color: rgba(0,0,0,.2);}
+.btw20      {background-color: rgba(255,255,255,.2);}
+
 .cfff      { color: #fff; }
 .ceee      { color: #eee; }
 .cddd      { color: #ddd; }
@@ -130,8 +133,8 @@ input:focus {
 .c555      { color: #555; }
 .c333      { color: #333; }
 
-.ctrans    { color: transparent; }
-.bg-trans  { background-color: transparent; }
+.ctrans    { color: transparent !important; }
+.bg-trans  { background-color: transparent !important; }
 .bg-8a8    { background-color: #8a8; }
 .bg-89a    { background-color: #89a; } // selected data
 .bg-89b    { background-color: #89b; } // selected data

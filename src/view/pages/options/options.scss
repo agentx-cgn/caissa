@@ -2,10 +2,10 @@
 
 
   div.default-options {
-    background-color: #aaa;
+    // background-color: #aaa;
     padding: 0.5rem 1.5rem;
   }
-  div.default-options div.group-title {
+  div.default-options div.group.title {
     margin-top: 0.5rem;
     font-weight: 800;
     font-size: 1.3rem;
@@ -61,7 +61,7 @@
     padding: 0.5rem 2rem;
     border-top: 5px solid #89b;
   }
-  div.play-options div.group-title {
+  div.play-options div.group.title {
     font-weight: 800;
     font-size: 1.3rem;
     letter-spacing: 1px;
@@ -73,7 +73,7 @@
     background-color: #eee;
     padding: 0.5rem 1.5rem;
   }
-  div.page-options div.group-title {
+  div.page-options div.group.title {
     font-weight: 800;
     font-size: 1.25rem;
     margin: 2rem 0 0.5rem 0;

@@ -14,7 +14,7 @@ import { H }           from '../services/helper';
 
 
 // const CompPages = [Sources, Games, Game, Plays, Play, Options, System];
-const CompPages = [Sources, Games, Game, Options, System];
+const CompPages = [Sources, Games, Game, Options, System, Plays, Play];
 const ConfigPages  = H.create({
 
     // Route                Layout  Content  Section         Navigation Feedback  Flags          Title

@@ -30,6 +30,12 @@ const Caissa = {
         console.log(' ');
     },
 
+    redraw () {
+        console.log(' ');
+        History.prepare('',  {}, {redraw: true});
+        m.redraw();
+    },
+
     route ( route, params={}, options={replace:false} ) {
 
         console.log(' ');
@@ -69,6 +75,7 @@ const Caissa = {
                 DEBUG && console.log('%cCaissa.render.in %s %s', 'color:darkorange; font-weight: 800', target, current);
 
                 History.finalize(route, vnode.attrs, content);
+                // History.log();
 
                 return m(Caissa.comp, { route, params: vnode.attrs });
             },
@@ -80,37 +87,13 @@ const Caissa = {
 
             const { route, params } = vnode.attrs;
             const [ Layout, Content, Section, pagedata ] = ConfigPages[route];
-
             const target   = m.buildPathname(route, params);
-            const animflag = History.canAnimate ? 'animate' : 'still' ;
 
-            DEBUG && console.log('%cCaissa.view.in %s %s', 'color:darkgreen; font-weight: 800', target, animflag);
+            DEBUG && console.log('%cCaissa.view.in %s %s', 'color:darkgreen; font-weight: 800', target, History.animation);
 
             document.title = pagedata.title;
 
             return m(Layout, { route, params }, [ Content, Section ]);
-
-            // // slider + board
-            // if (pagedata.flags.includes(' sb ')) {
-
-            //     const [ slides, log ] = History.slides();
-            //     const [ left, center, right, anim] = slides;
-            //     const sliderContent = [
-            //         m(left.content,   left.params),
-            //         m(center.content, center.params),
-            //         m(right.content,  right.params),
-            //     ];
-
-            //     History.log();
-            //     console.log('VIEW', log);
-            //     // console.log('VIEW', slides);
-
-            //     return m(layout, { pagedata, anim }, [ sliderContent, m(Nothing) ]);
-
-            // } else {
-            //     return m(layout, { route, params }, [ content, section ]);
-
-            // }
 
         },
 

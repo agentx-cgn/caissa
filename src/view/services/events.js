@@ -3,29 +3,30 @@ import DB      from './database';
 import Caissa  from '../caissa';
 import System  from '../data/state';
 import History from '../services/history';
+import Factory from '../components/factory';
 
 // https://developer.mozilla.org/en-US/docs/Web/Events
 
 let deferredPrompt;
 
 const Events = {
+
     listen () {
+
         document.addEventListener('beforeinstallprompt', Events.onbeforeinstallprompt);
-        document.addEventListener('selectionchange', Events.onselectionchange);
-        // document.addEventListener('swiped-right',    Events.onswipeback);
-        // document.addEventListener('swiped-left',     Events.onswipefore);
-        document.addEventListener('dblclick',        H.eat);
+        document.addEventListener('selectionchange',     Events.onselectionchange);
+        document.addEventListener('dblclick',            H.eat);
 
-        window.addEventListener('load',              Caissa.onload);
-        window.addEventListener('beforeunload',      Events.onbeforeunload);
-        window.addEventListener('online',            Events.ononline);
-        window.addEventListener('offline',           Events.onoffline);
+        window.addEventListener('load',                  Caissa.onload);
+        window.addEventListener('beforeunload',          Events.onbeforeunload);
+        window.addEventListener('online',                Events.ononline);
+        window.addEventListener('offline',               Events.onoffline);
+        window.addEventListener('resize',                Factory.onresize);
+        window.addEventListener('popstate',              History.onpopstate);
+        window.addEventListener('hashchange',            History.onhashchange);
 
-        window.addEventListener('popstate',          History.onpopstate);
-        window.addEventListener('hashchange',        History.onhashchange);
-        // window.addEventListener('pagehide',          Events.onpagehide);
-        // window.addEventListener('pageshow',          Events.onpageshow);
     },
+
     onbeforeinstallprompt (e) {
 
         const addBtn = document.querySelector('.a2hs-button');
@@ -75,7 +76,7 @@ const Events = {
     },
     onselectionchange () {
         // const selection = document.getSelection();
-        console.log('Selection', document.getSelection());
+        console.log('Selection', document.getSelection().toString());
     },
     onpopstate () {
         true && console.log('onpopstate');

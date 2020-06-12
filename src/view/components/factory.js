@@ -1,6 +1,7 @@
 
 import { H } from '../services/helper';
 
+const DEBUG = true;
 const freezer = [];
 
 const Dispatcher = function (source) {
@@ -9,7 +10,7 @@ const Dispatcher = function (source) {
         send (channel, msg) {
             freezer.forEach( comp => {
                 if (comp[channel] && typeof comp[channel] === 'function' && source !== comp.name){
-                    // console.log('dispatcher.sending', msg, 'to', comp.name, 'from', source, 'over', channel);
+                    DEBUG && console.log('dispatcher.sending', msg, 'to', comp.name, 'from', source, 'over', channel);
                     comp[channel]({ source, msg });
                 }
             });
@@ -19,13 +20,22 @@ const Dispatcher = function (source) {
 };
 
 const Factory = {
+    onresize () {
+        freezer.forEach( comp => {
+            if (typeof comp['onresize'] === 'function' ){
+                comp.onresize(innerWidth, innerHeight);
+            }
+        });
+    },
     create (name, comp) {
 
         //TODO: check for duplicates
 
         let preventUpdates = false;
 
+        // before first view
         (typeof comp.onregister === 'function') && comp.onregister(Dispatcher(name));
+        (typeof comp.onresize   === 'function') && comp.onresize(innerWidth, innerHeight);
 
         const ice = H.deepFreezeCreate({
             name,
@@ -40,7 +50,7 @@ const Factory = {
                 // and consequently to the vnode's children.
 
                 if (preventUpdates) {
-                    console.log('Component.' + name, 'prevented Updates');
+                    DEBUG && console.log('Component.' + name, 'prevented Updates');
                 }
                 return !preventUpdates;
             },

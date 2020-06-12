@@ -37,18 +37,20 @@ Config.playtemplates.forEach( template =>  {
 });
 
 const Plays = Factory.create('Plays', {
+
     view ( vnode ) {
 
-        const { mode } = vnode.attrs;
+        const { className, style } = vnode.attrs;
+        const { mode } = vnode.attrs.params;
 
-        return m('div.page.plays', [
+        return m('div.page.plays', { className, style }, [
 
             m(TitleLeft, 'Start a new Play'),
             m(FixedList, Config.playtemplates.map( play => {
 
                 const formdata = forms[play.mode];
                 const style = mode === play.mode
-                    ? {marginBottom: '0px', backgroundColor: '#89b'}
+                    ? {marginBottom: '0px', backgroundColor: 'rgba(255,255,255,.2)'}
                     : {}
                 ;
                 const onclick  = mode === play.mode
@@ -65,7 +67,7 @@ const Plays = Factory.create('Plays', {
                     ]),
 
                     play.mode === mode
-                        ? m(Forms, {formdata, class: 'play-options', style: 'background-color: #acb5ca'})
+                        ? m(Forms, {formdata, class: 'play-options', style: 'background-color: rgba(255,255,255,.3)'})
                         : m(Nothing),
 
                 ]);

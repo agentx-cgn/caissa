@@ -105,20 +105,20 @@ div.gm-bar-buttons {
         &.left {
             left: 0;
             z-index: 12;
-            background-color: red;
-            // background-color: #888;
+            // background-color: red;
+            background-color: #c40;
         }
         &.center {
             left: 0;
             z-index: 10;
-            background-color: green;
-            // background-color: #888;
+            // background-color: green;
+            background-color: #484;
         }
         &.right {
             left: 0;
             z-index: 12;
-            background-color: blue;
-            // background-color: #888;
+            // background-color: blue;
+            background-color: #57b;
 
         }
         &.slide-transition {
@@ -130,6 +130,21 @@ div.gm-bar-buttons {
             -webkit-transform: translateX(100vw) !important;
         }
 
+    }
+    // show hamburger
+    nav {
+        height: auto;
+    }
+    nav ul {
+        display: none;
+    }
+    nav ul li {
+        display: block;
+    }
+    nav input:checked + ul {
+        width: 22.5rem;
+        top: 40px;
+        display: block;
     }
 }
 
@@ -157,20 +172,20 @@ div.gm-bar-buttons {
         &.left {
             left: 0;
             z-index: 12;
-            background-color: orange;
-            // background-color: #888;
+            // background-color: orange;
+            background-color: #c40;
         }
         &.center {
             left: 0;
             z-index: 10;
-            background-color: lightgreen;
-            // background-color: #888;
+            // background-color: lightgreen;
+            background-color: #484;
         }
         &.right {
             left: 0;
             z-index: 12;
-            background-color: lightblue;
-            // background-color: #888;
+            // background-color: lightblue;
+            background-color: #578;
 
         }
         &.slide-transition {
@@ -182,5 +197,31 @@ div.gm-bar-buttons {
             -webkit-transform: translateX(360px) !important;
         }
     }
+    // show hamburger
+    nav {
+        height: auto;
+    }
+    nav ul {
+        display: none;
+    }
+    nav ul li {
+        display: block;
+    }
+    nav input:checked + ul {
+        width: 22.5rem;
+        top: 40px;
+        display: block;
+    }
 }
+@media only screen and (min-width: 721px) {
 
+    // hide menu
+    nav label,
+    nav div.home,
+    nav input {
+        display: none
+    }
+    nav ul li {
+        display: inline-block;
+    }
+}

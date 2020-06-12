@@ -14,6 +14,7 @@ const detected  = {
     fore:       false,
     same:       false,
     replace:    false,
+    redraw:     false,
     popstate:   false,
     hashchange: false,
 };
@@ -101,12 +102,17 @@ const History = {
         } else if (candidate[key]) {
             DEBUG && console.log('history.prepare.ignored.exists', key);
 
-        // ignored, because already there
+        // ignored, because already there, e.g. options form submit, system+module, or filtered content, e.g. GamesList
         } else if (stack[pointer] && stack[pointer].key === key) {
             detected.same = true;
             DEBUG && console.log('history.prepare.ignored.same', key);
 
-        // route.set w/ replace
+        // e.g. pages.afteranimate
+        } else if (options.redraw) {
+            detected.redraw = true;
+            DEBUG && console.log('history.prepare.redraw', key);
+
+        // route.set w/ replace e.g. game+turn
         } else if (options.replace || detected.replace) {
             candidate[key] = { ...options };
             detected.replace = true;
@@ -135,7 +141,7 @@ const History = {
                 detected.fore = true;
                 DEBUG && console.log('history.prepare.urlChangeDetected.fore', key);
 
-            // assuming fore
+            // assuming fore ???
             } else if (!detected.hashchange && detected.popstate){
                 detected.same = true;
                 DEBUG && console.log('history.prepare.urlChangeDetected.same', key);
@@ -163,7 +169,9 @@ const History = {
             delete candidate[key];
             DEBUG && console.log('history.finalize.replace.done', key, '==', stack[pointer].key);
 
-        // happens on m.redraw()
+        } else if (detected.redraw) {
+            DEBUG && console.log('history.finalize.redraw.done', stack[pointer]);
+
         } else if (detected.same || (stack[pointer] && stack[pointer].key === key)) {
             detected.same = true;
             DEBUG && console.log('history.finalize.same.done', stack[pointer]);
@@ -177,23 +185,31 @@ const History = {
             DEBUG && console.log('history.finalize.fore.done', stack[pointer]);
 
         } else if (!candidate[key]) {
-            DEBUG && console.log('history.finalize.ignored/not prepared', key);
+            DEBUG && console.log('history.finalize.nocandidate.ignored', key);
 
         } else {
             // kick out entries from old browsing path
             while (pointer < stack.length -1){
                 // eslint-disable-next-line no-unused-vars
                 const entry = stack.pop();
-                DEBUG && console.log('history.finalize.popped', pointer, stack.length, entry);
+                DEBUG && console.log('history.finalize.next.popped', pointer, stack.length, entry);
             }
             pointer = stack.push(H.create({key, route, params, content})) -1;
             delete candidate[key];
-            DEBUG && console.log('history.finalize.done', key, stack[pointer]);
+            DEBUG && console.log('history.finalize.next.done', key, stack[pointer]);
         }
 
     },
-    get canAnimate () {
-        return !( detected.same || detected.replace || stack.length === 1 );
+    get animation () {
+        return (
+            stack.length === 1 ? '=1=' :
+            detected.replace   ? '=r=' :
+            detected.redraw    ? '=w=' :
+            detected.same      ? '=s=' :
+            detected.back      ? '=b>' :
+            detected.fore      ? '<f=' :
+            '<c='
+        );
     },
 
     /**
@@ -202,7 +218,7 @@ const History = {
     slides () {
 
         const noContent = H.create({content: Nothing, route: '', params: H.create()});
-        let log, res;
+        let log, res, offset;
 
         function collectNamesFrom(start, dir) {
             return [0, 1, 2].map(diff => {
@@ -220,12 +236,19 @@ const History = {
             res = collectContentFrom(-1, '=1=');
 
         } else if (detected.replace) {
-            log = collectNamesFrom(-1,   '=r=');
-            res = collectContentFrom(-1, '=r=');
+            offset = -1; //pointer === stack.length -1 ? -1 : -2;
+            log = collectNamesFrom(offset,   '=r=');
+            res = collectContentFrom(offset, '=r=');
+
+        } else if (detected.redraw) {
+            offset = -1; //pointer === stack.length -1 ? -1 : -2;
+            log = collectNamesFrom(offset,   '=w=');
+            res = collectContentFrom(offset, '=w=');
 
         } else if (detected.same) {
-            log = collectNamesFrom(-1,   '=s=');
-            res = collectContentFrom(-1, '=s=');
+            offset = -1; //pointer === stack.length -1 ? -1 : -2;
+            log = collectNamesFrom(offset,   '=s=');
+            res = collectContentFrom(offset, '=s=');
 
         } else if (detected.back) {
             log = collectNamesFrom(0,    '=b>');
@@ -247,6 +270,7 @@ const History = {
         detected.back       = false;
         detected.fore       = false;
         detected.same       = false;
+        detected.redraw     = false;
         detected.popstate   = false;
         detected.hashchange = false;
 

@@ -23,21 +23,23 @@ const Play = Factory.create('Play', {
 
         Object.assign(state, Config.playstatetemplate, { play });
 
-        console.log('play.oninit');
-        Controller
-            .start(5 * 1000)
-            .then( () => {
-                console.log('play.oninit.done');
-                isReady = true;
-                m.redraw();
-            })
-        ;
+        // console.log('play.oninit');
+        // Controller
+        //     .start(5 * 1000)
+        //     .then( () => {
+        //         console.log('play.oninit.done');
+        //         isReady = true;
+        //         Caissa.redraw();
+        //     })
+        // ;
 
     },
 
-    view ( ) {
+    view ( vnode ) {
 
-        return m('div.page.play',
+        const { className, style } = vnode.attrs;
+
+        return m('div.page.play', { className, style },
 
             !isReady
                 ? m(TextLeft, 'Please wait...')

@@ -19,9 +19,18 @@ header {
 i.navi.fa {
     color: #bbb; flex-grow: 0; padding: 12px 10px;
 }
+i.navi.fa:hover {
+    background-color: #806464;
+}
+
+i.hamburger:hover {
+    background-color: #806464;
+}
 i.hamburger {
     font-size: 1.5rem;
-    color: #AAA
+    color: #AAA;
+    padding: 7px 8px 8px 8px;
+    display: inline-block;
 }
 nav {
     flex-grow: 1;
@@ -43,7 +52,8 @@ nav {
         font-size: 28px;
         color: #fff;
         position: absolute;
-        padding: 4px 4px 4px 12px;
+        // padding: 4px 4px 4px 12px;
+        padding: 0;
         cursor: pointer;
         -webkit-touch-callout: none;
         -webkit-user-select: none;

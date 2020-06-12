@@ -1,12 +1,12 @@
-
-import { $$, $$$ }    from '../services/helper';
+import Caissa         from '../caissa';
+import { $$ }         from '../services/helper';
 import History        from '../services/history';
 import Factory        from '../components/factory';
-import { Nothing }    from '../components/misc';
 import { CompPages }  from '../data/config-pages';
 import System         from '../data/system';
-import Config         from '../data/config';
 import touchSlider    from './toucher';
+
+const DEBUG = false;
 
 let
     anim,
@@ -31,19 +31,8 @@ const Pages = Factory.create('Pages', {
     onremove () {
         touchSlider.remove();
     },
-    view ( ) {
-
-        const [ slides, log ] = History.slides();
-        const [ left, center, right, animation ] = slides;
-        const cache = History.recent(Config.pagecache.size);
-
-        History.log();
-        console.log('pages', log);
-
-        // keep this
-        anim = animation;
-
-        if (innerWidth <= 360){
+    onresize (width) {
+        if (width <= 360){
             transLeft   = 'translateX(    0);';
             transCenter = 'translateX( 100vw );';
             transRight  = 'translateX( calc(2*100vw) );';
@@ -52,15 +41,56 @@ const Pages = Factory.create('Pages', {
             transCenter = 'translateX( 360px );';
             transRight  = 'translateX( 720px );';
         }
+    },
+    view ( ) {
+
+        const [ slides ] = History.slides();
+        const [ left, center, right, animation ] = slides;
+
+        // DEBUG && History.log();
+        // DEBUG && console.log('pages', log);
+
+        History.log();
+        console.log('PAGES.view', slides.slice(0, 3).map( s => s.content.name), animation);
+
+        // keep this
+        anim = animation;
 
         return m('div.pages', {}, CompPages.map( Comp => {
 
             const isLeft   = left.content   === Comp;
             const isCenter = center.content === Comp;
             const isRight  = right.content  === Comp;
-            const isCached = cache.includes(Comp);
+            const $Comp    = $$('div.page.' + Comp.name.toLowerCase());
 
-            // Comp.preventUpdates = !(isLeft || isCenter || isRight);
+            // ensure (still) not updating vnodes have proper classes and styles
+            if (isLeft || isCenter || isRight){
+                Comp.preventUpdates = false;
+                if ($Comp){
+                    $Comp.classList.remove('dn');
+                    if (isLeft){
+                        $Comp.classList.add('slide', 'left');
+                        $Comp.setAttribute('style', 'z-index: 12; transform: ' + transLeft);
+                    }
+                    if (isCenter) {
+                        $Comp.classList.add('slide', 'center');
+                        $Comp.setAttribute('style', 'z-index: 11; transform: ' + transCenter);
+                    }
+                    if (isRight) {
+                        $Comp.classList.add('slide', 'right');
+                        $Comp.setAttribute('style', 'z-index: 12; transform: ' + transRight);
+                    }
+                }
+
+            } else {
+                Comp.preventUpdates = true;
+                if ($Comp){
+                    $Comp.classList.remove('slide', 'left', 'center', 'right');
+                    $Comp.classList.add('dn');
+                    $Comp.removeAttribute('style');
+                }
+
+            }
 
             return (
                 isLeft   ? m(left.content,   {route: left.route,   params: left.params,
@@ -72,9 +102,8 @@ const Pages = Factory.create('Pages', {
                 isRight  ? m(right.content,  {route: right.route,   params: right.params,
                     className: 'slide right',  style: 'z-index: 12; transform: ' + transRight}) :
 
-                isCached ? m(Comp,           {route: '', params: {}, className: 'dn' }):
-
-                m(Nothing)
+                // all other, no updates, no display
+                m(Comp, {route: '', params: {}, className: 'dn' })
             );
 
         }));
@@ -84,35 +113,33 @@ const Pages = Factory.create('Pages', {
     onafterupdates () {
 
         const $Left   = $$('div.slide.left');
-        // const $Center = $$('div.slide.center');
+        const $Center = $$('div.slide.center');
         const $Right  = $$('div.slide.right');
 
-        console.log('pages.onafterupdates', anim, !!$Left, !!$Right);
+        DEBUG && console.log('pages.onafterupdates', !!$Left, !!$Center, !!$Right, anim);
 
-        [...$$('div.pages').children].forEach( div => {
-            if (div.className !== 'nothing dn'){
-                console.log('pages.child', [div.className]);
-            }
-        });
-
-        if (anim === '=1=' || anim === '=r=' || anim === '=s=') {
+        if (anim === '=1=' || anim === '=r=' || anim === '=s=' || anim === '=w=') {
             $Left  && ( $Left.style.transform  = transLeft);  //'translateX(0)' );
             $Right && ( $Right.style.transform = transRight); //'translateX(720px)' );
 
         } else if (anim === '=b>') {
-            $Right &&  ( $Right.style.zIndex = 10 );
-            $Left.style.zIndex  = 12;
-            $Left.addEventListener(endEvent, onafteranimate);
-            $Left.classList.add('slide-transition');
+            $Right && ( $Right.style.zIndex = 10 );
+            if ($Left) {
+                $Left.style.zIndex  = 12;
+                $Left.addEventListener(endEvent, onafteranimate);
+                $Left.classList.add('slide-transition');
+            }
 
         } else if (anim === '<c=' || anim === '<f=') {
-            $Left  && ( $Left.style.zIndex  = 10 );
-            $Right && ( $Right.style.zIndex = 12 );
-            $Right.addEventListener(endEvent, onafteranimate);
-            $Right.classList.add('slide-transition');
+            $Left && ( $Left.style.zIndex  = 10 );
+            if ($Right) {
+                $Right && ( $Right.style.zIndex = 12 );
+                $Right.addEventListener(endEvent, onafteranimate);
+                $Right.classList.add('slide-transition');
+            }
 
         } else {
-            console.log('pages.onafterupdates.unknown anim', anim);
+            console.warn('pages.onafterupdates.unknown anim', anim);
 
         }
 
@@ -128,7 +155,7 @@ function onafteranimate( ) {
     // const $Center = $$('div.slide.center');
     const $Right  = $$('div.slide.right');
 
-    if (anim === '=1=' || anim === '=r=' || anim === '=s=') {
+    if (anim === '=1=' || anim === '=r=' || anim === '=s=' || anim === '=w=') {
 
         $Left.style.transform  = transLeft;  //'translateX(0)';
         $Right.style.transform = transRight; //'translateX(720px)';
@@ -152,14 +179,15 @@ function onafteranimate( ) {
 
     }
 
-    // preventUpdates forces this
-    $$$('div.slide.dn').forEach( slide => slide.classList.remove('left', 'center', 'right'));
+    // needed bc preventUpdates
+    // $$$('div.slide.dn').forEach( slide => slide.classList.remove('left', 'center', 'right'));
 
-    console.log('pages.onafteranimate.out', anim);
-    console.log('');
+    DEBUG && console.log('pages.onafteranimate.out', anim);
+    DEBUG && console.log(' ');
     anim = '';
 
-    m.redraw();
+    // reorder back to LCR after animation
+    Caissa.redraw();
 
 }
 

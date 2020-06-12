@@ -43,7 +43,7 @@ const actions = {
     rotate (e) {
         State.board.orientation = State.board.orientation === COLOR.white ? COLOR.black : COLOR.white;
         return H.eat(e);
-        // m.redraw();
+        // Caissa.redraw();
     },
     toggle (e) {
         // TODO: use state.ui
