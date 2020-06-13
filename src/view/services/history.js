@@ -10,13 +10,14 @@ const stack     = [];
 let pointer     = NaN;
 
 const detected  = {
-    back:       false,
-    fore:       false,
-    same:       false,
-    replace:    false,
-    redraw:     false,
-    popstate:   false,
-    hashchange: false,
+    back:        false,
+    fore:        false,
+    same:        false,
+    replace:     false,
+    redraw:      false,
+    popstate:    false,
+    hashchange:  false,
+    noanimation: false,
 };
 
 const History = {
@@ -49,6 +50,16 @@ const History = {
         return !isNaN(History.pointer) && History.pointer < History.stack.length -1;
     },
 
+    // no checks here
+    // inits 'silent' back, no animation
+    goback () {
+        const { route, params } = stack[pointer -1];
+        Caissa.route(route, params, {back: true, noanimation: true});
+    },
+    gofore (){
+        const { route, params } = stack[pointer +1];
+        Caissa.route(route, params, {fore: true, noanimation: true});
+    },
     // comes from UI
     onback (e) {
         e.redraw = false;
@@ -121,12 +132,18 @@ const History = {
         // back from caissa
         } else if (options.back || detected.back) {
             detected.back = true;
-            DEBUG && console.log('history.prepare.back.found', key);
+            if (typeof options.noanimation !== 'undefined'){
+                detected.noanimation = !!options.noanimation;
+            }
+            DEBUG && console.log('history.prepare.back', key, H.shrink(options));
 
         // fore from caissa
         } else if (options.fore || detected.fore) {
             detected.fore = true;
-            DEBUG && console.log('history.prepare.fore', key);
+            if (typeof options.noanimation !== 'undefined'){
+                detected.noanimation = !!options.noanimation;
+            }
+            DEBUG && console.log('history.prepare.fore', key, H.shrink(options));
 
         // something changed addressbar
         } else if (detected.hashchange || detected.popstate) {
@@ -206,8 +223,10 @@ const History = {
             detected.replace   ? '=r=' :
             detected.redraw    ? '=w=' :
             detected.same      ? '=s=' :
-            detected.back      ? '=b>' :
-            detected.fore      ? '<f=' :
+            (detected.back &&  detected.noanimation)  ? '=b=' :
+            (detected.back && !detected.noanimation)  ? '=b>' :
+            (detected.fore &&  detected.noanimation)  ? '=f=' :
+            (detected.fore && !detected.noanimation)  ? '<f=' :
             '<c='
         );
     },
@@ -251,12 +270,14 @@ const History = {
             res = collectContentFrom(offset, '=s=');
 
         } else if (detected.back) {
-            log = collectNamesFrom(0,    '=b>');
-            res = collectContentFrom(0,  '=b>');
+            const anim = (detected.noanimation) ? '=b=' : '=b>';
+            log = collectNamesFrom(0,    anim);
+            res = collectContentFrom(0,  anim);
 
         } else if (detected.fore) {
-            log = collectNamesFrom(-2,   '<f=');
-            res = collectContentFrom(-2, '<f=');
+            const anim = (detected.noanimation) ? '=f=' : '<f=';
+            log = collectNamesFrom(-2,   anim);
+            res = collectContentFrom(-2, anim);
 
         // clicked
         } else {
@@ -266,13 +287,14 @@ const History = {
 
         // cleanup
         H.clear(candidate);
-        detected.replace    = false;
-        detected.back       = false;
-        detected.fore       = false;
-        detected.same       = false;
-        detected.redraw     = false;
-        detected.popstate   = false;
-        detected.hashchange = false;
+        detected.replace     = false;
+        detected.back        = false;
+        detected.fore        = false;
+        detected.same        = false;
+        detected.redraw      = false;
+        detected.popstate    = false;
+        detected.hashchange  = false;
+        detected.noanimation = false;
 
         return [ res, log ];
     },

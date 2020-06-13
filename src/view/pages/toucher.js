@@ -1,52 +1,72 @@
 
 import System     from '../data/system';
 import History    from '../services/history';
-import { H, $$ }  from '../services/helper';
+// import { H }      from '../services/helper';
 
 const abs = Math.abs;
-const threshold = System.screen.width / 3;
+let threshold = innerWidth / 3;
 
-let touch = { target: null, time: NaN, down: { x: NaN, y: NaN }, diff: { x: NaN, y: NaN } };
-let pageLeft, pageRight; // may get moved
+let touch = { selektor: '', time: NaN, down: { x: NaN, y: NaN }, diff: { x: NaN, y: NaN } };
+let slideLeft, slideRight; // may get moved
+let transLeft, transRight;
+let endEvent = System.transitionEnd;
+let width;
 
 const touchSlider = {
     listen () {
         if (System.touch){
-            document.addEventListener('touchstart', touchSlider.start, false);
+            document.addEventListener('touchstart', touchSlider.down,  false);
             document.addEventListener('touchmove',  touchSlider.move,  false);
             document.addEventListener('touchend',   touchSlider.end,   false);
             console.log('touchSlider.listening');
         }
     },
     remove () {
-        document.removeEventListener('touchstart', touchSlider.start, false);
+        document.removeEventListener('touchstart', touchSlider.down,  false);
         document.removeEventListener('touchmove',  touchSlider.move,  false);
         document.removeEventListener('touchend',   touchSlider.end,   false);
         console.log('touchSlider.removed');
     },
     pause () {
-        touch.target = null;
+        touch.selektor = '';
     },
-    go (left, center,right) {
-        pageLeft     = $$(left);
-        pageRight    = $$(right);
-        touch.target = center;
+    init (left, selCenter, right, transformLeft, transformRight, pageWidth) {
+
+        slideLeft       = left;
+        slideRight      = right;
+        touch.selektor  = selCenter;
+        transLeft       = transformLeft;
+        transRight      = transformRight;
+        width           = pageWidth;
+        threshold       = innerWidth / 4;
+
+        console.log('touchSlider.init', selCenter, transformLeft, transformRight);
+        slideLeft && console.log('left', slideLeft);
+        slideRight && console.log('right', slideRight);
     },
-    start (e) {
-        if (e.target.closest(touch.target)){
+    down (e) {
+        if (touch.selektor && e.target.closest(touch.selektor)){
+            // console.log('touch.found', touch.selektor);
             touch.time   = Date.now();
             touch.down.x = e.touches[0].clientX;
             touch.down.y = e.touches[0].clientY;
             touch.diff.x = 0;
             touch.diff.y = 0;
-            console.log('touchSlider.start', H.shrink(touch));
         }
+    },
+    onafterback () {
+        slideLeft.removeEventListener(endEvent, touchSlider.onafterback);
+        History.goback();
+        // console.log('toucher.onafteranimate');
+    },
+    onafterfore () {
+        slideRight.removeEventListener(endEvent, touchSlider.onafterfore);
+        History.gofore();
+        // console.log('toucher.onafteranimate');
     },
     move  (e) {
 
         if (touch.down.x || touch.down.y) {
-
-            console.log('touchSlider.move', H.shrink(touch));
 
             const x = e.touches[0].clientX;
             const y = e.touches[0].clientY;
@@ -54,31 +74,41 @@ const touchSlider = {
             touch.diff.x = touch.down.x - x;
             touch.diff.y = touch.down.y - y;
 
-            if (History.canBack && touch.diff.x > 0){
+            // console.log('touchSlider.move', History.canBack, touch.diff.x, threshold);
+
+            if (slideLeft && History.canBack && touch.diff.x < 0){
                 if (abs(touch.diff.x) > threshold){
-                    History.onback();
+                    slideLeft.addEventListener(endEvent, touchSlider.onafterback);
+                    slideLeft.classList.add('slide-transition');
                 } else {
-                    pageLeft.style.transform = 'translateX(' + abs(touch.diff.x) + 'px)';
+                    slideLeft.style.transform = 'translateX(' + abs(touch.diff.x) + 'px)';
                 }
             }
 
-            if (History.canFore && touch.diff.x < 0){
+            if (slideRight && History.canFore && touch.diff.x > 0){
                 if (abs(touch.diff.x) > threshold){
-                    History.onfore();
+                    slideRight.addEventListener(endEvent, touchSlider.onafterfore);
+                    slideRight.classList.add('slide-transition');
                 } else {
-                    pageRight.style.transform = 'translateX(-' + abs(touch.diff.x) + 'px)';
+                    slideRight.style.transform = 'translateX(' + ( 2 * width - abs(touch.diff.x) ) + 'px)';
                 }
             }
 
         }
 
     },
-    end   () {
 
-        touch = { target: null, time: NaN, down: { x: NaN, y: NaN }, diff: { x: NaN, y: NaN } };
+    end () {
 
-        pageLeft  && (pageLeft.style.transform  = 'translateX(0)');
-        pageRight && (pageRight.style.transform = 'translateX(360px)');
+        if (touch.selektor) {
+            touch.down = { x: NaN, y: NaN };
+            touch.diff = { x: NaN, y: NaN };
+
+            slideLeft  && (slideLeft.style.transform  = transLeft);
+            slideRight && (slideRight.style.transform = transRight);
+            console.log('touchSlider.end', touch.selektor);
+        }
+
     },
 
 };

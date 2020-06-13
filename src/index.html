@@ -10,30 +10,48 @@
 
         <link rel="shortcut icon" href="/static/favicon.png" />
         <style>
+
+            html, body, .root {
+                width:     100%;
+                height:    100%;
+                font-size: 16px;
+                min-width: 320px;
+                overflow: hidden;
+            }
+            body {
+                top: 0; left: 0;
+                position: fixed;
+            }
+
             :root {
                 --sat: env(safe-area-inset-top);
                 --sar: env(safe-area-inset-right);
                 --sab: env(safe-area-inset-bottom);
                 --sal: env(safe-area-inset-left);
             }
-            .backdrop {
+            loading-backdrop {
                 top: 40px; left: 0;
                 position: absolute;
                 height: 100%;
                 width: 100%;
-                background-color: rgba(128,128,128, 0.8);
+                background-color: rgba(0,0,0, 0.8);
+                z-index: 1000;
             }
-            .loader {
-                position: relative;
+            loading-screen {
+                position: absolute;
+                top: 80px;
                 height: 60%;
-                width: 80%;
-                margin: 20% auto;
+                width: 100%;
+                padding: 2rem;
                 font-family: monospace;
                 color: white;
-
+                z-index: 1001;
             }
-            .loader button {
+            loading-screen .option-waitscreen {
+                margin-top: 12px;
                 display: none;
+            }
+            loading-screen button {
                 margin-top: 12px;
                 padding: 4px 8px;
             }
@@ -50,43 +68,40 @@
                     console.log(JSON.stringify(arguments))
                 }
             }
-            // create namespace
-            window.caissa = {
-                system: null,
-                state:  null,
-                db:     null,
-                onimport : function (text) {
-                    offset += 50;
-                    setTimeout( function () {
-                        const $msgs = document.querySelector(".loader .messages");
-                        $msgs.innerHTML += '<br>' + text;
-                    }, offset);
-                },
-                onstart: function () {
-                    console.log('onstart');
-                }
+            function saveOption (ctrl) {
+                Caissa.DB.updateOption({ui:{waitscreen: !!ctrl.checked}});
+            }
 
-            };
+
             // if('serviceWorker' in navigator) {
             //     navigator.serviceWorker.register('./static/caissa.sw.js');
             // };
         </script>
-        <!-- <script src="/static/swiped-events.js"></script> -->
-        <!-- <script src="/static/web-animations.min.js"></script> -->
 
     </head>
     <body>
 
         <noscript>You need to enable JavaScript to run Caissa.</noscript>
+
         <div class="root"></div>
-        <div class="backdrop">
-            <div class="loader">
+
+        <loading-backdrop></loading-backdrop>
+        <loading-screen>
+            <loading-text>
                 <h3>Caissa loading...</h3>
                 <div class="messages"></div>
-                <button class="onstart" onclick="window.caissa.onstart()">Start</button>
-                <button class="reload"  onclick="location.reload()">Reload</button>
-            </div>
-        </div>
+                <div>
+                    <button class="start"   onclick="window.Caissa.start()">Start</button>
+                    <button class="reload"  onclick="location.reload()">Reload</button>
+                    </div>
+                <div>
+                    <button class="a2home"  onclick="">Add to Home Screen</button>
+                </div>
+                <div class="option-waitscreen">
+                    <input type="checkbox" onchange="saveOption(this)" /> Don't show again
+                </div>
+            </loading-text>
+        </loading-screen>
 
     </body>
 </html>

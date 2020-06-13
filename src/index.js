@@ -4,11 +4,7 @@ import 'regenerator-runtime/runtime';
 import 'tachyons/css/tachyons.min.css';
 import './app.scss';
 
-import System from './view/data/system';
-import State  from './view/data/state';
-import DB     from './view/services/database';
-import { H }  from './view/services/helper';
-import Events from './view/services/events';
+// import { H }  from './view/services/helper';
 import Caissa, { Routes, DefaultRoute } from './view/caissa';
 
 const DEBUG = false;
@@ -17,12 +13,9 @@ DEBUG && console.log('Info   :', 'Loaded imports after', Date.now() - window.t0,
 
 module.hot && module.hot.accept();
 
-window.H = H;
-window.caissa.system = System;
-window.caissa.state = State;
-window.caissa.db = DB;
-window.caissa.onstart = Caissa.onstart;
-Events.listen();
+// window.H = H;
+window.Caissa = Caissa;
+Caissa.onafterImport();
 
 // Extend Mithril
 m.cls = (def = {}, sep = ' ', classes = '') => {

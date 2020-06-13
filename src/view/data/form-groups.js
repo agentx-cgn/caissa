@@ -207,6 +207,18 @@ const FormGroups = function ( formdata ) {
                     },
                 }  ],
 
+        },{ group: 'ui',                     sort: 70, title: 'Other',                         active: true,
+            controls:
+                [  { caption: 'Loader',      sort: 10, type: 'checkbox',                       active:  true,
+                    value: () => formdata.waitscreen,
+                    attributes: {
+                        type: 'checkbox',
+                        onchange: (e) => {
+                            formdata.waitscreen = !!e.target.checked;
+                            formdata.autosubmit && formdata.submit();
+                        },
+                    },
+                }  ],
         },
 
     ];

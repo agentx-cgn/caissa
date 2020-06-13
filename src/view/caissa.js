@@ -1,18 +1,42 @@
 
-import { H, $$ }     from './services/helper';
-import History       from './services/history';
-import {ConfigPages}   from './data/config-pages';
-import DB            from './services/database';
-// import { Nothing } from './components/misc';
-// import Tools         from './tools/tools';
-import Factory       from './components/factory';
+import { H, $$ }       from './services/helper';
+import History         from './services/history';
+import { ConfigPages } from './data/config-pages';
+import DB              from './services/database';
+import Events          from './services/events';
+import Factory         from './components/factory';
+import State           from './data/state';
+import System          from './data/system';
 
 const DEBUG = true;
 
-let redraws = 0;
+let redraws = 0, offset = 50;
 
+// available in cosole as window.Caissa
 const Caissa = {
 
+    // available for debugging
+    H, DB, State, System,
+
+    // happens once in index.js
+    onafterImport () {
+        Events.listen();
+    },
+
+    //from loading screen
+    start () {
+        document.body.removeChild($$('loading-screen'));
+        document.body.removeChild($$('loading-backdrop'));
+    },
+    onregister : function (text) {
+        offset += 50;
+        setTimeout( function () {
+            const $msgs = $$('loading-screen .messages');
+            $msgs.innerHTML += '<br>' + text;
+        }, offset);
+    },
+
+    // == window.onload
     onload () {
         const t = Date.now() - window.t0;
         t > 2000
@@ -20,12 +44,13 @@ const Caissa = {
             : console.log ('Info   :', '... done after', 0, t, 'msecs')
         ;
         if (DB.Options['ui'].waitscreen) {
-            $$('.loader button.onstart').style.display = 'inline-block';
-            $$('.loader button.reload').style.display  = 'inline-block';
+            $$('loading-screen button.start').style.display   = 'inline-block';
+            $$('loading-screen button.reload').style.display  = 'inline-block';
+            $$('loading-screen button.a2home').style.display  = 'inline-block';
+            $$('loading-screen .option-waitscreen').style.display  = 'inline-block';
         } else {
-            //TODO: delete nodes
-            $$('.loader').style.display   = 'none';
-            $$('body .backdrop').style.display = 'none';
+            document.body.removeChild($$('loading-screen'));
+            document.body.removeChild($$('loading-backdrop'));
         }
         console.log(' ');
     },
@@ -36,6 +61,7 @@ const Caissa = {
         m.redraw();
     },
 
+    // wrapper for m.route.set
     route ( route, params={}, options={replace:false} ) {
 
         console.log(' ');
@@ -58,7 +84,7 @@ const Caissa = {
             onmatch ( params ) {
 
                 try {
-                    redraws && console.log(' ');
+                    DEBUG && redraws && console.log(' ');
                     const target  = m.buildPathname(route, params);
                     const current = History.isCurrent(target) ? 'current' : 'new';
                     DEBUG && console.log('%cCaissa.onmatch.in %s %s ', 'color:darkblue; font-weight: 800', target, current);

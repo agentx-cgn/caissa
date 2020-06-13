@@ -14,7 +14,6 @@ const Options = Factory.create('Options', {
         formgroups = Object.keys(DB.Options);
     },
     view ( vnode ) {
-        // TODO: think about auto save, with monkeypatching onchanges/oninput
 
         const { className, style } = vnode.attrs;
 
@@ -33,7 +32,7 @@ const Options = Factory.create('Options', {
                         DB.Forms.save(formgroup, formdata);
                     },
                 };
-                return m(Forms, {formdata, class: 'default-options'});
+                return m(Forms, {formdata, class: 'default-options group-' + formgroup});
             }),
 
         ]);
@@ -42,48 +41,3 @@ const Options = Factory.create('Options', {
 });
 
 export default Options;
-
-/*
-
-                              Config/File      Database    Options     Config      State
-data                                X
-    flagTitles
-    flagColors
-    fontPieces
-Navigation                          X
-    menu
-gameTemplate                        X
-    json
-playsDifficulties                   X
-    depth : rooky
-playTemplates/available             X
-    json
-Engines                             X
-    stockfish|leela
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-User                                            X
-    name
-defaultEngine                                   X
-    select
-evaluator                                       X
-    depth,maxpv,time,maxmate
-board
-    fen                                                                             X
-    orientation                                 X                                   X
-    illustrations                               X
-        pinning
-        bestmove,ponder
-        lastmove
-        availmoves
-        attack
-        valid
-    config                                      X
-
-
-
-
-
-
-
-
-*/

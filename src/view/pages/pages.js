@@ -11,16 +11,16 @@ const DEBUG = false;
 let
     anim,
     endEvent = System.transitionEnd,
-    transLeft, transCenter, transRight
+    transLeft, transCenter, transRight,
+    pageWidth
 ;
 
 const Pages = Factory.create('Pages', {
 
-    // Each page has a slot here
+    // Each page has a it's own slot here
     // special are the slides from history (includes content)
-    // content gets updated all other not
-    // slides from history are positioned and possibly animated
-    // Nothing is shown for pages not in cache
+    // only slides get displayed and updated
+    // slides are transformed and possibly animated
 
     oninit () {
         touchSlider.listen();
@@ -33,13 +33,15 @@ const Pages = Factory.create('Pages', {
     },
     onresize (width) {
         if (width <= 360){
-            transLeft   = 'translateX(    0);';
-            transCenter = 'translateX( 100vw );';
-            transRight  = 'translateX( calc(2*100vw) );';
+            pageWidth = width;
+            transLeft   = 'translateX(    0)';
+            transCenter = 'translateX( 100vw )';
+            transRight  = 'translateX( calc(2*100vw) )';
         } else {
-            transLeft   = 'translateX(    0);';
-            transCenter = 'translateX( 360px );';
-            transRight  = 'translateX( 720px );';
+            pageWidth = 360;
+            transLeft   = 'translateX(    0)';
+            transCenter = 'translateX( 360px )';
+            transRight  = 'translateX( 720px )';
         }
     },
     view ( ) {
@@ -70,15 +72,15 @@ const Pages = Factory.create('Pages', {
                     $Comp.classList.remove('dn');
                     if (isLeft){
                         $Comp.classList.add('slide', 'left');
-                        $Comp.setAttribute('style', 'z-index: 12; transform: ' + transLeft);
+                        $Comp.setAttribute('style', 'z-index: 12; transform: ' + transLeft + ';');
                     }
                     if (isCenter) {
                         $Comp.classList.add('slide', 'center');
-                        $Comp.setAttribute('style', 'z-index: 11; transform: ' + transCenter);
+                        $Comp.setAttribute('style', 'z-index: 11; transform: ' + transCenter + ';');
                     }
                     if (isRight) {
                         $Comp.classList.add('slide', 'right');
-                        $Comp.setAttribute('style', 'z-index: 12; transform: ' + transRight);
+                        $Comp.setAttribute('style', 'z-index: 12; transform: ' + transRight + ';');
                     }
                 }
 
@@ -119,8 +121,18 @@ const Pages = Factory.create('Pages', {
         DEBUG && console.log('pages.onafterupdates', !!$Left, !!$Center, !!$Right, anim);
 
         if (anim === '=1=' || anim === '=r=' || anim === '=s=' || anim === '=w=') {
+
             $Left  && ( $Left.style.transform  = transLeft);  //'translateX(0)' );
             $Right && ( $Right.style.transform = transRight); //'translateX(720px)' );
+
+            if (History.canBack || History.canFore){
+                setTimeout( () => {
+                    touchSlider.init($$('div.slide.left'), 'div.slide.center', $$('div.slide.right'), transLeft, transRight, pageWidth);
+                }, 0);
+            }
+
+        } else if (anim === '=b=' || anim === '=f=') {
+            Caissa.redraw();
 
         } else if (anim === '=b>') {
             $Right && ( $Right.style.zIndex = 10 );
@@ -159,7 +171,6 @@ function onafteranimate( ) {
 
         $Left.style.transform  = transLeft;  //'translateX(0)';
         $Right.style.transform = transRight; //'translateX(720px)';
-        // touchSlider.go($Left, $Center, $Right);
 
     } else if (anim === '<c=' || anim === '<f=') {
 
@@ -188,6 +199,13 @@ function onafteranimate( ) {
 
     // reorder back to LCR after animation
     Caissa.redraw();
+
+    if (History.canBack || History.canFore){
+        setTimeout( () => {
+            touchSlider.init($$('div.slide.left'), 'div.slide.center', $$('div.slide.right'), transLeft, transRight);
+        }, 0);
+    }
+
 
 }
 

@@ -11,13 +11,7 @@
 //    f4 =   1.25rem
 //    f5 =   1.0rem
 
-html, body, .root {
-    width:     100%;
-    height:    100%;
-    font-size: 16px;
-    min-width: 320px;
-    overflow: hidden;
-}
+
 
 div.layout {
     height: 100%;
@@ -28,13 +22,12 @@ div.layout {
 header {
     height: 2.625rem;
     width: 100%;
-}
-
-nav {
-    height: 2.625rem;
-    > label {
-        left: 0;
-        top: 0;
+    nav {
+        height: 2.625rem;
+        > label {
+            left: 0;
+            top: 0;
+        }
     }
 }
 
@@ -49,7 +42,8 @@ div.gm-bar-buttons {
 
 main {
     overflow: hidden;
-    height: 100%;
+    // height: 100%;
+    flex: 1 0 auto;
     display: flex;
     flex-direction: row;
     background-color: #fff;

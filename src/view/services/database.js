@@ -75,12 +75,14 @@ const db =  {
 
     },
 
-    set Options (value) {
-        ls('options', value);
-        console.log('database.options.saved', value);
-    },
     get Options () {
         return ls('options');
+    },
+    updateOption (diff) {
+        const options = ls('options');
+        Object.assign(options, diff);
+        ls('options', options);
+        console.log('updateOption', H.shrink(diff));
     },
 
     Forms : {
