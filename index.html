@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <title>Caissa</title>
+
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+        <link rel="manifest" href="/static/caissa.manifest">
+
+        <link rel="shortcut icon" href="/static/favicon.png" />
+        <style>
+
+            html, body, .root {
+                width:     100%;
+                height:    100%;
+                font-size: 16px;
+                min-width: 320px;
+                overflow: hidden;
+            }
+            body {
+                top: 0; left: 0;
+                position: fixed;
+            }
+
+            :root {
+                --sat: env(safe-area-inset-top);
+                --sar: env(safe-area-inset-right);
+                --sab: env(safe-area-inset-bottom);
+                --sal: env(safe-area-inset-left);
+            }
+            loading-backdrop {
+                top: 40px; left: 0;
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                background-color: rgba(0,0,0, 0.8);
+                z-index: 1000;
+            }
+            loading-screen {
+                position: absolute;
+                top: 80px;
+                height: 60%;
+                width: 100%;
+                padding: 2rem;
+                font-family: monospace;
+                color: white;
+                z-index: 1001;
+            }
+            loading-screen .option-waitscreen {
+                margin-top: 12px;
+                display: none;
+            }
+            loading-screen button {
+                margin-top: 12px;
+                padding: 4px 8px;
+            }
+        </style>
+
+        <script>
+            var offset = 16;
+            window.t0 = Date.now();
+            console.log('Info   :', 'Initializing...');
+
+            if (location.hash.includes('debug')){
+                window.onerror = function (...args) {
+                    document.body.innerHTML = JSON.stringify(args);
+                    console.log(JSON.stringify(arguments))
+                }
+            }
+            function saveOption (ctrl) {
+                Caissa.DB.updateOption({ui:{waitscreen: !!ctrl.checked}});
+            }
+
+
+            // if('serviceWorker' in navigator) {
+            //     navigator.serviceWorker.register('./static/caissa.sw.js');
+            // };
+        </script>
+
+    <link href="css/3-f9303d88.css" rel="stylesheet"><link href="css/0-d64c6286.css" rel="stylesheet"><link href="css/1-07668849.css" rel="stylesheet"></head>
+    <body>
+
+        <noscript>You need to enable JavaScript to run Caissa.</noscript>
+
+        <div class="root"></div>
+
+        <loading-backdrop></loading-backdrop>
+        <loading-screen>
+            <loading-text>
+                <h3>Caissa loading...</h3>
+                <div class="messages"></div>
+                <div>
+                    <button class="start"   onclick="window.Caissa.start()">Start</button>
+                    <button class="reload"  onclick="location.reload()">Reload</button>
+                    </div>
+                <div>
+                    <button class="a2home"  onclick="">Add to Home Screen</button>
+                </div>
+                <div class="option-waitscreen">
+                    <input type="checkbox" onchange="saveOption(this)" /> Don't show again
+                </div>
+            </loading-text>
+        </loading-screen>
+
+    <script type="text/javascript" src="js/runtime-414170b5.js"></script><script type="text/javascript" src="js/vendor-9e86c0ea.js"></script><script type="text/javascript" src="js/assets-2cc8b08d.js"></script><script type="text/javascript" src="js/main-33903e20.js"></script></body>
+</html>
