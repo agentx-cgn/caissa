@@ -17,7 +17,7 @@ let
 
 const Pages = Factory.create('Pages', {
 
-    // Each page has a it's own slot here
+    // Each page has it's own slot here
     // special are the slides from history (includes content)
     // only slides get displayed and updated
     // slides are transformed and possibly animated
@@ -31,7 +31,7 @@ const Pages = Factory.create('Pages', {
     onremove () {
         touchSlider.remove();
     },
-    onresize (width) {
+    onresize (width, height) {
         if (width <= 360){
             pageWidth = width;
             transLeft   = 'translateX(    0)';
@@ -43,14 +43,12 @@ const Pages = Factory.create('Pages', {
             transCenter = 'translateX( 360px )';
             transRight  = 'translateX( 720px )';
         }
+        console.log('pages.onresize', width, height);
     },
     view ( ) {
 
         const [ slides ] = History.slides();
         const [ left, center, right, animation ] = slides;
-
-        // DEBUG && History.log();
-        // DEBUG && console.log('pages', log);
 
         History.log();
         console.log('PAGES.view', slides.slice(0, 3).map( s => s.content.name), animation);
@@ -135,7 +133,7 @@ const Pages = Factory.create('Pages', {
             Caissa.redraw();
 
         } else if (anim === '=b>') {
-            $Right && ( $Right.style.zIndex = 10 );
+            // $Right && ( $Right.style.zIndex = 10 );
             if ($Left) {
                 $Left.style.zIndex  = 12;
                 $Left.addEventListener(endEvent, onafteranimate);
@@ -143,9 +141,9 @@ const Pages = Factory.create('Pages', {
             }
 
         } else if (anim === '<c=' || anim === '<f=') {
-            $Left && ( $Left.style.zIndex  = 10 );
+            // $Left && ( $Left.style.zIndex  = 10 );
             if ($Right) {
-                $Right && ( $Right.style.zIndex = 12 );
+                $Right.style.zIndex = 12;
                 $Right.addEventListener(endEvent, onafteranimate);
                 $Right.classList.add('slide-transition');
             }
@@ -168,13 +166,13 @@ function onafteranimate( ) {
     const $Right  = $$('div.slide.right');
 
     if (anim === '=1=' || anim === '=r=' || anim === '=s=' || anim === '=w=') {
-
-        $Left.style.transform  = transLeft;  //'translateX(0)';
-        $Right.style.transform = transRight; //'translateX(720px)';
+        //TODO: Needed?
+        // $Left.style.transform  = transLeft;  //'translateX(0)';
+        // $Right.style.transform = transRight; //'translateX(720px)';
 
     } else if (anim === '<c=' || anim === '<f=') {
 
-        $Left && ( $Left.style.transform  = transLeft); //'translateX(0)' );
+        // $Left && ( $Left.style.transform  = transLeft); //'translateX(0)' );
 
         $Right.removeEventListener(endEvent, onafteranimate);
         $Right.classList.remove('slide-transition');
@@ -182,16 +180,13 @@ function onafteranimate( ) {
 
     } else if (anim === '=b>') {
 
-        $Right && ( $Right.style.transform = transRight); //'translateX(720px)' );
+        // $Right && ( $Right.style.transform = transRight); //'translateX(720px)' );
 
         $Left.removeEventListener(endEvent, onafteranimate);
         $Left.classList.remove('slide-transition');
         $Left.style.transform  = transCenter; //'translateX(360px)';
 
     }
-
-    // needed bc preventUpdates
-    // $$$('div.slide.dn').forEach( slide => slide.classList.remove('left', 'center', 'right'));
 
     DEBUG && console.log('pages.onafteranimate.out', anim);
     DEBUG && console.log(' ');
@@ -200,11 +195,12 @@ function onafteranimate( ) {
     // reorder back to LCR after animation
     Caissa.redraw();
 
-    if (History.canBack || History.canFore){
-        setTimeout( () => {
-            touchSlider.init($$('div.slide.left'), 'div.slide.center', $$('div.slide.right'), transLeft, transRight);
-        }, 0);
-    }
+    //TODO: Needed?
+    // if (History.canBack || History.canFore){
+    //     setTimeout( () => {
+    //         touchSlider.init($$('div.slide.left'), 'div.slide.center', $$('div.slide.right'), transLeft, transRight);
+    //     }, 0);
+    // }
 
 
 }

@@ -23,11 +23,6 @@ const Caissa = {
         Events.listen();
     },
 
-    //from loading screen
-    start () {
-        document.body.removeChild($$('loading-screen'));
-        document.body.removeChild($$('loading-backdrop'));
-    },
     onregister : function (text) {
         offset += 50;
         setTimeout( function () {
@@ -36,6 +31,11 @@ const Caissa = {
         }, offset);
     },
 
+    //from loading screen
+    start () {
+        document.body.removeChild($$('loading-screen'));
+        document.body.removeChild($$('loading-backdrop'));
+    },
     // == window.onload
     onload () {
         const t = Date.now() - window.t0;
@@ -101,7 +101,6 @@ const Caissa = {
                 DEBUG && console.log('%cCaissa.render.in %s %s', 'color:darkorange; font-weight: 800', target, current);
 
                 History.finalize(route, vnode.attrs, content);
-                // History.log();
 
                 return m(Caissa.comp, { route, params: vnode.attrs });
             },

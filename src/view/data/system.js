@@ -54,6 +54,8 @@ const system = {
         aspect:        screen.width / screen.height,
         availWidth:    screen.availWidth,
         availHeight:   screen.availHeight,
+        get innerWidth  () {return innerWidth;},
+        get innerHeight () {return innerHeight;},
         colorDepth:    screen.colorDepth,
         pixelDepth:    screen.pixelDepth,
         left:          screen.left,

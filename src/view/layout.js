@@ -32,16 +32,3 @@ const Layout = Factory.create('Layout', {
 
 export default Layout;
 
-/*
-
-        Sec1        Sec2        Sec3        Action
-1                   Sources                 sourceclick
-2                   Sources     Games       inject
-3       Sources     Games                   scroll
-4       Sources     Games                   gamesclick
-5       Sources     Games       Game        inject
-6       Games       Game                    scroll
-7                                           swiperight
-2
-
-*/

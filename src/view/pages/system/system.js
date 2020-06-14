@@ -37,6 +37,7 @@ const System = Factory.create('System', {
 
         const clicker = module => (e) => {
             e.redraw = false;
+            // replace here, bc can't animate between same page
             Caissa.route('/system/:module/', { module }, {replace: true});
         };
 
