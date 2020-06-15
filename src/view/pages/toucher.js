@@ -1,7 +1,7 @@
 
 import System     from '../data/system';
 import History    from '../services/history';
-// import { H }      from '../services/helper';
+import { $$ }     from '../services/helper';
 
 const abs = Math.abs;
 let threshold = innerWidth / 3;
@@ -30,19 +30,21 @@ const touchSlider = {
     pause () {
         touch.selektor = '';
     },
-    init (left, selCenter, right, transformLeft, transformRight, pageWidth) {
+    init (transformLeft, transformRight, pageWidth) {
+        // next frame
+        setTimeout ( () => {
+            slideLeft       = $$('div.slide.left');
+            slideRight      = $$('div.slide.right');
+            touch.selektor  = 'div.slide.center';
+            transLeft       = transformLeft;
+            transRight      = transformRight;
+            width           = pageWidth;
+            threshold       = innerWidth / 4;
 
-        slideLeft       = left;
-        slideRight      = right;
-        touch.selektor  = selCenter;
-        transLeft       = transformLeft;
-        transRight      = transformRight;
-        width           = pageWidth;
-        threshold       = innerWidth / 4;
-
-        console.log('touchSlider.init', selCenter, transformLeft, transformRight);
-        slideLeft && console.log('left', slideLeft);
-        slideRight && console.log('right', slideRight);
+            console.log('touchSlider.init', transformLeft, transformRight, pageWidth);
+            // slideLeft && console.log('left', slideLeft);
+            // slideRight && console.log('right', slideRight);
+        }, 0);
     },
     down (e) {
         if (touch.selektor && e.target.closest(touch.selektor)){
@@ -57,12 +59,10 @@ const touchSlider = {
     onafterback () {
         slideLeft.removeEventListener(endEvent, touchSlider.onafterback);
         History.goback();
-        // console.log('toucher.onafteranimate');
     },
     onafterfore () {
         slideRight.removeEventListener(endEvent, touchSlider.onafterfore);
         History.gofore();
-        // console.log('toucher.onafteranimate');
     },
     move  (e) {
 

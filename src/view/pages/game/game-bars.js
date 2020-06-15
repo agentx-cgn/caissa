@@ -4,12 +4,13 @@ import { COLOR }    from '../../../extern/cm-chessboard/Chessboard';
 import { H, $$ }    from '../../services/helper';
 import State        from '../../data/state';
 import evaluate     from './game-evaluate';
+import Factory      from '../../components/factory';
 
 const state = State.game;
 
 let progressdom;
-export const GameProgressBar = {
-    name: 'GameProgressBar',
+
+const GameProgressBar = Factory.create('GameProgressBar', {
     render ( width ) {
         progressdom && (progressdom.innerHTML = `<div class="gm-progress" style="width:${width}%">`);
     },
@@ -19,7 +20,8 @@ export const GameProgressBar = {
     view () {
         return m('div.gm-bar-progress');
     },
-};
+})
+;
 
 function setTurn (diff) {
     const turn = state.game.turn;
@@ -53,9 +55,9 @@ const actions = {
     },
 };
 
-function wheeler (e) {
-    (e.deltaY > 0) ? actions.left() : actions.right();
-}
+// function wheeler (e) {
+//     (e.deltaY > 0) ? actions.left() : actions.right();
+// }
 
 const buttons = {
     minimize: {onclick: actions.toggle, title: '', tag: 'i.gm-button.fa.fa-compress-alt'},
@@ -71,16 +73,7 @@ const buttons = {
     rotate:   {onclick: actions.rotate, title: '', tag: 'i.gm-button.fa.fa-sync-alt'},
 };
 
-export const GameButtons = {
-    name: 'GameButtons',
-    onremove () {
-        $$('div.gm-buttons') && $$('div.gm-buttons').removeEventListener('wheel', wheeler);
-    },
-    oncreate () {
-        $$('div.gm-buttons') && $$('div.gm-buttons').addEventListener('wheel', wheeler);
-    },
-    onupdate () {},
-
+const GameButtons = Factory.create('GameButtons', {
     view( ) {
         return m('div.gm-bar', [
             m('div.gm-buttons.f3',
@@ -94,7 +87,7 @@ export const GameButtons = {
             m(GameProgressBar),
         ]);
     },
-};
+});
 
 /*
     https://fontawesome.com/cheatsheet/free/solid
@@ -120,10 +113,8 @@ export const GameButtons = {
 const flagger = function (flags) {
 
     const f        = flags;
-    // const cTrans   = 'bg-trans ctrans';
     const cTrans   = 'c999 bg-999';
     const cActive  = 'dark-red';
-    // const cWhite   = 'white';
     const cPlayer  = f.turn === 'w' ? 'ceee' : 'c333';
 
     return {
@@ -138,8 +129,7 @@ const flagger = function (flags) {
     };
 };
 
-export const GameFlags = {
-    name: 'GameFlags',
+const GameFlags = Factory.create('GameFlags', {
     view( ) {
         return (
             m('div.gm-bar',
@@ -151,5 +141,11 @@ export const GameFlags = {
             )
         );
     },
+});
+
+export {
+    GameButtons,
+    GameProgressBar,
+    GameFlags,
 };
 

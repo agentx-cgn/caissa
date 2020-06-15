@@ -24,10 +24,10 @@ const ply = {
     name: 'Ply',
     view ( vnode ) {
 
-        const { player, move, colbar, colpiece } = vnode.attrs;
+        const { player, move, back } = vnode.attrs;
 
-        const bg        = move.turn !== state.game.turn ? '.bg-transparent' : '.bg-89b';
-        const style     = 'color:' + Config.flagColors[player][move.flags];
+        // const bg        = move.turn !== state.game.turn ? '.bg-transparent' : '.bg-89b';
+        // const style     = 'color:' + Config.flagColors[player][move.flags];
         const width     = calcWidth(move);
 
         const piece     = Config.fontPieces[move.piece];
@@ -38,21 +38,21 @@ const ply = {
         };
 
         const matetext  = move.mate ? '# in ' + Math.abs(move.mate) : '';
-        const matecolor = move.mate && move.mate > 0 ? '.ceee' : '.c333';
+        // const matecolor = move.mate && move.mate > 0 ? '.ceee' : '.c333';
 
-        const title     = Config.flagTitles[move.flags] + `  ${move.turn}`;
+        const title     = Config.flagTitles[move.flags]; // + `  ${move.turn}`;
         const titlepv   = move.pv ? move.pv.split(' ').slice(0, 3).join(' ') : '';
         const titleline = move.pv ? move.cp || '' + ':' +  titlepv : '';
         const titlemate = move.mate && move.pv ? titlepv : '';
         const titleeval = matetext ? titlemate : titleline;
 
         return m('[', [
-            m('td.tc.f4.pa0.chess'  + bg, {onclick, title, style: colpiece, 'data-turn': move.turn}, piece ),
-            m('td.tl.fiom.f5' + bg, {onclick, title, style}, move.san),
-            m('td.f6'         + bg, {style: 'min-width: 20px', title: titleeval}, [
+            m('td.gm-ply-pic-' + player + back, { onclick, title, 'data-turn': move.turn }, piece ),
+            m('td.gm-ply-san-' + player + back, { onclick, title }, move.san),
+            m('td.gm-ply-val-' + player + back, { onclick, title: titleeval }, [
                 matetext
-                    ? m('div' + matecolor, matetext)
-                    : m('div.h05' + colbar, {style: 'width:' + width + 'px'} ),
+                    ? m('div.gm-ply-mate-' + player, matetext)
+                    : m('div.gm-ply-bar-'  + player, { style: 'width:' + width + 'px'} ),
             ]),
         ]);
 
@@ -63,12 +63,14 @@ export default {
     name: 'Move',
     view (vnode) {
         const { num, white, black } = vnode.attrs;
+        const bgw = white.move.turn !== state.game.turn ? '.bg-transparent' : '.bg-89b';
+        const bgb = black.move.turn !== state.game.turn ? '.bg-transparent' : '.bg-89b';
         return m('tr.gm-move.trhover', [
-            m('td', {style:'width: 1rem'}),
-            m('td.tr.fiom.f5.fw8.c555', num + '.'),
-            m(ply, { move: white.move, player: 'w', colpiece: {color: '#eee'}, colbar: '.bg-ddd'}),
-            m(ply, { move: black.move, player: 'b', colpiece: {color: '#333'}, colbar: '.bg-555'}),
-            m('td', {style:'width: 1rem'}),
+            m('td.gm-move-space'),
+            m('td.gm-move-num', num),
+            m(ply, { back: bgw, move: white.move, player: 'w' }),
+            m(ply, { back: bgb, move: black.move, player: 'b' }),
+            m('td.gm-move-space'),
         ]);
     },
 

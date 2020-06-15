@@ -6,7 +6,7 @@ import { CompPages }  from '../data/config-pages';
 import System         from '../data/system';
 import touchSlider    from './toucher';
 
-const DEBUG = false;
+const DEBUG = true;
 
 let
     anim,
@@ -64,7 +64,13 @@ const Pages = Factory.create('Pages', {
             const $Comp    = $$('div.page.' + Comp.name.toLowerCase());
 
             // ensure (still) not updating vnodes have proper classes and styles
-            if (isLeft || isCenter || isRight){
+            if (isLeft && isRight){
+                console.log('gotcha');
+                // eslint-disable-next-line no-debugger
+                debugger;
+            }
+
+            if (isLeft || isCenter || isRight) {
                 Comp.preventUpdates = false;
                 if ($Comp){
                     $Comp.classList.remove('dn');
@@ -116,34 +122,28 @@ const Pages = Factory.create('Pages', {
         const $Center = $$('div.slide.center');
         const $Right  = $$('div.slide.right');
 
-        DEBUG && console.log('pages.onafterupdates', !!$Left, !!$Center, !!$Right, anim);
+        DEBUG && console.log('pages.onafterupdates.in', !!$Left, !!$Center, !!$Right, anim);
 
         if (anim === '=1=' || anim === '=r=' || anim === '=s=' || anim === '=w=') {
 
-            $Left  && ( $Left.style.transform  = transLeft);  //'translateX(0)' );
-            $Right && ( $Right.style.transform = transRight); //'translateX(720px)' );
+            $Left  && ( $Left.style.transform  = transLeft);
+            $Right && ( $Right.style.transform = transRight);
 
             if (History.canBack || History.canFore){
-                setTimeout( () => {
-                    touchSlider.init($$('div.slide.left'), 'div.slide.center', $$('div.slide.right'), transLeft, transRight, pageWidth);
-                }, 0);
+                touchSlider.init(transLeft, transRight, pageWidth);
             }
 
         } else if (anim === '=b=' || anim === '=f=') {
             Caissa.redraw();
 
         } else if (anim === '=b>') {
-            // $Right && ( $Right.style.zIndex = 10 );
             if ($Left) {
-                $Left.style.zIndex  = 12;
                 $Left.addEventListener(endEvent, onafteranimate);
                 $Left.classList.add('slide-transition');
             }
 
         } else if (anim === '<c=' || anim === '<f=') {
-            // $Left && ( $Left.style.zIndex  = 10 );
             if ($Right) {
-                $Right.style.zIndex = 12;
                 $Right.addEventListener(endEvent, onafteranimate);
                 $Right.classList.add('slide-transition');
             }
@@ -159,29 +159,17 @@ const Pages = Factory.create('Pages', {
 
 function onafteranimate( ) {
 
-    console.log('%cpages.onafteranimate.in %s', {color: 'green'}, anim);
+    // console.log('%cpages.onafteranimate.in %s', {color: 'green'}, anim);
 
     const $Left   = $$('div.slide.left');
-    // const $Center = $$('div.slide.center');
     const $Right  = $$('div.slide.right');
 
-    if (anim === '=1=' || anim === '=r=' || anim === '=s=' || anim === '=w=') {
-        //TODO: Needed?
-        // $Left.style.transform  = transLeft;  //'translateX(0)';
-        // $Right.style.transform = transRight; //'translateX(720px)';
-
-    } else if (anim === '<c=' || anim === '<f=') {
-
-        // $Left && ( $Left.style.transform  = transLeft); //'translateX(0)' );
-
+    if (anim === '<c=' || anim === '<f=') {
         $Right.removeEventListener(endEvent, onafteranimate);
         $Right.classList.remove('slide-transition');
         $Right.style.transform = transCenter; //'translateX(360px)';
 
     } else if (anim === '=b>') {
-
-        // $Right && ( $Right.style.transform = transRight); //'translateX(720px)' );
-
         $Left.removeEventListener(endEvent, onafteranimate);
         $Left.classList.remove('slide-transition');
         $Left.style.transform  = transCenter; //'translateX(360px)';
@@ -194,14 +182,6 @@ function onafteranimate( ) {
 
     // reorder back to LCR after animation
     Caissa.redraw();
-
-    //TODO: Needed?
-    // if (History.canBack || History.canFore){
-    //     setTimeout( () => {
-    //         touchSlider.init($$('div.slide.left'), 'div.slide.center', $$('div.slide.right'), transLeft, transRight);
-    //     }, 0);
-    // }
-
 
 }
 

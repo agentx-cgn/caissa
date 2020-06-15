@@ -8,7 +8,19 @@
             .gm-progress
     .gm-players
     .gm-moves
-        tr.move ...
+        tr.gm-move ...
+        td.gm-move-space
+        td.gm-move-num
+        td.gm-ply-piece
+        td.gm-ply-san
+        td.gm-ply-val
+            div.gm-play-mate
+            div.gm-play-bar
+        td.gm-ply-piece
+        td.gm-ply-san
+        td.gm-ply-val
+        td.gm-move-space
+
     .gm-bar
         .gm-bar-flags
             .gm-flag ...
@@ -35,6 +47,8 @@ div.gm-progress {
 
 div.gm-moves {
     margin: 0.5rem 0;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 tr.gm-move {
     cursor: pointer;
@@ -43,7 +57,66 @@ tr.gm-move:hover {
     background-color: #a78e8e;
 }
 
+td.gm-move-space {
+    width: 1rem;
+}
+td.gm-move-num {
+    text-align: right;
+    font-family: 'Iosevka-Term-Medium';
+    font-size: 1rem; //f5
+    font-weight: 800;
+    color: #555;
+}
+.gm-move-num:after {
+    content: '.';
+}
 
+td.gm-ply-pic-w {
+    // td.tc.f4.pa0.chess
+    text-align: center;
+    font-size: 1.25rem;
+    padding: 0;
+    font-family: 'Chess';
+    color: #eee;
+}
+td.gm-ply-pic-b {
+    // td.tc.f4.pa0.chess
+    text-align: center;
+    font-size: 1.25rem;
+    padding: 0;
+    font-family: 'Chess';
+    color: #333;
+}
+
+td.gm-ply-san-w {
+    // td.tl.fiom.f5
+    text-align: left;
+    font-family: 'Iosevka-Term-Medium';
+    font-size: 1rem;
+    color: #eee;
+}
+td.gm-ply-san-b {
+    // td.tl.fiom.f5
+    text-align: left;
+    font-family: 'Iosevka-Term-Medium';
+    font-size: 1rem;
+    color: #333;
+}
+
+td.gm-ply-val-w {
+    // td.f6
+    font-size: 0.5rem;
+    min-width: 20px
+}
+
+
+td.gm-ply-val-b {
+    // td.f6
+    font-size: 0.5rem;
+    min-width: 20px
+}
+
+// tr.fiom.f5.fw8.c555
 
 /* GAME FLAGS */
 // div.gm-flags {

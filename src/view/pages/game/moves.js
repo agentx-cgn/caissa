@@ -25,7 +25,7 @@ function renderMove (moves, idx) {
 const Moves = Factory.create('Moves', {
 
     view ( ) {
-        return m('div.gm-moves.viewport-y.flex-shrink', [
+        return m('div.gm-moves.flex-shrink', [
             m('table.w-100.collapse',
                 state.moves.reduce( combinePlys, [] ).map( renderMove ),
             ),

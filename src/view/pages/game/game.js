@@ -14,17 +14,16 @@ import { GameFlags, GameButtons } from './game-bars';
 import { Spacer, GrowSpacer, TitleLeft, HeaderCentered, TextCenter} from '../../components/misc';
 
 const state = State.game;
-Object.assign(state, H.deepcopy(Config.gamestatetemplate));
-
-const fire = Dispatcher.connect({ name: 'game'});
+const fire  = Dispatcher.connect({ name: 'game'});
 
 const Game = Factory.create('Game', {
-    onupdate() {},
-    view( vnode ) {
+    oninit () {
+        Object.assign(state, H.deepcopy(Config.gamestatetemplate));
+    },
+    view ( vnode ) {
 
         const { className, style } = vnode.attrs;
 
-        // const route = '/game/:turn/:uuid/';
         let uuid  = vnode.attrs.params.uuid === ':uuid' ? undefined :   vnode.attrs.params.uuid;
         let turn  = vnode.attrs.params.turn === ':turn' ? undefined : ~~vnode.attrs.params.turn;
 
@@ -55,8 +54,6 @@ const Game = Factory.create('Game', {
         } else if (state.game.turn !== turn && turn !== undefined){
             state.game = DB.Games.update(uuid, { turn });
 
-        // } else {
-        //     console.log('WTF');
         }
 
         // update board, showing fen
@@ -65,9 +62,6 @@ const Game = Factory.create('Game', {
 
         const players    = state.game.white  + '<br>' + state.game.black;
         const resultline = state.game.result + ' '    + state.game.termination + ' ' + state.game.timecontrol;
-
-        // TODO: use {order: x} to swap Flags & Buttons on collapsed
-        // https://developer.mozilla.org/en-US/docs/Web/CSS/order
 
         return m('div.page.game', { className, style }, [
             m(GameButtons),
