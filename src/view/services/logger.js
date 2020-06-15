@@ -1,3 +1,4 @@
+import System from '../data/system';
 
 const abbr = {
     'engine':     'ENGI',
@@ -7,20 +8,20 @@ const abbr = {
     'dispatcher': 'DISP',
     'games':      'GAMS',
     'evalgame':   'NEWG',
+    'events':     'EVTS',
+    'caissa':     'CAIS',
 };
 
-let 
-    cnt  = 0,
-    list = []
-;
+let list = [];
 
+log('logger', 'init: ' + new Date().toLocaleDateString());
 log('logger', 'init: ' + new Date().toLocaleTimeString());
+log('logger', 'init: ' + System.userAgent);
 
 function log (source, line) {
     list.unshift (
-        counter() + ' ' + (abbr[source] || '----') + ' - ' + colorize(line),
+        new Date().toLocaleTimeString() + ' ' + (abbr[source] || '----') + ' - ' + colorize(line),
     );
-    cnt += 1;
 }
 function shrink (obj) {
     return JSON.stringify(obj).replace(/"/g, '').slice(0, 140);
@@ -37,10 +38,6 @@ function colorize (line) {
             .replace(/-r>/g,      '<strong class="dark-red">==></strong>')
             .replace(/-g>/g,      '<strong class="dark-green">==></strong>')
     );
-}
-
-function counter () {
-    return ('00000' + cnt).slice(-5);
 }
 
 export default {

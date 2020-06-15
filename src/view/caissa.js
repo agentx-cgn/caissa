@@ -3,6 +3,7 @@ import { H, $$ }       from './services/helper';
 import History         from './services/history';
 import { ConfigPages } from './data/config-pages';
 import DB              from './services/database';
+import Logger          from './services/logger';
 import Events          from './services/events';
 import Factory         from './components/factory';
 import State           from './data/state';
@@ -20,6 +21,7 @@ const Caissa = {
 
     // happens once in index.js
     onafterImport () {
+        Logger.log('caissa', 'onafterImport');
         Events.listen();
     },
 
@@ -38,15 +40,16 @@ const Caissa = {
     },
     // == window.onload
     onload () {
+        Logger.log('caissa', 'onload');
         const t = Date.now() - window.t0;
         t > 2000
             ? console.warn('Warn   :', '... done after', 0, t, 'msecs')
             : console.log ('Info   :', '... done after', 0, t, 'msecs')
         ;
         if (DB.Options['ui'].waitscreen) {
-            $$('loading-screen button.start').style.display   = 'inline-block';
-            $$('loading-screen button.reload').style.display  = 'inline-block';
-            $$('loading-screen button.a2home').style.display  = 'inline-block';
+            $$('loading-screen button.start').style.display        = 'inline-block';
+            $$('loading-screen button.reload').style.display       = 'inline-block';
+            $$('loading-screen button.a2home').style.display       = 'inline-block';
             $$('loading-screen .option-waitscreen').style.display  = 'inline-block';
         } else {
             document.body.removeChild($$('loading-screen'));

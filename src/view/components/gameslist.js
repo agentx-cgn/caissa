@@ -10,12 +10,14 @@ const GamesList = Factory.create('GamesList', {
         return m(FlexList, {class: 'games-list'},
             vnode.attrs.games.map( game => m(GameEntry, { game, onclick: (e) => {
                 e.redraw = false;
-                const dbgame = DB.Games.get(game.uuid);
-                if ( dbgame ) {
-                    Caissa.route('/game/:turn/:uuid/', {uuid: dbgame.uuid, turn: dbgame.turn});
-                } else {
-                    Caissa.route('/game/:turn/:uuid/', {uuid: DB.Games.create(game).uuid});
-                }
+                const { uuid, turn } = DB.Games.createget(game);
+                Caissa.route('/game/:turn/:uuid/', { uuid, turn });
+
+                // if ( dbgame ) {
+                //     Caissa.route('/game/:turn/:uuid/', {uuid: dbgame.uuid, turn: dbgame.turn});
+                // } else {
+                //     Caissa.route('/game/:turn/:uuid/', {uuid: DB.Games.create(game).uuid});
+                // }
             }})),
         );
     },

@@ -4,6 +4,7 @@ import Caissa  from '../caissa';
 import System  from '../data/state';
 import History from '../services/history';
 import Factory from '../components/factory';
+import Logger  from '../services/logger';
 
 // https://developer.mozilla.org/en-US/docs/Web/Events
 
@@ -28,6 +29,9 @@ const Events = {
     },
 
     onbeforeinstallprompt (e) {
+
+        console.log('onbeforeinstallprompt');
+        Logger.log('events', 'onbeforeinstallprompt');
 
         const addBtn = document.querySelector('.a2hs-button');
         // Prevent Chrome 67 and earlier from automatically showing the prompt

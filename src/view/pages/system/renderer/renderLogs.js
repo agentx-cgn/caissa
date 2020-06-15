@@ -12,11 +12,11 @@ export default {
                 style: 'background-color: #fff',
                 oninput: e => search = e.target.value + '',
                 value: search,
-                placeholder: 'type to search',
+                placeholder: 'type to filter',
             }),
         ]),
 
-        m('pre.w-100.bg-eee.pl3.viewport-xy', [
+        m('pre.w-100.bg-eee.pl3.viewport-xy.f7', [
             m.trust(Logger.search(search).slice(0, 1000).join('<br/>')),
         ]),
 

@@ -138,6 +138,17 @@ const db =  {
             !ls('games', games) && console.warn('db.games.save.failed', games);
 
         },
+        createget (g) {
+
+            let game = ls('games').find( game => game.uuid === g.uuid );
+            if (!game) {
+                // console.warn('DB.game.get', 'uuid', uuid, 'not found');
+                return db.Games.create(g);
+            }
+            return game;
+
+
+        },
         create (game) {
 
             const games = ls('games');
@@ -152,8 +163,8 @@ const db =  {
             games.push(game);
             db.Games.save(games);
 
-            false && console.log('db.games.create', {uuid: game.uuid});
-            false && console.log('db.games.create.header', game.header);
+            true && console.log('db.games.create', {uuid: game.uuid, turn: game.turn });
+            true && console.log('db.games.create.header', game.header);
 
             return game;
 

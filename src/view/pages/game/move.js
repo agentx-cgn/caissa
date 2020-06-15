@@ -11,9 +11,9 @@ const clampScale = function (cp) {
 
 const calcWidth = function (move) {
     var result = (
-        !move.cp                           ? 0 :
-        move.turn % 2 === 0 && move.cp > 0 ? ~~clampScale(move.cp) :
-        move.turn % 2 === 1 && move.cp > 0 ? ~~clampScale(move.cp) :
+        !move.cp                             ? 0 :
+        (move.turn % 2 === 0 && move.cp) > 0 ? ~~clampScale(move.cp) :
+        (move.turn % 2 === 1 && move.cp) > 0 ? ~~clampScale(move.cp) :
         0
     );
     // console.log('calcwidth', move.turn, result, move.cp, state.score.maxcp);
@@ -26,19 +26,14 @@ const ply = {
 
         const { player, move, back } = vnode.attrs;
 
-        // const bg        = move.turn !== state.game.turn ? '.bg-transparent' : '.bg-89b';
-        // const style     = 'color:' + Config.flagColors[player][move.flags];
         const width     = calcWidth(move);
-
         const piece     = Config.fontPieces[move.piece];
-
         const onclick   = (e) => {
             e.redraw = false;
             Caissa.route('/game/:turn/:uuid/', {turn: move.turn, uuid: state.game.uuid}, { replace: true });
         };
 
         const matetext  = move.mate ? '# in ' + Math.abs(move.mate) : '';
-        // const matecolor = move.mate && move.mate > 0 ? '.ceee' : '.c333';
 
         const title     = Config.flagTitles[move.flags]; // + `  ${move.turn}`;
         const titlepv   = move.pv ? move.pv.split(' ').slice(0, 3).join(' ') : '';
@@ -48,7 +43,7 @@ const ply = {
 
         return m('[', [
             m('td.gm-ply-pic-' + player + back, { onclick, title, 'data-turn': move.turn }, piece ),
-            m('td.gm-ply-san-' + player + back, { onclick, title }, move.san),
+            m('td.gm-ply-san-' + player + back, { onclick, title }, move.san ),
             m('td.gm-ply-val-' + player + back, { onclick, title: titleeval }, [
                 matetext
                     ? m('div.gm-ply-mate-' + player, matetext)
