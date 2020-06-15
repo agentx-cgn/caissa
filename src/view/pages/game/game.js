@@ -11,7 +11,7 @@ import Factory           from '../../components/factory';
 import Moves             from './moves';
 
 import { GameFlags, GameButtons } from './game-bars';
-import { Spacer, GrowSpacer, TitleLeft, HeaderCentered, TextCenter} from '../../components/misc';
+import { Spacer, GrowSpacer, PageTitle, HeaderCentered, TextCenter} from '../../components/misc';
 
 const state = State.game;
 const fire  = Dispatcher.connect({ name: 'game'});
@@ -30,7 +30,7 @@ const Game = Factory.create('Game', {
         // there is nothing, show DB List
         if (!uuid && !state.game.uuid) {
             return m('div.page.game', { className, style }, [
-                m(TitleLeft, 'Recent Games (DB)'),
+                m(PageTitle, 'Recent Games (DB)'),
                 m(GamesList, { games: DB.Games.list() }),
             ]);
 

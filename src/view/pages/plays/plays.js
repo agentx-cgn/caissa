@@ -9,7 +9,7 @@ import Factory    from '../../components/factory';
 import {
     Nothing,
     Spacer,
-    TitleLeft,
+    PageTitle,
     FlexListShrink,
     FixedList,
     FlexListEntry,
@@ -45,7 +45,7 @@ const Plays = Factory.create('Plays', {
 
         return m('div.page.plays', { className, style }, [
 
-            m(TitleLeft, 'Start a new Play'),
+            m(PageTitle, 'Start a new Play'),
             m(FixedList, Config.playtemplates.map( play => {
 
                 const formdata = forms[play.mode];
@@ -74,7 +74,7 @@ const Plays = Factory.create('Plays', {
 
             })),
 
-            m(TitleLeft, 'Resume a Play (' + DB.Games.list.length + ')'),
+            m(PageTitle, 'Resume a Play (' + DB.Games.list.length + ')'),
             m(FlexListShrink, DB.Plays.list.map (play => {
                 const onclick = (e) => {e.redraw = false; Caissa.route('/play/:uuid/', {uuid: play.uuid});};
                 return m(FlexListPlayEntry, { onclick, play });

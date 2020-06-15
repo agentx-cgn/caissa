@@ -9,12 +9,22 @@ back-drop.visible {
     background-color: rgba(255,255,255, 0.5);
 }
 
-div.title-left {
+page-title {
     width: 100%;
     margin: 2rem 0 0.5rem 0;
     padding: 0 1rem;
     font-size: 1.7rem;
+    color: #eee;
+    text-align: left;
+    font-family: 'SairaCondensed-Medium'
 }
+
+// div.title-left {
+//     width: 100%;
+//     margin: 2rem 0 0.5rem 0;
+//     padding: 0 1rem;
+//     font-size: 1.7rem;
+// }
 div.header-left,
 div.header-center {
     width: 100%;

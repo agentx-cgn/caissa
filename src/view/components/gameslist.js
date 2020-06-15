@@ -1,10 +1,9 @@
 
-import Caissa from '../caissa';
-import Factory   from './factory';
+import Caissa       from '../caissa';
 import DB           from '../services/database';
+import Factory      from './factory';
 import { FlexList } from './misc';
 
-// turn becomes plycount later
 const GamesList = Factory.create('GamesList', {
     view ( vnode ) {
         return m(FlexList, {class: 'games-list'},
@@ -12,12 +11,6 @@ const GamesList = Factory.create('GamesList', {
                 e.redraw = false;
                 const { uuid, turn } = DB.Games.createget(game);
                 Caissa.route('/game/:turn/:uuid/', { uuid, turn });
-
-                // if ( dbgame ) {
-                //     Caissa.route('/game/:turn/:uuid/', {uuid: dbgame.uuid, turn: dbgame.turn});
-                // } else {
-                //     Caissa.route('/game/:turn/:uuid/', {uuid: DB.Games.create(game).uuid});
-                // }
             }})),
         );
     },

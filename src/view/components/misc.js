@@ -17,8 +17,8 @@ const Spacer = Factory.create('Spacer', {
 });
 
 const GrowSpacer = {
-    view ( vnode ) {
-        return m('div.spacer.flex-grow', vnode.attrs, m.trust('&nbsp;'));
+    view ( { attrs } ) {
+        return m('div.spacer.flex-grow', attrs, m.trust('&nbsp;'));
     },
 };
 
@@ -35,11 +35,19 @@ const ListFilter = {
     },
 };
 
-const TitleLeft = {
-    view ( v ) {
-        return m('div.title-left.tl.saim.white', m('span', v.attrs, v.children));
+// const TitleLeft = {
+//     view ( v ) {
+//         return m('div.title-left.tl.saim.white', m('span', v.attrs, v.children));
+//     },
+// };
+const PageTitle = Factory.create('PageTitle', {
+    view ( { attrs, children } ) {
+        return m('page-title',
+            m('span', attrs, children),
+        );
     },
-};
+});
+
 const HeaderLeft = {
     view ( v ) {
         return m('div.header-left.tl.saim.f3.white', m('span', v.attrs, v.children));
@@ -118,7 +126,9 @@ export {
 
     ListFilter,
 
-    TitleLeft,
+    PageTitle,
+
+    // TitleLeft,
     HeaderLeft,
     HeaderCentered,
     TextCenter,

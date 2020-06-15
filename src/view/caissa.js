@@ -129,7 +129,11 @@ const Caissa = {
 
 };
 
-const DefaultRoute = '/sources/';
+const DefaultRoute = ConfigPages.DefaultRoute; //'/sources/';
 const Routes = H.transform(ConfigPages, Caissa.resolver);
 
-export { Caissa as default, Routes, DefaultRoute };
+export {
+    Caissa as default,
+    Routes,
+    DefaultRoute,
+};

@@ -6,12 +6,13 @@ import { H }         from '../../services/helper';
 import Factory       from '../../components/factory';
 import GamesList     from '../../components/gameslist';
 
-import {ListFilter, FlexListEntry, TitleLeft } from '../../components/misc';
+import { ListFilter, FlexListEntry, PageTitle } from '../../components/misc';
 
 const DEBUG = false;
 
 const state = State.games;
 const read  = H.interprete;
+
 let filter  = '';
 
 const Games = Factory.create('Games', {
@@ -61,11 +62,10 @@ const Games = Factory.create('Games', {
         // There is a provider, but no games cached (F5), so fetch them w/ progress and error
         } else if (!provider.games.length) {
 
-            provider.fetch()
+            provider
+                .fetch()
                 .then( () => {
                     provider.progress = 0;
-                    // NEEDED ???
-                    // Caissa.redraw();
                 })
             ;
 
@@ -98,7 +98,7 @@ const Games = Factory.create('Games', {
 
             return m('div.page.games', { className, style }, [
 
-                m(TitleLeft, filter.length
+                m(PageTitle, filter.length
                     ? read(provider.header)
                     : read(provider.header) + `[${games.length}/${provider.games.length}]`,
                 ),

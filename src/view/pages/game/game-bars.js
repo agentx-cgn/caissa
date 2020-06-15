@@ -80,7 +80,7 @@ const GameButtons = Factory.create('GameButtons', {
                 H.map(buttons, (name, props) => {
                     return m(
                         props.tag,
-                        {title: props.title, onclick: props.onclick, class: state.buttons[name] ? 'dib' : 'dn'},
+                        {title: props.title, onclick: props.onclick, class: state.buttons[name] ? 'dib' : 'vih'},
                     );
                 }),
             ),

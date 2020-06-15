@@ -21,10 +21,16 @@ const Navigation = Factory.create('Navigation', {
             };
         };
 
+        const onmenu = (e) => {
+            e.redraw = false;
+            Caissa.route('/menu/');
+        };
+
         return m('nav', [
 
             // hamburger
-            m('label', {for:'toggle-mobile-menu', 'aria-label':'Menu'},
+            // m('label', {for:'toggle-mobile-menu', 'aria-label':'Menu'},
+            m('label', {'aria-label':'Menu', onclick: onmenu},
                 m('i.hamburger.fa.fa-bars '),
                 m('span.home.f4.fiom.white.pl3', 'Caissa'),
             ),

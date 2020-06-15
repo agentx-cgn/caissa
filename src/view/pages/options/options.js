@@ -4,7 +4,7 @@ import './options.scss';
 import DB            from '../../services/database';
 import Forms         from '../../components/forms';
 import Factory       from '../../components/factory';
-import { TitleLeft } from '../../components/misc';
+import { PageTitle } from '../../components/misc';
 
 let formgroups = Object.keys(DB.Options);
 
@@ -19,7 +19,7 @@ const Options = Factory.create('Options', {
 
         return m('div.page.options', { className, style }, [
 
-            m(TitleLeft, 'Options'),
+            m(PageTitle, 'Options'),
             m('div.mv1.ph3.w-100',
                 m('button.w-100.pv1', {onclick: () => DB.reset()   },        'Defaults'),
             ),

@@ -95,7 +95,8 @@ input:focus {
 }
 
 .dn        {display: none !important;}
-.outline   { outline: 1px solid white }
+.outline   { outline: 1px solid white; }
+.vih       { visibility: hidden;}
 
 .z10       { z-index: 10;}
 .z11       { z-index: 11;}
