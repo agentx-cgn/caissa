@@ -1,12 +1,12 @@
 
+import Factory      from '../../components/factory';
 import State        from '../../data/state';
-import Clock        from '../../components/chessclock';
+import ChessClock   from '../../components/chessclock';
 import Tools        from '../../tools/tools';
 
 const state = State.board;
 
-const BoardBar = {
-    onupdate () {},
+const BoardBar = Factory.create('BoardBar', {
     view (vnode) {
 
         const { pos, player } = vnode.attrs;
@@ -20,7 +20,7 @@ const BoardBar = {
         if (player === 'w') {
 
             return m('div.flex.flex-row.board-bar-' + pos, [
-                m(Clock.comp(), { player }),
+                m(ChessClock, { player }),
                 m('div.flex-auto.mh2.saim.f4.c333.ellipsis',  state.white),
                 m('div.captured.tr', m('div.chess.cfff', { style }, captured.whites)),
             ]);
@@ -28,7 +28,7 @@ const BoardBar = {
         } else {
 
             return m('div.flex.flex-row.board-bar-' + pos, [
-                m(Clock.comp(), { player }),
+                m(ChessClock, { player }),
                 m('div.flex-auto.mh2.saim.f4.cfff.ellipsis', state.black),
                 m('div.captured.tr', m('div.chess.c333', { style }, captured.blacks )),
             ]);
@@ -36,6 +36,6 @@ const BoardBar = {
         }
 
     },
-};
+});
 
 export default BoardBar;

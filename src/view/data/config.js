@@ -82,8 +82,8 @@ const gamestatetemplate = H.create({
         maxmate     : 0,
     },
     buttons: {
-        minimize: true,
-        maximize: false,
+        // minimize: true,
+        // maximize: false,
         rotate:   true,
         backward: true,
         forward:  true,
@@ -92,7 +92,7 @@ const gamestatetemplate = H.create({
         play:     false,
         pause:    false,
         evaluate: true,
-        spinner:  false,
+        // spinner:  false,
     },
     flags : {
         turn: '',     // turn w || b

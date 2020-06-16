@@ -1,0 +1,111 @@
+/* CHESSBOARD */
+svg.cm-chessboard rect.border {
+    stroke: transparent;
+  }
+
+  .cm-chessboard rect.square.dropzone {
+    fill: darkred;
+  }
+
+  .cm-chessboard.gray .board .square.white {
+    fill: #bbb;
+  }
+
+  .cm-chessboard.gray .board .square.black {
+    fill: #888;
+  }
+
+  .cm-chessboard.gray.has-border .board .border {
+    fill: #ccc;
+  }
+
+  .cm-chessboard.gray.has-border .board .border-inner {
+    fill: #444;
+  }
+
+
+  .cm-chessboard .markers .marker.emphasize {
+    stroke: blue;
+    opacity: 0.5; }
+
+  .cm-chessboard .markers .marker.pointer {
+    stroke: red;
+    fill: blue;
+    opacity: 0.5; }
+
+  .cm-chessboard .markers .marker.line {
+    stroke: green;
+    fill: yellow;
+    opacity: 0.5; }
+
+  .cm-chessboard .markers .marker.arrow {
+    stroke: orange;
+    fill: yellow;
+    opacity: 0.5; }
+
+  .cm-chessboard .markers .marker.rectblack {
+    fill: black;
+    opacity: 0.5; }
+
+  .cm-chessboard .markers .marker.rectwhite {
+    fill: white;
+    opacity: 0.5; }
+
+
+  .cm-chessboard .caissa-arrows {
+    pointer-events: none;
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 1.0;
+  }
+
+  .cm-chessboard .caissa-arrows .arrow.test {
+    pointer-events: auto;
+    fill: none;
+    stroke: darkorange;
+    stroke-width: 4;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+
+  .cm-chessboard .caissa-arrows .arrow.pinned {
+    stroke: darkred;
+    opacity: 0.5;
+  }
+
+  .cm-chessboard .caissa-arrows .arrow.last-black {
+    stroke: black;
+    stroke-width: 3;
+    opacity: 0.2;
+  }
+
+  .cm-chessboard .caissa-arrows .arrow.last-white {
+    stroke: white;
+    stroke-width: 3;
+    opacity: 0.2;
+  }
+
+  .cm-chessboard .caissa-arrows .arrow.bestmove {
+    pointer-events: stroke;
+    stroke: green;
+    stroke-width: 6;
+    opacity: 0.5;
+    cursor: pointer;
+  }
+
+  .cm-chessboard .caissa-arrows .arrow.ponder {
+    stroke: red;
+    stroke-width: 6;
+    opacity: 0.5;
+  }
+
+  .cm-chessboard .caissa-arrows .arrow.validmove {
+    // stroke: greenyellow;
+    stroke: #7b7;
+    stroke-width: 4;
+    opacity: 0.9;
+  }

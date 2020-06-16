@@ -16,9 +16,14 @@ import { Spacer, GrowSpacer, PageTitle, HeaderCentered, TextCenter} from '../../
 const state = State.game;
 const fire  = Dispatcher.connect({ name: 'game'});
 
+let width;
+
 const Game = Factory.create('Game', {
     oninit () {
         Object.assign(state, H.deepcopy(Config.gamestatetemplate));
+    },
+    onresize (innerWidth) {
+        width = innerWidth;
     },
     view ( vnode ) {
 
@@ -63,16 +68,27 @@ const Game = Factory.create('Game', {
         const players    = state.game.white  + '<br>' + state.game.black;
         const resultline = state.game.result + ' '    + state.game.termination + ' ' + state.game.timecontrol;
 
-        return m('div.page.game', { className, style }, [
-            m(GameButtons),
-            m(HeaderCentered, {class: 'gm-players'}, m.trust(players)),
-            m(Moves),
-            m(Spacer),
-            m(GameFlags),
-            m(Spacer),
-            m(TextCenter, {class: 'gm-result', title: 'result termination timecontrol'}, resultline ),
-            m(GrowSpacer),
-        ]);
+        return width >= 720
+            ? m('div.page.game', { className, style }, [
+                // m(GameButtons),
+                m(HeaderCentered, {class: 'gm-players'}, m.trust(players)),
+                m(Moves),
+                m(Spacer),
+                // m(GameFlags),
+                m(Spacer),
+                m(TextCenter, {class: 'gm-result', title: 'result termination timecontrol'}, resultline ),
+                m(GrowSpacer),
+            ])
+            : m('div.page.game', { className, style }, [
+                m(GameButtons),
+                m(HeaderCentered, {class: 'gm-players'}, m.trust(players)),
+                m(Moves),
+                m(Spacer),
+                m(GameFlags),
+                m(Spacer),
+                m(TextCenter, {class: 'gm-result', title: 'result termination timecontrol'}, resultline ),
+                m(GrowSpacer),
+            ]);
 
     },
 });

@@ -1,11 +1,11 @@
 
-import { INPUT_EVENT_TYPE } from '../../../extern/cm-chessboard/Chessboard';
-import State        from '../../data/state';
-import Tools        from '../../tools/tools';
+import { INPUT_EVENT_TYPE } from '../../extern/cm-chessboard/Chessboard';
+import State        from '../data/state';
+import Tools        from '../tools/tools';
 
 const state = State.board;
 
-const inputHandler = function( board, chess ) {
+const GameController = function( board, chess ) {
 
     return function inputHandler(event) {
 
@@ -47,4 +47,4 @@ const inputHandler = function( board, chess ) {
 
 };
 
-export default inputHandler;
+export default GameController;

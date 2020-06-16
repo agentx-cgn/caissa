@@ -60,8 +60,8 @@ const actions = {
 // }
 
 const buttons = {
-    minimize: {onclick: actions.toggle, title: '', tag: 'i.gm-button.fa.fa-compress-alt'},
-    maximize: {onclick: actions.toggle, title: '', tag: 'i.gm-button.fa.fa-compress-alt'},
+    // minimize: {onclick: actions.toggle, title: '', tag: 'i.gm-button.fa.fa-compress-alt'},
+    // maximize: {onclick: actions.toggle, title: '', tag: 'i.gm-button.fa.fa-compress-alt'},
     backward: {onclick: actions.back,   title: '', tag: 'i.gm-button.fa.fa-step-backward'},
     left:     {onclick: actions.left,   title: '', tag: 'i.gm-button.fa.fa-chevron-left'},
     play:     {onclick: actions.play,   title: '', tag: 'i.gm-button.fa.fa-play'},
@@ -78,9 +78,18 @@ const GameButtons = Factory.create('GameButtons', {
         return m('div.gm-bar', [
             m('div.gm-buttons.f3',
                 H.map(buttons, (name, props) => {
+
+                    const className = (
+                        name === 'spinner'  &&  state.buttons['evaluate'] ? 'dn'  :
+                        name === 'spinner'  && !state.buttons['evaluate'] ? 'dib' :
+                        name === 'evaluate' &&  state.buttons['evaluate'] ? 'dib' :
+                        name === 'evaluate' && !state.buttons['evaluate'] ? 'dn'  :
+                        state.buttons[name] ? 'dib' : 'vih'
+                    );
+
                     return m(
                         props.tag,
-                        {title: props.title, onclick: props.onclick, class: state.buttons[name] ? 'dib' : 'vih'},
+                        {title: props.title, onclick: props.onclick, className },
                     );
                 }),
             ),

@@ -43,7 +43,7 @@ const Pages = Factory.create('Pages', {
             transCenter = 'translateX( 360px )';
             transRight  = 'translateX( 720px )';
         }
-        console.log('pages.onresize', width, height);
+        false && console.log('pages.onresize', width, height);
     },
     view ( ) {
 
@@ -67,7 +67,7 @@ const Pages = Factory.create('Pages', {
             if (isLeft && isRight){
                 console.log('gotcha');
                 // eslint-disable-next-line no-debugger
-                debugger;
+                // debugger;
             }
 
             if (isLeft || isCenter || isRight) {

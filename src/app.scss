@@ -20,10 +20,11 @@
     Nav Menu : 100
     Backdrop :  80
     Slider   : 10, 11, 12
+    Content  : 20
 */
 
 * {
-  margin: 0;
+  margin:  0;
   padding: 0;
 }
 
@@ -128,6 +129,7 @@ input:focus {
 .cfff      { color: #fff; }
 .ceee      { color: #eee; }
 .cddd      { color: #ddd; }
+.cccc      { color: #ccc; }
 .cbbb      { color: #bbb; }
 .caaa      { color: #aaa; }
 .c999      { color: #999; }
