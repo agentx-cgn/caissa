@@ -13,25 +13,25 @@ const Tools = {
         return target;
     },
 
-    scrollTurnIntoView (state, msecs=60) {
+    scrollTurnIntoView (turn, msecs=60) {
 
-        if (state.moves.length){
-            setTimeout( () => {
+        // if (state.moves.length){
+        setTimeout( () => {
 
-                const selectorElem = 'td[data-turn="' + state.game.turn + '"]';
-                const selectorView = 'div.gm-moves';
-                const isVisible    = H.isVisibleInView($$(selectorElem), $$(selectorView));
+            const selectorElem = 'td[data-turn="' + turn + '"]';
+            const selectorView = 'div.gm-moves';
+            const isVisible    = H.isVisibleInView($$(selectorElem), $$(selectorView));
 
-                if (!selectorElem || !selectorView) {
-                    console.warn('scrollIntoView', selectorElem, selectorView);
-                }
+            if (!selectorElem || !selectorView) {
+                console.warn('scrollIntoView', selectorElem, selectorView);
+            }
 
-                if ( !isVisible && $$(selectorElem) ){
-                    $$(selectorElem).scrollIntoView(true);
-                }
+            if ( !isVisible && $$(selectorElem) ){
+                $$(selectorElem).scrollIntoView(true);
+            }
 
-            }, msecs);
-        }
+        }, msecs);
+        // }
 
     },
 
@@ -82,7 +82,6 @@ const Tools = {
     createPlayTemplate (playtemplate, formdata) {
 
         const play = {
-            uuid: H.shortuuid(),
             turn: 0,
             ...Tools.resolvePlayers(playtemplate),
             ...formdata,

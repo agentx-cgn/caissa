@@ -1,6 +1,8 @@
 
 export default {
 
+    'uuid': '0',
+
     'user-data': {
         name: 'noiv',
     },

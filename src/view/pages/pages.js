@@ -6,7 +6,7 @@ import { CompPages }  from '../data/config-pages';
 import System         from '../data/system';
 import touchSlider    from './toucher';
 
-const DEBUG = true;
+const DEBUG = false;
 
 let
     anim,
@@ -50,8 +50,8 @@ const Pages = Factory.create('Pages', {
         const [ slides ] = History.slides();
         const [ left, center, right, animation ] = slides;
 
-        History.log();
-        console.log('PAGES.view', slides.slice(0, 3).map( s => s.content.name), animation);
+        DEBUG && History.log();
+        DEBUG && console.log('PAGES.view', slides.slice(0, 3).map( s => s.content.name), animation);
 
         // keep this
         anim = animation;
@@ -159,8 +159,6 @@ const Pages = Factory.create('Pages', {
 
 function onafteranimate( ) {
 
-    // console.log('%cpages.onafteranimate.in %s', {color: 'green'}, anim);
-
     const $Left   = $$('div.slide.left');
     const $Right  = $$('div.slide.right');
 
@@ -178,6 +176,7 @@ function onafteranimate( ) {
 
     DEBUG && console.log('pages.onafteranimate.out', anim);
     DEBUG && console.log(' ');
+
     anim = '';
 
     // reorder back to LCR after animation

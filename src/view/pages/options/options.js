@@ -6,16 +6,12 @@ import Forms         from '../../components/forms';
 import Factory       from '../../components/factory';
 import { PageTitle } from '../../components/misc';
 
-let formgroups = Object.keys(DB.Options);
-
 const Options = Factory.create('Options', {
 
-    oncreate: function( /* vnode */ ) {
-        formgroups = Object.keys(DB.Options);
-    },
     view ( vnode ) {
 
         const { className, style } = vnode.attrs;
+        const formgroups = Object.keys(DB.Options.first);
 
         return m('div.page.options', { className, style }, [
 
@@ -27,9 +23,10 @@ const Options = Factory.create('Options', {
                 const formdata = {
                     group: formgroup,
                     autosubmit: true,
-                    ...DB.Options[formgroup],
+                    ...DB.Options.first[formgroup],
                     submit: () => {
-                        DB.Forms.save(formgroup, formdata);
+                        DB.Options.update('0', {[formgroup]: formdata});
+                        // DB.Forms.save(formgroup, formdata);
                     },
                 };
                 return m(Forms, {formdata, class: 'default-options group-' + formgroup});

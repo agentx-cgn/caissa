@@ -17,18 +17,18 @@ import {
 
 const forms = {};
 
-Config.playtemplates.forEach( template =>  {
+Config.templates.plays.forEach( template =>  {
 
     const group = 'play-' + template.mode;
     const form = {
         group,
         autosubmit: false,
-        ...DB.Options[group],
+        ...DB.Options.first[group],
         submit: (form) => {
             let play = Tools.createPlayTemplate(template, form);
-            DB.Plays.create(play);
+            play = DB.Plays.create(play);
             console.log('plays.form.submitted', play.uuid, play.mode, play.white, play.black);
-            Caissa.route('/play/:uuid/', {uuid: play.uuid});
+            Caissa.route('/play/:uuid/', { uuid: play.uuid });
         },
     };
 
@@ -46,7 +46,7 @@ const Plays = Factory.create('Plays', {
         return m('div.page.plays', { className, style }, [
 
             m(PageTitle, 'Start a new Play'),
-            m(FixedList, Config.playtemplates.map( play => {
+            m(FixedList, Config.templates.plays.map( play => {
 
                 const formdata = forms[play.mode];
                 const style = mode === play.mode
@@ -74,7 +74,7 @@ const Plays = Factory.create('Plays', {
 
             })),
 
-            m(PageTitle, 'Resume a Play (' + DB.Games.list.length + ')'),
+            m(PageTitle, 'Resume a Play (' + DB.Games.length + ')'),
             m(FlexListShrink, DB.Plays.list.map (play => {
                 const onclick = (e) => {e.redraw = false; Caissa.route('/play/:uuid/', {uuid: play.uuid});};
                 return m(FlexListPlayEntry, { onclick, play });

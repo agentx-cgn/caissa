@@ -96,6 +96,13 @@ const H = {
         return JSON.parse(JSON.stringify(obj));
     },
 
+    difference (a, b) {
+        return Object
+            .entries(b)
+            .reduce( (ac, [k, v]) => (!a[k] || v !== a[k]) ? (ac[k] = b[k], ac) : ac, H.create())
+        ;
+    },
+
     map (o, fn) {
         const out = [];
         for(let a in o){

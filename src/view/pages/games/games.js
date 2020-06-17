@@ -20,7 +20,7 @@ const Games = Factory.create('Games', {
     oninit ( vnode ) {
 
         const idx      = ~~vnode.attrs.params.idx;
-        const provider = Providers.list.find( p => p.idx === idx );
+        const provider = Providers.list().find( p => p.idx === idx );
 
         DEBUG && console.log('games.oninit', idx, provider.caption);
 
@@ -49,7 +49,7 @@ const Games = Factory.create('Games', {
             ~~vnode.attrs.params.idx
         );
 
-        const provider = idx !== undefined ? Providers.list.find( p => p.idx === idx ) : undefined;
+        const provider = idx !== undefined ? Providers.list().find( p => p.idx === idx ) : undefined;
 
         // remember
         state.idx = idx;

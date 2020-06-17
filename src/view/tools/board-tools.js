@@ -4,10 +4,27 @@ import {MARKER_TYPE} from '../../extern/cm-chessboard/Chessboard';
 import Dispatcher from '../services/dispatcher';
 import State from '../data/state';
 import Config from '../data/config';
+import { $$ }  from '../services/helper';
 
 const fire = Dispatcher.connect({name: 'board-tools'});
 
 export default {
+
+    resize (innerWidth, innerHeight) {
+        if ( innerWidth >= 720 ) {
+
+            // below 720 MQs take care
+            const availWidth  = innerWidth  - 360;
+            const availHeight = innerHeight - 5 * 42;
+            const $board      = $$('div.chessboard');
+            const $content    = $$('section.content');
+            const size  = Math.min(availWidth, availHeight);
+
+            $board   && ($board.style.width      = size + 'px');
+            $board   && ($board.style.height     = size + 'px');
+            $content && ($content.style.maxWidth = size + 'px');
+        }
+    },
 
     isValid (chess, move) {
         const chess1 = new Chess();
@@ -92,24 +109,6 @@ export default {
             //     chessBoard.addArrow(square.from, square.to, arrowType);
             // });
         }
-
-    },
-
-    // full list of moves in current game
-    genMoves (pgn) {
-
-        if (pgn === '') { return [];}
-
-        const chess  = new Chess();
-        const chess1 = new Chess();
-        !chess.load_pgn(pgn) && console.warn('boardtools.load.pgn.failed', pgn);
-
-        return chess.history({verbose: true}).map( (move, idx) => {
-            chess1.move(move);
-            move.fen  = chess1.fen();
-            move.turn = idx;
-            return move;
-        });
 
     },
 

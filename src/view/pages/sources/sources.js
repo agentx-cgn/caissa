@@ -13,7 +13,7 @@ const Sources = Factory.create('Sources', {
         return m('div.page.sources', { className, style }, [
             m(PageTitle, 'Choose a Game Collection'),
             m(FlexList,
-                Providers.list.map( provider => {
+                Providers.list().map( provider => {
 
                     const onclick = async (e) => {
                         e.redraw = false;

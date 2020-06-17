@@ -1,13 +1,16 @@
 
+// Order matters :(
 import { H, $$ }       from './services/helper';
-import History         from './services/history';
-import { ConfigPages } from './data/config-pages';
-import DB              from './services/database';
+import System          from './data/system';
 import Logger          from './services/logger';
+import DB              from './services/database';
 import Events          from './services/events';
 import Factory         from './components/factory';
+import History         from './services/history';
 import State           from './data/state';
-import System          from './data/system';
+
+// last :(
+import { ConfigPages } from './data/config-pages';
 
 const DEBUG = true;
 
@@ -46,7 +49,7 @@ const Caissa = {
             ? console.warn('Warn   :', '... done after', 0, t, 'msecs')
             : console.log ('Info   :', '... done after', 0, t, 'msecs')
         ;
-        if (DB.Options['ui'].waitscreen) {
+        if (DB.Options.first['ui'].waitscreen) {
             $$('loading-screen button.start').style.display        = 'inline-block';
             $$('loading-screen button.reload').style.display       = 'inline-block';
             $$('loading-screen button.a2home').style.display       = 'inline-block';

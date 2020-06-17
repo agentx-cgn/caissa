@@ -12,7 +12,7 @@ export default function evaluate (state) {
     const bigStep    = 4;
     const smallStep  = ( 99 - 3 * bigStep * threads ) / state.moves.length;
     const divisor    = 2;
-    const options    = DB.Options['game-evaluator'];
+    const options    = DB.Options.first['game-evaluator'];
     const depth      = ~~options.maxdepth;
     const threads    = ~~options.maxthreads;
     const partitions = H.partitions(state.moves, threads);

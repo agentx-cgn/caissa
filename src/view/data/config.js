@@ -20,18 +20,18 @@ const pieces = H.create({
 });
 
 
-// const playtemplates = [
-//     {mode: 's-s', turn: 0 , uuid: '0000000A', subline: 'this is fun',
-//         pgn: '', white: 'Stockfish', black: 'Stockfish', engine: 'stockfish',
-//         depth: 5, timecontrol: 1,
-//     },
+const playstemplates = [
+    {mode: 's-s', turn: 0 , uuid: '0000000A', subline: 'this is fun',
+        pgn: '', white: 'Stockfish', black: 'Stockfish', engine: 'stockfish',
+        depth: 5, timecontrol: 1,
+    },
 
-//     {mode: 'h-s', turn: 0 , uuid: '0000000B', subline: 'beat the machine',
-//         pgn: '', white: 'Human', black: 'Stockfish', engine: 'stockfish',
-//         depth: 3, timecontrol: 1,
-//     },
+    {mode: 'h-s', turn: 0 , uuid: '0000000B', subline: 'beat the machine',
+        pgn: '', white: 'Human', black: 'Stockfish', engine: 'stockfish',
+        depth: 3, timecontrol: 1,
+    },
 
-// ];
+];
 
 const playstatetemplate = H.create({
     // timestamp: null, is in play
@@ -106,6 +106,17 @@ const gamestatetemplate = H.create({
     },
 });
 
+const boardtemplate = H.create({
+    fen: '',
+    pgn: '',
+    orientation: COLOR.white,
+    moveStart: '',
+    bestmove: {move: {from: '', to: ''}, ponder: {from: '', to: ''}},
+
+    // illustrations : CFG.board.illustrations,
+
+});
+
 const opponents = H.create({
     'h': 'Human',
     'l': 'Leela',
@@ -118,19 +129,39 @@ const opponents = H.create({
 // ].map(encodeURI);
 
 export default H.deepFreeze(H.create({
-// export default H.freeze(H.create({
+
+    database: {
+        updateInterval: 60 * 1000,
+    },
+
+    templates : {
+        game:        gametemplate,
+        gameshort:   gametemplateshort,
+        gamestate:   gamestatetemplate,
+        playstate:   playstatetemplate,
+        play:        playtemplates,
+        plays:       playstemplates,
+        boardstate:  boardtemplate,
+    },
+    tableTemplates: {
+        Games:   gametemplate,
+        Play:    playtemplates,
+        Boards:  boardtemplate,
+    },
 
     fens,
     pieces,
     opponents,
 
-    gametemplate,
-    gametemplateshort,
+    // gametemplate,
+    // gametemplateshort,
 
-    gamestatetemplate,
-    playstatetemplate,
+    // gamestatetemplate,
+    // playstatetemplate,
 
-    playtemplates,
+    // boardtemplate,
+
+    // playtemplates,
 
     pagecache: {
         size: 5,

@@ -140,6 +140,8 @@ nav input:checked + ul {
             transition-delay: 0;
             transform: translateX(100vw) !important;
             -webkit-transform: translateX(100vw) !important;
+            border-left: 1px solid white;
+            border-right: 1px solid white;
         }
 
     }
@@ -194,6 +196,8 @@ nav input:checked + ul {
             transition-delay: 0;
             transform: translateX(360px) !important;
             -webkit-transform: translateX(360px) !important;
+            border-left:  1px solid white;
+            border-right: 1px solid white;
         }
     }
 }

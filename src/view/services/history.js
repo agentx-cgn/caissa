@@ -3,7 +3,7 @@ import { Nothing } from '../components/misc';
 import Caissa      from '../caissa';
 // import Tools       from '../tools/tools';
 
-const DEBUG = true;
+const DEBUG = false;
 
 const candidate = {};
 const stack     = [];

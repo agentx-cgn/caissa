@@ -54,7 +54,7 @@ const providerTemplates = [
 function genProviderList (templates) {
 
     const params = {
-        user  : DB.Options['user-data'].name,
+        user  : DB.Options.first['user-data'].name,
         month : ('00' + ((new Date()).getUTCMonth() +1)).slice(-2),
         year  : (new Date()).getUTCFullYear(),
     };
@@ -65,13 +65,12 @@ function genProviderList (templates) {
 
 }
 
-const providers = {
-    load: () => providers.list = genProviderList(providerTemplates),
-    list: [],
+const Providers = {
+    list () { return genProviderList(providerTemplates); },
 };
 
 // Also needed if changes, think APIs
-providers.list = genProviderList(providerTemplates);
+// providers.list = genProviderList(providerTemplates);
 // console.log(providers);
 
-export { providers as default };
+export default Providers;
