@@ -49,6 +49,9 @@ const Table = function (tablename, dump=[], template={}) {
         find (uuid='0') {
             return cache.find( row => row.uuid === uuid ) || null;
         },
+        filter (fn) {
+            return cache.filter(fn);
+        },
         clear () {
             const length = cache.length;
             cache = dump;
@@ -56,11 +59,16 @@ const Table = function (tablename, dump=[], template={}) {
             isDirty = false;
             DEBUG && console.log('TAB.' + tablename, 'cleared', length, 'rows');
         },
-        create (row) {
-            row.uuid = H.shortuuid();
+        create (row, force=false) {
+            // row.uuid = H.shortuuid();
             cache.push(row);
-            isDirty = true;
-            DEBUG && console.log('TAB.' + tablename, 'create', row.uuid);
+            if (force){
+                self.persist();
+            } else {
+                isDirty = true;
+            }
+            DEBUG && console.log('TAB.' + tablename, 'created', row.uuid);
+            return row;
         },
         createget (uuid) {
             let row = self.find(uuid);
@@ -73,20 +81,24 @@ const Table = function (tablename, dump=[], template={}) {
             DEBUG && console.log('TAB.' + tablename, 'createget', uuid);
             return row;
         },
-        delete (uuid) {
+        delete (uuid, force=false) {
             const idx = cache.findIndex( row => row.uuid === uuid);
             if (idx > -1) {
                 cache.splice(idx, 1);
-                isDirty = true;
+                if (force){
+                    self.persist();
+                } else {
+                    isDirty = true;
+                }
             } else {
                 throw `ERROR ! ${tablename}.delete failed. ${uuid} not found`;
             }
             DEBUG && console.log('TAB.' + tablename, 'deleted', uuid);
         },
-        update (uuid, diff, force) {
+        update (uuid, diff, force=false) {
             const row  = self.find(uuid);
             if (row !== null) {
-                Object.assign(row, diff);
+                H.deepassign(row, diff);
                 if (force){
                     self.persist();
                 } else {

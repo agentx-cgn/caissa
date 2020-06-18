@@ -33,13 +33,13 @@ const playstemplates = [
 
 ];
 
-const playstatetemplate = H.create({
-    // timestamp: null, is in play
-    moves: [],
-    fen:   fens.start,
-    play:  null,
-    timecontrol: null,
-});
+// const playstatetemplate = H.create({
+//     // timestamp: null, is in play
+//     moves: [],
+//     fen:   fens.start,
+//     play:  null,
+//     timecontrol: null,
+// });
 
 const gametemplateshort = H.create({
 
@@ -61,29 +61,27 @@ const gametemplateshort = H.create({
 
 });
 
-const gametemplate = H.create({
-    ...gametemplateshort,
-    mode:       'h-h',          // indicates opponents s=stockfish, h= human, l=leela
-    turn:       -3 ,            // Number, used to gen gen and display on board (-3 unknown, -2 empty board, -1 start, 0 after first ply)
-    plycount:   0,              // # of halfmoves
-    subline:    'this is fun',  // optional comment
-    opening:    '',             // optional
-    time:       10,             // optional, only for machine opponent
-    depth:      3,              // optional,
-    difficulty: 'rooky',        // optional, only for machine opponent
-    timestamp:  1589137091395,  // game started or viewed
-});
+// const gametemplate = H.create({
+//     ...gametemplateshort,
+//     mode:       'h-h',          // indicates opponents s=stockfish, h= human, l=leela
+//     turn:       -3 ,            // Number, used to gen gen and display on board (-3 unknown, -2 empty board, -1 start, 0 after first ply)
+//     plycount:   0,              // # of halfmoves
+//     subline:    'this is fun',  // optional comment
+//     opening:    '',             // optional
+//     time:       10,             // optional, only for machine opponent
+//     depth:      3,              // optional,
+//     difficulty: 'rooky',        // optional, only for machine opponent
+//     timestamp:  1589137091395,  // game started or viewed
+// });
 
-const gamestatetemplate = H.create({
-    game        : {},
+const gametemplate = H.create({
+    // game        : {},
     moves       : [],
     score: {
         maxcp       : 0,
         maxmate     : 0,
     },
     buttons: {
-        // minimize: true,
-        // maximize: false,
         rotate:   true,
         backward: true,
         forward:  true,
@@ -92,7 +90,6 @@ const gamestatetemplate = H.create({
         play:     false,
         pause:    false,
         evaluate: true,
-        // spinner:  false,
     },
     flags : {
         turn: '',     // turn w || b
@@ -130,6 +127,10 @@ const opponents = H.create({
 
 export default H.deepFreeze(H.create({
 
+    fens,
+    pieces,
+    opponents,
+
     database: {
         updateInterval: 60 * 1000,
     },
@@ -137,8 +138,6 @@ export default H.deepFreeze(H.create({
     templates : {
         game:        gametemplate,
         gameshort:   gametemplateshort,
-        gamestate:   gamestatetemplate,
-        playstate:   playstatetemplate,
         play:        playtemplates,
         plays:       playstemplates,
         boardstate:  boardtemplate,
@@ -148,20 +147,6 @@ export default H.deepFreeze(H.create({
         Play:    playtemplates,
         Boards:  boardtemplate,
     },
-
-    fens,
-    pieces,
-    opponents,
-
-    // gametemplate,
-    // gametemplateshort,
-
-    // gamestatetemplate,
-    // playstatetemplate,
-
-    // boardtemplate,
-
-    // playtemplates,
 
     pagecache: {
         size: 5,
@@ -231,7 +216,7 @@ export default H.deepFreeze(H.create({
                 markers:            ['marker4', 'marker5'],
             },
             responsive:             true,           // resizes the board on window resize, if true
-            animationDuration:      300,            // pieces animation duration in milliseconds
+            animationDuration:      500,            // pieces animation duration in milliseconds
             moveInputMode:          MOVE_INPUT_MODE.dragPiece, // set to MOVE_INPUT_MODE.dragPiece or MOVE_INPUT_MODE.dragMarker for interactive movement
         },
     }),

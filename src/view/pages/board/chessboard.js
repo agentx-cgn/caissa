@@ -1,36 +1,15 @@
 
-import { H, $$ } from '../../services/helper';
+import { $$ } from '../../services/helper';
 import Factory from '../../components/factory';
-import State   from '../../data/state';
 import Config   from '../../data/config';
 // import GameController from '../../controller/game-controller';
-import { Chessboard, COLOR } from '../../../extern/cm-chessboard/Chessboard';
-// import { GameFlags, GameButtons } from '../../pages/game/game-bars';
-// import BoardBar  from './board-bar';
+import { Chessboard } from '../../../extern/cm-chessboard/Chessboard';
 import Tools from '../../tools/tools';
 import DB from '../../services/database';
 
-const state = State.board;
 const DEBUG = true;
 
-// let width, size, oldRoute, oldParams;
-
-let chessBoard, lastParams = {};
-
-function prepareState (oldParams, newParams) {
-    const diff = H.difference(oldParams, newParams);
-    if (diff.uuid){
-        const board = DB.Boards.createget(diff.uuid);
-        const game  = DB.Games.find(diff.uuid);
-        Object.assign(state, board, {moves: game.moves});
-        const turn = diff.turn ? ~~diff.turn : state.game.moves.length -1;
-        state.fen = state.moves[turn];
-        state.orientation = state.game.orientation || 'w';
-    }
-    if (diff.turn){
-        state.fen = state.game.moves[~~diff.turn];
-    }
-}
+let chessBoard, game;
 
 const ChessBoard = Factory.create('ChessBoard', {
     onresize : Tools.board.resize,
@@ -40,15 +19,16 @@ const ChessBoard = Factory.create('ChessBoard', {
             Config.board.config,
         );
         Tools.board.resize(innerWidth, innerHeight);
-        console.log('chessboard.oncreate');
+        DEBUG && console.log('chessboard.oncreate');
     },
     view () {
-        console.log('chessboard.view');
+        DEBUG && console.log('chessboard.view');
         return m('div.chessboard');
     },
     onupdate ( vnode ) {
-        prepareState(lastParams, vnode.attrs.params);
-        lastParams = vnode.attrs;
+        Tools.board.resize(innerWidth, innerHeight);
+        game = vnode.attrs.game;
+        DEBUG && console.log('chessboard.onupdate', game);
 
         // chessBoard.enableMoveInput(inputHandler({move: (...args) => {
         //     console.log('board.onupdate.move', ...args);
@@ -56,17 +36,20 @@ const ChessBoard = Factory.create('ChessBoard', {
     },
     onafterupdates () {
 
-        const { route, params } = lastParams;
+        if (game && game.uuid) {
+            // DEBUG && console.log('chessboard.onafterupdates', game.uuid);
 
-        if (chessBoard) {
+            const board = DB.Boards.createget(game.uuid);
 
-            chessBoard.setOrientation(state.orientation);
-            chessBoard.setPosition(state.fen, true);
-            console.log('chessboard.onafterupdates', H.strip({ route, params }));
+            if (chessBoard && board) {
+                chessBoard.setOrientation(board.orientation);
+                chessBoard.setPosition(board.fen, true);
+                // DEBUG && console.log('chessboard.onafterupdates', game.uuid, board.fen);
 
-        } else {
-            console.log('chessboard.onafterupdates', 'NO BOARD');
+            } else {
+                DEBUG && console.log('chessboard.onafterupdates', 'NO BOARD', chessBoard, board);
 
+            }
         }
 
     },

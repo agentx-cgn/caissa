@@ -4,6 +4,14 @@ import './components.scss';
 import { H }     from '../services/helper';
 import Factory   from './factory';
 
+const Error = Factory.create('Error', {
+    view ( { attrs, children } ) {
+        return m('div.error', {style:'padding: 1rem 2rem; color: darkred'},
+            m('span.f4', attrs, children),
+        );
+    },
+});
+
 const Nothing = Factory.create('Nothing', {
     view ( ) {
         return m('div.nothing.dn');
@@ -119,6 +127,7 @@ const FlexListPlayEntry = {
 
 export {
 
+    Error,
     Nothing,
 
     Spacer,

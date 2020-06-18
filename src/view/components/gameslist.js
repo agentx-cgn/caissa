@@ -3,14 +3,22 @@ import Caissa       from '../caissa';
 import DB           from '../services/database';
 import Factory      from './factory';
 import { FlexList } from './misc';
+import Tools        from '../tools/tools';
+import Config       from '../data/config';
+import { H }        from '../services/helper';
 
 const GamesList = Factory.create('GamesList', {
     view ( vnode ) {
         return m(FlexList, {class: 'games-list'},
             vnode.attrs.games.map( game => m(GameEntry, { game, onclick: (e) => {
                 e.redraw = false;
-                const { uuid, turn } = DB.Games.createget(game);
-                Caissa.route('/game/:turn/:uuid/', { uuid, turn });
+                const fullgame = H.create({},
+                    Config.templates.game,
+                    game,
+                    { moves: Tools.games.pgn2moves(game.pgn) },
+                );
+                DB.Games.create(fullgame, true);
+                Caissa.route('/game/:turn/:uuid/', { uuid: fullgame.uuid, turn: fullgame.moves.length -1 });
             }})),
         );
     },

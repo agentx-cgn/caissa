@@ -2,16 +2,17 @@
 import './board.scss';
 
 // import { $$ } from '../../services/helper';
-import Factory from '../../components/factory';
-import State   from '../../data/state';
 // import Config   from '../../data/config';
 // import GameController from '../../controller/game-controller';
 // import { Chessboard, COLOR } from '../../../extern/cm-chessboard/Chessboard';
-import { GameFlags, GameButtons } from '../../pages/game/game-bars';
-import BoardBar  from './board-bar';
-import ChessBoard from './chessboard';
 
-// const state = State.board;
+import Factory         from '../../components/factory';
+import { Nothing }     from '../../components/misc';
+import { GameFlags, GameButtons } from '../../pages/game/game-bars';
+import DB              from '../../services/database';
+import Tools           from '../../tools/tools';
+import BoardBar        from './board-bar';
+import ChessBoard      from './chessboard';
 
 let width;
 
@@ -27,22 +28,33 @@ const Board = Factory.create('Board', {
     },
     view ( vnode ) {
 
-        const { route, params } = vnode.attrs;
+        const { params: { uuid, turn } } = vnode.attrs;
+        let game, board;
 
-        const playerTop = State.board.orientation === 'w' ? 'w' : 'b';
-        const playerBot = State.board.orientation === 'b' ? 'w' : 'b';
+        if (uuid && turn !== undefined){
+            game  = DB.Games.find(uuid);
+            board = DB.Boards.createget(uuid);
+            const fen = Tools.board.game2fen(game);
+            DB.Boards.update(uuid, { fen }, true);
+        }
 
-        return (
-            width >= 720
-                ? m('[', [
-                    m(GameFlags,   { route, params }),
-                    m(BoardBar,    { pos: 'top', player: playerTop }),
-                    m(ChessBoard,  { route, params }),
-                    m(BoardBar,    { pos: 'bot', player: playerBot }),
-                    m(GameButtons, { route, params }),
-                ])
-                : m(ChessBoard, { route, params })
-        );
+        const playerTop = board.orientation === 'w' ? 'w' : 'b';
+        const playerBot = board.orientation === 'b' ? 'w' : 'b';
+
+        return !uuid
+            ? m(Nothing)
+            : !game
+                ? m(Error, 'Game not found: ' + uuid)
+                : width >= 720
+                    ? m('[', [
+                        m(BoardBar,    { game, pos: 'top', player: playerTop }),
+                        m(ChessBoard,  { game }),
+                        m(BoardBar,    { game, pos: 'bot', player: playerBot }),
+                        m(GameFlags,   { game }),
+                        m(GameButtons, { game }),
+                    ])
+                    : m(ChessBoard, { game })
+        ;
 
     },
 });

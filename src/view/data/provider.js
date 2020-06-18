@@ -65,8 +65,14 @@ function genProviderList (templates) {
 
 }
 
+let providerList = [];
 const Providers = {
-    list () { return genProviderList(providerTemplates); },
+    list () {
+        if (!providerList.length) {
+            providerList = genProviderList(providerTemplates);
+        }
+        return providerList;
+    },
 };
 
 // Also needed if changes, think APIs

@@ -1,6 +1,7 @@
 
 import Config from '../../data/config';
 import Tools  from '../../tools/tools';
+import { H }  from '../helper';
 
 const Parser = {
     readGames (pgns, delimiter='\n', deleteComments=false) {
@@ -20,7 +21,7 @@ const Parser = {
             lines = pgns.split(delimiter)
         ;
 
-        let rxp, game = { ...Config.gametemplateshort, header: {} };
+        let rxp, game = H.create({ ...Config.templates.gameshort, header: {} });
 
         lines.forEach( (line) => {
 
@@ -32,7 +33,7 @@ const Parser = {
                 if (game.header.Event){
                     games.push(game);
                 }
-                game = { ...Config.gametemplateshort, header: {} };
+                game = H.create({ ...Config.templates.gameshort, header: {} });
                 game.header[rxp[1]] = rxp[2];
 
             } else if (rxp !== null) {

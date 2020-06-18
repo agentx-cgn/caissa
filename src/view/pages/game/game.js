@@ -10,9 +10,9 @@ import Factory           from '../../components/factory';
 import Moves             from './moves';
 
 import { GameFlags, GameButtons } from './game-bars';
-import { Spacer, GrowSpacer, HeaderCentered, TextCenter, Nothing} from '../../components/misc';
+import { Spacer, GrowSpacer, HeaderCentered, TextCenter, Error, Nothing} from '../../components/misc';
 
-const state = State.game;
+// const state = State.game;
 // Object.assign(state, H.create({uuid: undefined, turn: undefined}));
 
 let width;
@@ -24,18 +24,22 @@ const Game = Factory.create('Game', {
     },
     view ( vnode ) {
 
-        const { params, className, style } = vnode.attrs;
+        const { params: { uuid, turn }, className, style } = vnode.attrs;
 
         let game, players, resultline;
 
-        game = DB.Games.find(params.uuid);
+        if (uuid && turn !== undefined){
 
-        if (game) {
-            Object.assign(state, H.create({ ...params, game }));
-            players    = game.white  + '<br>' + game.black;
-            resultline = game.result + ' '    + game.termination + ' ' + game.timecontrol;
-            Tools.scrollTurnIntoView(state.turn);
+            game = DB.Games.find(uuid);
+
+            if (game) {
+                DB.Games.update(uuid, { turn: ~~turn });
+                players    = game.white  + '<br>' + game.black;
+                resultline = game.result + ' '    + game.termination + ' ' + game.timecontrol;
+                Tools.scrollTurnIntoView(turn);
+            }
         }
+
 
 
 
@@ -79,27 +83,29 @@ const Game = Factory.create('Game', {
         // const players    = state.game.white  + '<br>' + state.game.black;
         // const resultline = state.game.result + ' '    + state.game.termination + ' ' + state.game.timecontrol;
 
-        return !game
+        return !uuid
             ? m(Nothing)
-            : width >= 720
-                ? m('div.page.game', { className, style }, [
-                    m(HeaderCentered, {class: 'gm-players'}, m.trust(players)),
-                    m(Moves),
-                    m(Spacer),
-                    m(Spacer),
-                    m(TextCenter, {class: 'gm-result', title: 'result termination timecontrol'}, resultline ),
-                    m(GrowSpacer),
-                ])
-                : m('div.page.game', { className, style }, [
-                    m(GameButtons),
-                    m(HeaderCentered, {class: 'gm-players'}, m.trust(players)),
-                    m(Moves),
-                    m(Spacer),
-                    m(GameFlags),
-                    m(Spacer),
-                    m(TextCenter, {class: 'gm-result', title: 'result termination timecontrol'}, resultline ),
-                    m(GrowSpacer),
-                ]);
+            : !game
+                ? m('div.page.game', { className, style }, m(Error, 'Game not found: ' + uuid))
+                : width >= 720
+                    ? m('div.page.game', { className, style }, [
+                        m(HeaderCentered, {class: 'gm-players'}, m.trust(players)),
+                        m(Moves, { game }),
+                        m(Spacer),
+                        m(Spacer),
+                        m(TextCenter, {class: 'gm-result', title: 'result termination timecontrol'}, resultline ),
+                        m(GrowSpacer),
+                    ])
+                    : m('div.page.game', { className, style }, [
+                        m(GameButtons, { game }),
+                        m(HeaderCentered, {class: 'gm-players'}, m.trust(players)),
+                        m(Moves,      { game }),
+                        m(Spacer),
+                        m(GameFlags,  { game }),
+                        m(Spacer),
+                        m(TextCenter, {class: 'gm-result', title: 'result termination timecontrol'}, resultline ),
+                        m(GrowSpacer),
+                    ]);
 
     },
 });

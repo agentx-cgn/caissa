@@ -1,12 +1,13 @@
 
 import Caissa       from '../../caissa';
-import { COLOR }    from '../../../extern/cm-chessboard/Chessboard';
+// import { COLOR }    from '../../../extern/cm-chessboard/Chessboard';
 import { H, $$ }    from '../../services/helper';
-import State        from '../../data/state';
+// import State        from '../../data/state';
 import evaluate     from './game-evaluate';
 import Factory      from '../../components/factory';
+import DB           from '../../services/database';
 
-const state = State.game;
+let curgame;
 
 let progressdom;
 
@@ -24,28 +25,32 @@ const GameProgressBar = Factory.create('GameProgressBar', {
 ;
 
 function setTurn (diff) {
-    const turn = state.game.turn;
+    const turn = curgame.turn;
     return (
         diff === '0' ? 0 :
-        diff === 'e' ? state.moves.length -1 :
+        diff === 'e' ? curgame.moves.length -1 :
         turn === -2 && diff < 0  ? -2 :
-        turn === state.moves.length -1 && diff > 0  ? state.moves.length -1 :
+        turn === curgame.moves.length -1 && diff > 0  ? curgame.moves.length -1 :
         turn + diff
     );
 }
 
 const actions = {
-    back  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn('0'), uuid: state.game.uuid}, { replace: true }); return H.eat(e);},
-    left  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn(-1),  uuid: state.game.uuid}, { replace: true }); return H.eat(e);},
-    right (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn(+1),  uuid: state.game.uuid}, { replace: true }); return H.eat(e);},
-    fore  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn('e'), uuid: state.game.uuid}, { replace: true }); return H.eat(e);},
-    pause (e) {return H.eat(e);},
-    play  (e) {return H.eat(e);},
-    eval  (e) { evaluate(state); return H.eat(e);},
+    back  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn('0'), uuid: curgame.uuid}, { replace: true }); return H.eat(e);},
+    left  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn(-1),  uuid: curgame.uuid}, { replace: true }); return H.eat(e);},
+    right (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn(+1),  uuid: curgame.uuid}, { replace: true }); return H.eat(e);},
+    fore  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn('e'), uuid: curgame.uuid}, { replace: true }); return H.eat(e);},
+    pause (e) { e.redraw = false; return H.eat(e);},
+    play  (e) { e.redraw = false; return H.eat(e);},
+    eval  (e) { e.redraw = false; evaluate(curgame); return H.eat(e);},
     rotate (e) {
-        State.board.orientation = State.board.orientation === COLOR.white ? COLOR.black : COLOR.white;
-        return H.eat(e);
-        // Caissa.redraw();
+        e.redraw = false;
+        const board = DB.Boards.find(curgame.uuid);
+        if (board){
+            const orientation = board.orientation === 'w' ? 'b' : 'w';
+            DB.Boards.update(curgame.uuid, {orientation});
+            Caissa.redraw();
+        }
     },
     toggle (e) {
         // TODO: use state.ui
@@ -74,17 +79,19 @@ const buttons = {
 };
 
 const GameButtons = Factory.create('GameButtons', {
-    view( ) {
+    view( vnode ) {
+        const { game } = vnode.attrs;
+        curgame = game;
         return m('div.gm-bar', [
             m('div.gm-buttons.f3',
                 H.map(buttons, (name, props) => {
 
                     const className = (
-                        name === 'spinner'  &&  state.buttons['evaluate'] ? 'dn'  :
-                        name === 'spinner'  && !state.buttons['evaluate'] ? 'dib' :
-                        name === 'evaluate' &&  state.buttons['evaluate'] ? 'dib' :
-                        name === 'evaluate' && !state.buttons['evaluate'] ? 'dn'  :
-                        state.buttons[name] ? 'dib' : 'vih'
+                        name === 'spinner'  &&  game.buttons['evaluate'] ? 'dn'  :
+                        name === 'spinner'  && !game.buttons['evaluate'] ? 'dib' :
+                        name === 'evaluate' &&  game.buttons['evaluate'] ? 'dib' :
+                        name === 'evaluate' && !game.buttons['evaluate'] ? 'dn'  :
+                        game.buttons[name] ? 'dib' : 'vih'
                     );
 
                     return m(
@@ -93,7 +100,7 @@ const GameButtons = Factory.create('GameButtons', {
                     );
                 }),
             ),
-            m(GameProgressBar),
+            m(GameProgressBar, { game }),
         ]);
     },
 });
@@ -139,11 +146,12 @@ const flagger = function (flags) {
 };
 
 const GameFlags = Factory.create('GameFlags', {
-    view( ) {
+    view( vnode ) {
+        const { game } = vnode.attrs;
         return (
             m('div.gm-bar',
                 m('div.gm-flags',
-                    H.map(flagger(state.flags), (_, props) => {
+                    H.map(flagger(game.flags), (_, props) => {
                         return m(props.tag, {title: props.title, class: props.class});
                     }),
                 ),

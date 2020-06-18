@@ -96,6 +96,19 @@ const H = {
         return JSON.parse(JSON.stringify(obj));
     },
 
+    deepassign (acc, ...sources) {
+        // overwrites arrays...
+        for (const source of sources) {
+            for (let [key, value] of Object.entries(source)) {
+                if (value instanceof Object && key in acc) {
+                    value = H.deepassign(acc[key], value);
+                }
+                acc[key] = value;
+            }
+        }
+        return acc;
+    },
+
     difference (a, b) {
         return Object
             .entries(b)

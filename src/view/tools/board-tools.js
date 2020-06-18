@@ -10,6 +10,17 @@ const fire = Dispatcher.connect({name: 'board-tools'});
 
 export default {
 
+    game2fen (game) {
+        const turn = ~~game.turn;
+        return (
+            turn === -2
+                ? Config.fens.empty
+                : turn === -1
+                    ? Config.fens.start
+                    : game.moves[turn].fen
+        );
+    },
+
     resize (innerWidth, innerHeight) {
         if ( innerWidth >= 720 ) {
 
@@ -127,6 +138,10 @@ export default {
 
     genCapturedPieces (fen) {
 
+        if (fen === Config.fens.empty) {
+            return{ blacks: 'lwtnjo', whites: 'lwtnjo' };
+        }
+
         const sorter = (a, b) => {
             return (
                 Config.pieces.fens.sorted.indexOf(a.toLowerCase()) -
@@ -142,8 +157,6 @@ export default {
             whites = whites.replace(letter, '');
         }),
 
-        // blacks = blacks.split('').sort(sorter).map( letter => 'b' + letter);
-        // whites = whites.split('').sort(sorter).map( letter => 'w' + letter.toLowerCase());
         blacks = blacks.split('').sort(sorter).map( letter => Config.fontPieces[letter] );
         whites = whites.split('').sort(sorter).map( letter => Config.fontPiecesWhite[letter] );
 

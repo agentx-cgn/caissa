@@ -1,19 +1,19 @@
 import Config  from '../../data/config';
-import State   from '../../data/state';
+// import State   from '../../data/state';
 import { H }   from '../../services/helper';
 import Caissa  from '../../caissa';
 
-const state = State.game;
+// const state = State.game;
 
-const clampScale = function (cp) {
-    return H.scale(H.clamp(Math.abs(cp), 0.001, state.score.maxcp), 0, state.score.maxcp, 1, 20);
+const clampScale = function (game, cp) {
+    return H.scale(H.clamp(Math.abs(cp), 0.001, game.score.maxcp), 0, game.score.maxcp, 1, 20);
 };
 
-const calcWidth = function (move) {
+const calcWidth = function (game, move) {
     var result = (
         !move.cp                             ? 0 :
-        (move.turn % 2 === 0 && move.cp) > 0 ? ~~clampScale(move.cp) :
-        (move.turn % 2 === 1 && move.cp) > 0 ? ~~clampScale(move.cp) :
+        (move.turn % 2 === 0 && move.cp) > 0 ? ~~clampScale(game, move.cp) :
+        (move.turn % 2 === 1 && move.cp) > 0 ? ~~clampScale(game, move.cp) :
         0
     );
     // console.log('calcwidth', move.turn, result, move.cp, state.score.maxcp);
@@ -24,13 +24,13 @@ const ply = {
     name: 'Ply',
     view ( vnode ) {
 
-        const { player, move, back } = vnode.attrs;
+        const { game, player, move, back } = vnode.attrs;
 
-        const width     = calcWidth(move);
+        const width     = calcWidth(game, move);
         const piece     = Config.fontPieces[move.piece];
         const onclick   = (e) => {
             e.redraw = false;
-            Caissa.route('/game/:turn/:uuid/', {turn: move.turn, uuid: state.game.uuid}, { replace: true });
+            Caissa.route('/game/:turn/:uuid/', {turn: move.turn, uuid: game.uuid}, { replace: true });
         };
 
         const matetext  = move.mate ? '# in ' + Math.abs(move.mate) : '';
@@ -57,14 +57,14 @@ const ply = {
 export default {
     name: 'Move',
     view (vnode) {
-        const { num, white, black } = vnode.attrs;
-        const bgw = white.move.turn !== state.game.turn ? '.bg-transparent' : '.bg-89b';
-        const bgb = black.move.turn !== state.game.turn ? '.bg-transparent' : '.bg-89b';
+        const { game, num, white, black } = vnode.attrs;
+        const bgw = white.move.turn !== game.turn ? '.bg-transparent' : '.bg-89b';
+        const bgb = black.move.turn !== game.turn ? '.bg-transparent' : '.bg-89b';
         return m('tr.gm-move.trhover', [
             m('td.gm-move-space'),
             m('td.gm-move-num', num),
-            m(ply, { back: bgw, move: white.move, player: 'w' }),
-            m(ply, { back: bgb, move: black.move, player: 'b' }),
+            m(ply, { game, back: bgw, move: white.move, player: 'w' }),
+            m(ply, { game, back: bgb, move: black.move, player: 'b' }),
             m('td.gm-move-space'),
         ]);
     },
