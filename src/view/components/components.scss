@@ -10,11 +10,11 @@ back-drop.visible {
 }
 
 page-title {
-    width: 100%;
-    margin: 2rem 0 0.5rem 0;
-    padding: 0 1rem;
+    max-width: 100%;
+    padding: 2rem 1rem 0.5rem 1rem;
     font-size: 1.7rem;
     color: #eee;
+    background-color: #866;
     text-align: left;
     font-family: 'SairaCondensed-Medium'
 }

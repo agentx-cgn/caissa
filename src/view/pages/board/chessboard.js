@@ -5,11 +5,11 @@ import Config   from '../../data/config';
 // import GameController from '../../controller/game-controller';
 import { Chessboard } from '../../../extern/cm-chessboard/Chessboard';
 import Tools from '../../tools/tools';
-import DB from '../../services/database';
+// import DB from '../../services/database';
 
 const DEBUG = true;
 
-let chessBoard, game;
+let chessBoard, board, game;
 
 const ChessBoard = Factory.create('ChessBoard', {
     onresize : Tools.board.resize,
@@ -21,14 +21,35 @@ const ChessBoard = Factory.create('ChessBoard', {
         Tools.board.resize(innerWidth, innerHeight);
         DEBUG && console.log('chessboard.oncreate');
     },
-    view () {
-        DEBUG && console.log('chessboard.view');
+    onbeforeremove () {
+        // Removes the board from the DOM. Returns a Promise which will be resolved, after destruction.
+        // If a Promise is returned, Mithril only detaches the DOM element after the promise completes.
+        return chessBoard.destroy().then( () => {
+            chessBoard = undefined;
+            DEBUG && console.log('chessboard.destroyed');
+        });
+    },
+    view ( vnode ) {
+
+        game  = vnode.attrs.game;
+        board = vnode.attrs.board;
+
+        DEBUG && console.log('chessboard.view.cbgb', !!chessBoard, !!game, !!board);
         return m('div.chessboard');
     },
     onupdate ( vnode ) {
-        Tools.board.resize(innerWidth, innerHeight);
-        game = vnode.attrs.game;
-        DEBUG && console.log('chessboard.onupdate', game);
+        if (!chessBoard) {
+            // eslint-disable-next-line no-debugger
+            debugger;
+
+        } else {
+            game  = vnode.attrs.game;
+            board = vnode.attrs.board;
+
+            (chessBoard.getOrientation() !== board.orientation) && chessBoard.setOrientation(board.orientation);
+            // Tools.board.resize(innerWidth, innerHeight);
+            DEBUG && console.log('chessboard.onupdate.cbgb', !!chessBoard, !!game, !!board);
+        }
 
         // chessBoard.enableMoveInput(inputHandler({move: (...args) => {
         //     console.log('board.onupdate.move', ...args);
@@ -36,20 +57,13 @@ const ChessBoard = Factory.create('ChessBoard', {
     },
     onafterupdates () {
 
-        if (game && game.uuid) {
-            // DEBUG && console.log('chessboard.onafterupdates', game.uuid);
+        if (chessBoard && game && board) {
+            DEBUG && console.log('chessboard.onafterupdates', board.fen);
+            chessBoard.setPosition(board.fen, true);
 
-            const board = DB.Boards.createget(game.uuid);
+        } else {
+            DEBUG && console.warn('chessboard.onafterupdates.cbgb', !!chessBoard, !!game, !!board);
 
-            if (chessBoard && board) {
-                chessBoard.setOrientation(board.orientation);
-                chessBoard.setPosition(board.fen, true);
-                // DEBUG && console.log('chessboard.onafterupdates', game.uuid, board.fen);
-
-            } else {
-                DEBUG && console.log('chessboard.onafterupdates', 'NO BOARD', chessBoard, board);
-
-            }
         }
 
     },
@@ -57,20 +71,3 @@ const ChessBoard = Factory.create('ChessBoard', {
 });
 
 export default ChessBoard;
-
-
-/*
-
-state.games[uuid/hash] = {
-    moves // show last move
-    turn  // current move // -2, -1, 0
-    rotation //
-    arrow flags // show decoration
-    gameController // manipulate game, input methods // move validation // drag new pieces
-
-}
-
-
-
-
- */

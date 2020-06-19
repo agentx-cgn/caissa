@@ -1,11 +1,6 @@
 
 import './board.scss';
 
-// import { $$ } from '../../services/helper';
-// import Config   from '../../data/config';
-// import GameController from '../../controller/game-controller';
-// import { Chessboard, COLOR } from '../../../extern/cm-chessboard/Chessboard';
-
 import Factory         from '../../components/factory';
 import { Nothing }     from '../../components/misc';
 import { GameFlags, GameButtons } from '../../pages/game/game-bars';
@@ -14,6 +9,8 @@ import Tools           from '../../tools/tools';
 import BoardBar        from './board-bar';
 import ChessBoard      from './chessboard';
 
+const DEBUG = false;
+
 let width;
 
 const Board = Factory.create('Board', {
@@ -21,10 +18,10 @@ const Board = Factory.create('Board', {
         width = innerWidth;
     },
     oncreate () {
-        console.log('board.oncreate');
+        DEBUG && console.log('board.oncreate');
     },
     onupdate () {
-        console.log('board.onupdate');
+        DEBUG && console.log('board.onupdate');
     },
     view ( vnode ) {
 
@@ -47,13 +44,13 @@ const Board = Factory.create('Board', {
                 ? m(Error, 'Game not found: ' + uuid)
                 : width >= 720
                     ? m('[', [
+                        m(GameButtons, { game }),
                         m(BoardBar,    { game, pos: 'top', player: playerTop }),
-                        m(ChessBoard,  { game }),
+                        m(ChessBoard,  { game, board }),
                         m(BoardBar,    { game, pos: 'bot', player: playerBot }),
                         m(GameFlags,   { game }),
-                        m(GameButtons, { game }),
                     ])
-                    : m(ChessBoard, { game })
+                    : m(ChessBoard, { game, board })
         ;
 
     },

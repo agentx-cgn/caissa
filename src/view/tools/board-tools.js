@@ -29,7 +29,7 @@ export default {
             const availHeight = innerHeight - 5 * 42;
             const $board      = $$('div.chessboard');
             const $content    = $$('section.content');
-            const size  = Math.min(availWidth, availHeight);
+            const size  = Math.min(availWidth, availHeight) + 4;
 
             $board   && ($board.style.width      = size + 'px');
             $board   && ($board.style.height     = size + 'px');

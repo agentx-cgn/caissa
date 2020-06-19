@@ -289,7 +289,7 @@ export class ChessboardView {
         const transform = (this.svg.createSVGTransform())
         transform.setTranslate(point.x, point.y)
         pieceGroup.transform.baseVal.appendItem(transform)
-        const pieceUse = Svg.addElement(pieceGroup, "use", {"href": `#${pieceName}`, "class": "piece"}) 
+        const pieceUse = Svg.addElement(pieceGroup, "use", {"href": `#${pieceName}`, "class": "piece"})
         // center on square
         const transformTranslate = (this.svg.createSVGTransform())
         transformTranslate.setTranslate(this.pieceXTranslate, 0)
@@ -373,7 +373,7 @@ export class ChessboardView {
     }
 
     calcAngle (x1, y1, x2, y2) {
-        
+
         return (
             x1 === x2 && y1  <  y2 ?   0 :   // north
             x1  >  x2 && y1 === y2 ?  90 :   // east
@@ -386,7 +386,7 @@ export class ChessboardView {
             x1  <  x2 && y1  <  y2 ? 315 :   // north west
 
             22
-        );  
+        );
 
     }
 
@@ -400,9 +400,9 @@ export class ChessboardView {
 
         let angle, start, end, head;
 
-        const 
+        const
             arrowGroup = Svg.addElement(
-                this.arrowsGroup, "g", 
+                this.arrowsGroup, "g",
                 {class: arrow.attributes.class}
             ),
             translate  = this.svg.createSVGTransform(),
@@ -424,7 +424,7 @@ export class ChessboardView {
             arrowGroup.addEventListener('click', arrow.attributes.onclick);
             arrowGroup.addEventListener('touchstart', arrow.attributes.onclick);
         }
-        
+
         // move group to from
         translate.setTranslate(from.x, from.y)
         arrowGroup.transform.baseVal.appendItem(translate)
@@ -464,6 +464,7 @@ export class ChessboardView {
     // animation queue //
 
     animatePieces(fromSquares, toSquares, callback) {
+        // console.log('animatePieces', 'queue#', this.animationQueue.length, 'running?', this.animationRunning);
         this.animationQueue.push({fromSquares: fromSquares, toSquares: toSquares, callback: callback})
         if (!this.animationRunning) {
             this.nextPieceAnimationInQueue()

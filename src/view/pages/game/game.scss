@@ -29,8 +29,7 @@
 
 div.gm-bar {
     height: 2.625rem;  //42px
-    background-color:rgba(0, 0, 0, 0.20);
-    // padding-top: 5px;
+    background-color:rgba(0, 0, 0, 0.1);
     text-align: center;
 }
 
@@ -48,7 +47,7 @@ div.gm-progress {
 div.gm-moves {
     margin: 0.5rem 0;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 tr.gm-move {
     cursor: pointer;
@@ -119,9 +118,6 @@ td.gm-ply-val-b {
 // tr.fiom.f5.fw8.c555
 
 /* GAME FLAGS */
-// div.gm-flags {
-//     text-align: center;
-// }
 div.gm-flag {
     width: 20px;
     height: 20px;
@@ -133,6 +129,7 @@ i.gm-flag {
     margin: 0.5rem;
     background-color: transparent;
     vertical-align: top;
+    font-size: 1.3rem;
 }
 
 /* GAME BUTTONS */

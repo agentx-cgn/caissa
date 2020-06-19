@@ -45,6 +45,8 @@ export default function() {
             console.log('sample.onupdate', count);
         },
         onbeforeremove: function( /* vnode */ ) {
+            // The onbeforeremove(vnode) hook is called before a DOM element is detached from the document.
+            // If a Promise is returned, Mithril only detaches the DOM element after the promise completes.
             //console.log('exit animation can start');
             console.log('sample.onbeforeremove', count);
             return new Promise(function(resolve) {

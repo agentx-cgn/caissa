@@ -1,5 +1,6 @@
 
-import { H } from '../services/helper';
+import { H }   from '../services/helper';
+import Caissa  from '../caissa';
 
 const DEBUG = false;
 const freezer = [];
@@ -26,6 +27,7 @@ const Factory = {
                 comp.onresize(innerWidth, innerHeight);
             }
         });
+        Caissa.redraw();
     },
     create (name, comp) {
 

@@ -50,8 +50,8 @@ const ListFilter = {
 // };
 const PageTitle = Factory.create('PageTitle', {
     view ( { attrs, children } ) {
-        return m('page-title',
-            m('span', attrs, children),
+        return m('page-title', { className: attrs.className },
+            m('span', { style: attrs.style }, children),
         );
     },
 });
