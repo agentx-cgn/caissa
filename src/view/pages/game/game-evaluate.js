@@ -4,7 +4,7 @@ import DB                  from '../../services/database';
 import { H }               from '../../services/helper';
 import System              from '../../data/system';
 import Pool                from '../../services/engine/pool';
-import { GameProgressBar } from '../game/game-bars';
+import GameProgress        from './game-progress';
 
 export default function evaluate (state) {
 
@@ -32,7 +32,7 @@ export default function evaluate (state) {
 
     const updateProgress = (step) => {
         progress += step;
-        GameProgressBar.render(progress);
+        GameProgress.render(progress);
     };
 
     const callback = move => {
@@ -50,7 +50,7 @@ export default function evaluate (state) {
         state.buttons.spinner  = false;
 
         slots.forEach( slot => slot.idle = true );
-        GameProgressBar.render(0);
+        GameProgress.render(0);
         Caissa.redraw();
 
         console.log('game.evaluator.finish',
@@ -64,7 +64,7 @@ export default function evaluate (state) {
 
     console.log('game.evaluator.start', threads, '/', System.threads, 'depth', conditions.depth);
 
-    GameProgressBar.render(bigStep);
+    GameProgress.render(bigStep);
 
     Promise.all( Pool.request(threads).map( (slot, idx) => {
 

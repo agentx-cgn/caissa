@@ -6,10 +6,9 @@ import Tools        from '../../tools/tools';
 const BoardBar = Factory.create('BoardBar', {
     view (vnode) {
 
-        const { game, pos, player } = vnode.attrs;
+        const { game, board, pos, player } = vnode.attrs;
         const style = 'letter-spacing: -8px; font-size: 1.5rem;';
-        const fen   = Tools.board.game2fen(game);
-
+        const fen   = board.fen;
         const captured = Tools.board.genCapturedPieces(fen);
 
         if (player === 'w') {

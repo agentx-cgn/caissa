@@ -5,8 +5,8 @@ import Tools             from '../../tools/tools';
 import DB                from '../../services/database';
 import Factory           from '../../components/factory';
 import Moves             from './moves';
-
-import { GameFlags, GameButtons } from './game-bars';
+import GameFlags         from './game-flags';
+import GameButtons       from './game-buttons';
 import { Spacer, GrowSpacer, PageTitle, TextCenter, Error, Nothing} from '../../components/misc';
 
 let width;

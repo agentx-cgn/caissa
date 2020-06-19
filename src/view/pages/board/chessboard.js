@@ -5,9 +5,8 @@ import Config   from '../../data/config';
 // import GameController from '../../controller/game-controller';
 import { Chessboard } from '../../../extern/cm-chessboard/Chessboard';
 import Tools from '../../tools/tools';
-// import DB from '../../services/database';
 
-const DEBUG = true;
+const DEBUG = false;
 
 let chessBoard, board, game;
 
@@ -19,6 +18,7 @@ const ChessBoard = Factory.create('ChessBoard', {
             Config.board.config,
         );
         Tools.board.resize(innerWidth, innerHeight);
+        chessBoard.view.handleResize();
         DEBUG && console.log('chessboard.oncreate');
     },
     onbeforeremove () {
@@ -45,6 +45,8 @@ const ChessBoard = Factory.create('ChessBoard', {
         } else {
             game  = vnode.attrs.game;
             board = vnode.attrs.board;
+
+            chessBoard.view.handleResize();
 
             (chessBoard.getOrientation() !== board.orientation) && chessBoard.setOrientation(board.orientation);
             // Tools.board.resize(innerWidth, innerHeight);

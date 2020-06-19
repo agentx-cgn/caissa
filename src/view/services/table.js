@@ -91,7 +91,7 @@ const Table = function (tablename, dump=[], template={}) {
                     isDirty = true;
                 }
             } else {
-                throw `ERROR ! ${tablename}.delete failed. ${uuid} not found`;
+                throw `ERROR ! DB.${tablename}.delete failed. ${uuid} not found`;
             }
             DEBUG && console.log('TAB.' + tablename, 'deleted', uuid);
         },
@@ -105,7 +105,7 @@ const Table = function (tablename, dump=[], template={}) {
                     isDirty = true;
                 }
             } else {
-                throw `ERROR ! ${tablename}.update failed. ${uuid} not found`;
+                throw `ERROR ! DB.${tablename}.update failed. ${uuid} not found`;
             }
             DEBUG && console.log('TAB.' + tablename, 'updated', uuid, H.shrink(diff));
             return row;
@@ -115,7 +115,7 @@ const Table = function (tablename, dump=[], template={}) {
                 isDirty = false;
                 // DEBUG && console.log('TAB.' + tablename, 'saved', cache.length, 'rows');
             } else {
-                throw `ERROR ! ${tablename}.persist failed`;
+                throw `ERROR ! DB.${tablename}.persist failed`;
             }
         },
 
