@@ -6,7 +6,7 @@ import Factory   from './factory';
 let isRunning, turn, start, interval, timecontrol, total, counter, divisor;
 let domBlack, domWhite, domTotal;
 
-const template = { format: H.msec2HMS, time: 0, color: 'cred' };
+const template = { format: H.msec2HMS, time: 0, pressure: false };
 const white = {};
 const black = {};
 
@@ -48,12 +48,12 @@ const ChessClock = Factory.create('ChessClock', {
         // at least one player is running out of time
         if (timecontrol - white.time < 10 * 1000) {
             white.format = H.msec2HMSm;
-            white.color  = 'darkred';
+            white.pressure = true;
             divisor = 1;
         }
         if (timecontrol - black.time < 10 * 1000) {
             black.format = H.msec2HMSm;
-            black.color  = 'darkred';
+            black.pressure = true;
             divisor = 1;
         }
 
@@ -80,13 +80,13 @@ const ChessClock = Factory.create('ChessClock', {
         if (turn === 'w')  turn = 'b';
     },
     white () {
-        return white.format(timecontrol - white.time);
+        return isRunning ? white.format(timecontrol - white.time) : '0:00:00';
     },
     black () {
-        return black.format(timecontrol - black.time);
+        return isRunning ? black.format(timecontrol - black.time) : '0:00:00';
     },
     total () {
-        return H.msec2HMSm(total);
+        return isRunning ? H.msec2HMSm(total) : '0:00:00';
     },
     oncreate ( vnode ) {
         const { player } = vnode.attrs;
@@ -97,17 +97,23 @@ const ChessClock = Factory.create('ChessClock', {
         Object.assign(black, template);
     },
     view ( vnode ) {
+
         const { player } = vnode.attrs;
-        const tag      = 'div.fiom.f4.';
-        // must match with board-bar-top/bottom (bbb as of now)
-        const tagwhite = tag + (isRunning ? white.color : 'c999');
-        const tagblack = tag + (isRunning ? black.color : 'cddd');
-        const tagtotal = tag + 'orange';
-        return (
-            player === 'w' ? m(tagwhite, isRunning ? ChessClock.white : '0:00:00') :
-            player === 'b' ? m(tagblack, isRunning ? ChessClock.black : '0:00:00') :
-            m(tagtotal, ChessClock.total)
-        );
+        const className  = m.cls({
+            white:    player === 'w',
+            black:    player === 'b',
+            total:    player !== 'w' && player !== 'b',
+            active:   isRunning,
+            pressure: player === 'w' && white.pressure || player === 'b' && black.pressure,
+        });
+        const time =
+            player === 'w' ? ChessClock.white() :
+            player === 'b' ? ChessClock.black() :
+            ChessClock.total()
+        ;
+
+        return m('div.clock', { className }, time);
+
     },
 
 });

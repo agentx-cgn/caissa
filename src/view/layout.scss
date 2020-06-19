@@ -70,7 +70,11 @@ div.page {
 div.slide {
     background-color: #aaa;
 }
-
+section.pages {
+    height: 100%;
+    left: 0;
+    position: relative;
+}
 section.content {
     flex: 1 0;
     background-color: #aaa;
@@ -103,7 +107,6 @@ nav input:checked + ul {
     }
     section.pages {
         width: 100vw;
-        height: 100%;
     }
     section.content {
         display:none
@@ -157,7 +160,6 @@ nav input:checked + ul {
     }
     section.pages {
         width: 360px;
-        height: 100%;
     }
     section.content {
         display:none
@@ -210,7 +212,6 @@ nav input:checked + ul {
     }
     section.pages {
         width: 360px;
-        height: 100%;
     }
     div.pages {
         left: calc(0px - 360px);

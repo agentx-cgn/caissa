@@ -60,7 +60,9 @@ const system = {
         pixelDepth:    screen.pixelDepth,
         left:          screen.left,
         top:           screen.top,
+        orientation:  (screen.orientation || {}).type || screen.mozOrientation || screen.msOrientation,
         devicePixelRatio: window.devicePixelRatio,
+
         'safe-area-inset-top':      getComputedStyle(document.documentElement).getPropertyValue('--sat'),
         'safe-area-inset-right':    getComputedStyle(document.documentElement).getPropertyValue('--sar'),
         'safe-area-inset-bottom':   getComputedStyle(document.documentElement).getPropertyValue('--sab'),

@@ -11,12 +11,15 @@ back-drop.visible {
 
 page-title {
     max-width: 100%;
+    min-height: 62px;
     padding: 2rem 1rem 0.5rem 1rem;
     font-size: 1.7rem;
     color: #eee;
-    background-color: #866;
+    // background-color: #866;
     text-align: left;
-    font-family: 'SairaCondensed-Medium'
+    font-family: 'SairaCondensed-Medium';
+    background: rgb(136,102,102);
+    background: linear-gradient(0deg, rgba(136,102,102,1) 50%, rgba(119,85,85,1) 100%);
 }
 
 // div.title-left {
@@ -49,7 +52,7 @@ div.flexlistentry {
     cursor: pointer;
 }
 div.flexlistentry:hover {
-    background-color: #89b;
+    background-color: #78a;
     color: white;
     // transition: background-color 0.2s ease;
 }
@@ -109,3 +112,31 @@ div.source-progress-off {
     width: 0;
 }
 
+div.clock {
+    font-family: 'Iosevka-Term-Medium';
+    font-size: 1.3rem;
+    &.total {
+        color: rgba(233, 132, 0, 0.582);
+        &.active {
+            color: rgba(233, 132, 0, 1)
+        }
+    }
+    &.white {
+        color: rgba(255, 255, 255, 0.3);
+        &.active {
+            color: rgba(255, 255, 255, 0.8);
+            &.pressure {
+                color: rgba(200, 0, 0, 1)
+            }
+        }
+    }
+    &.black {
+        color: rgba(0, 0, 0, 0.3);
+        &.active {
+            color: rgba(255, 255, 255, 0.8);
+            &.pressure {
+                color: rgba(200, 0, 0, 1)
+            }
+        }
+    }
+}
