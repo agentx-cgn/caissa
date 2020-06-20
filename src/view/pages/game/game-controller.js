@@ -1,7 +1,7 @@
 
-import { INPUT_EVENT_TYPE } from '../../extern/cm-chessboard/Chessboard';
-import State        from '../data/state';
-import Tools        from '../tools/tools';
+import { INPUT_EVENT_TYPE } from '../../../extern/cm-chessboard/Chessboard';
+import State        from '../../data/state';
+import Tools        from '../../tools/tools';
 
 const state = State.board;
 

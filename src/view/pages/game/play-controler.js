@@ -9,6 +9,11 @@ const fire = Dispatcher.connect({ name: 'play-controller',
 
 });
 
+// m('button.pv1.mh3.mv1', {onclick: () => Controller.start(60 * 1000) }, 'Controller.start(60secs)'),
+// m('button.pv1.mh3.mv1', {onclick: () => Controller.white.move() }, 'white.move()'),
+// m('button.pv1.mh3.mv1', {onclick: () => Controller.black.move() }, 'black.move()'),
+// m('button.pv1.mh3.mv1', {onclick: () => Controller.stop() }, 'Controller.stop'),
+
 const controller = {
     doprocess : false,
     slots     : [],

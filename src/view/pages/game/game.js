@@ -9,13 +9,8 @@ import GameFlags         from './game-flags';
 import GameButtons       from './game-buttons';
 import { Spacer, GrowSpacer, PageTitle, TextCenter, Error, Nothing} from '../../components/misc';
 
-let width;
-
 const Game = Factory.create('Game', {
 
-    onresize (innerWidth) {
-        width = innerWidth;
-    },
     view ( vnode ) {
 
         const { params: { uuid, turn }, className, style } = vnode.attrs;
@@ -38,11 +33,10 @@ const Game = Factory.create('Game', {
             ? m(Nothing)
             : !game
                 ? m('div.page.game', { className, style }, m(Error, 'Game not found: ' + uuid))
-                : width >= 720
+                : innerWidth >= 720
                     ? m('div.page.game', { className, style }, [
                         m(PageTitle,     { className: 'gm-players tc'}, m.trust(players) ),
                         m(Moves,         { game }),
-                        m(Spacer),
                         m(Spacer),
                         m(TextCenter,    { class: 'gm-result', title: 'result termination timecontrol'}, resultline ),
                         m(GrowSpacer),
