@@ -1,9 +1,41 @@
 import Chess from 'chess.js';
+import { H, $$ }  from '../services/helper';
 
 const chess = new Chess();
 
 export default {
 
+
+    scrollTurnIntoView (turn, msecs=60) {
+
+        // if (state.moves.length){
+        setTimeout( () => {
+
+            const selectorElem = 'td[data-turn="' + turn + '"]';
+            const selectorView = 'div.gm-moves';
+            const isVisible    = H.isVisibleInView($$(selectorElem), $$(selectorView));
+
+            if (!selectorElem || !selectorView) {
+                console.warn('scrollIntoView', selectorElem, selectorView);
+            }
+
+            if ( !isVisible && $$(selectorElem) ){
+                $$(selectorElem).scrollIntoView(true);
+            }
+
+        }, msecs);
+        // }
+
+    },
+
+    genResultLine(game) {
+        let accu = '';
+        game.result      && (accu += game.result + ' ');
+        game.termination && (accu += game.termination + ' ');
+        typeof game.timecontrol === 'object' && (accu += game.timecontrol.caption + ' ');
+        typeof game.timecontrol === 'string' && (accu += game.timecontrol + ' ');
+        return accu;
+    },
 
     // full list of moves in current game
     pgn2moves (pgn) {

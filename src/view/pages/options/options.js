@@ -24,7 +24,10 @@ const Options = Factory.create('Options', {
                         autosubmit: true,
                         ...DB.Options.first[formgroup],
                         submit: () => {
-                            DB.Options.update('0', {[formgroup]: formdata});
+                            delete formdata.group;
+                            delete formdata.submit;
+                            delete formdata.autosubmit;
+                            DB.Options.update('0', {[formgroup]: formdata}, true);
                         },
                     };
                     return m(Forms, {formdata, noheader: false, className: 'default-options group-' + formgroup});

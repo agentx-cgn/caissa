@@ -19,6 +19,11 @@
     font-size: 1rem;
     padding: 4px 1rem;
   }
+  div.play-options button,
+  div.default-options button {
+    font-weight: 800;
+    border-radius: 15px;
+  }
   div.play-options input[type="checkbox"],
   div.default-options input[type="checkbox"] {
     vertical-align: middle;

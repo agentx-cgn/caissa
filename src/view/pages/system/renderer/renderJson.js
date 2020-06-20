@@ -28,7 +28,7 @@ function renderTree(prop, tree, paths, statusLookup, options, level) {
     var length, value, filler;
     var sprop   = prop === null ? '' : prop + ' : ';
     var path   = JSON.stringify(paths);
-    var collapsed = statusLookup[path] !== null ? statusLookup[path] : paths.length > options.collapseAfter;
+    var collapsed = statusLookup[path] !== undefined ? statusLookup[path] : paths.length > options.collapseAfter;
 
     if (tree !== null && tree instanceof Array) {
         length = tree.length;
@@ -63,15 +63,15 @@ function renderTree(prop, tree, paths, statusLookup, options, level) {
 
 }
 
-export default function ( vnode ) {
+export default function ( ) {
 
-    var attrs = vnode.attrs;
-    var options = attrs.options || {};
+    // var attrs = vnode.attrs;
+    // var options = attrs.options || {};
     var statusLookup = {};
 
     return {
         view: function (vnode) {
-            var tree = vnode.attrs.tree;
+            const { tree, options } = vnode.attrs;
             return renderTree(null, tree, [], statusLookup, options, 0);
         },
     };

@@ -1,6 +1,7 @@
 
 import Config  from '../data/config';
-import { H, $$ }   from '../services/helper';
+import { H }   from '../services/helper';
+import DB      from '../services/database';
 
 const Tools = {
 
@@ -11,28 +12,6 @@ const Tools = {
             target = target.replace(':' + key, val);
         });
         return target;
-    },
-
-    scrollTurnIntoView (turn, msecs=60) {
-
-        // if (state.moves.length){
-        setTimeout( () => {
-
-            const selectorElem = 'td[data-turn="' + turn + '"]';
-            const selectorView = 'div.gm-moves';
-            const isVisible    = H.isVisibleInView($$(selectorElem), $$(selectorView));
-
-            if (!selectorElem || !selectorView) {
-                console.warn('scrollIntoView', selectorElem, selectorView);
-            }
-
-            if ( !isVisible && $$(selectorElem) ){
-                $$(selectorElem).scrollIntoView(true);
-            }
-
-        }, msecs);
-        // }
-
     },
 
     genGameHash (game) {
@@ -68,13 +47,14 @@ const Tools = {
     resolvePlayers (game) {
 
         const opponents = Config.opponents;
+        const username = DB.Options.first['user-data'].name;
 
         const w = game.mode[0];
         const b = game.mode[2];
 
         return {
-            white: opponents[w],
-            black: opponents[b],
+            white: opponents[w] === 'Human' ? username : opponents[w],
+            black: opponents[b] === 'Human' ? username : opponents[b],
         };
 
     },
@@ -82,13 +62,22 @@ const Tools = {
     createPlayTemplate (playtemplate, formdata) {
 
         const play = {
-            turn: 0,
-            ...Tools.resolvePlayers(playtemplate),
-            ...formdata,
+            ...Config.templates.game,
             ...playtemplate,
+            ...formdata,
+            ...Tools.resolvePlayers(playtemplate),
             difficulty: Tools.resolveDifficulty(formdata.depth),
-            pgn: '',
         };
+
+        delete play.autosubmit;
+        delete play.group;
+        delete play.subline;
+        delete play.submit;
+
+        play.turn = -1;
+        play.uuid = H.hash(JSON.stringify(play));
+
+        console.log('createPlayTemplate', play);
 
         return play;
 

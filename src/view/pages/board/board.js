@@ -29,7 +29,7 @@ const Board = Factory.create('Board', {
     view ( vnode ) {
 
         // keep the last board through page changes unless new uuid
-        // if no last uuid show empty board, ready to interact
+        // if no last uuid show default board, ready to interact
 
         DEBUG && console.log('board.view', vnode.attrs.params);
 
@@ -37,11 +37,11 @@ const Board = Factory.create('Board', {
 
         if (!uuid && !lastuuid) {
             // happens at start
-            game  = DB.Games.createget('empty');
-            board = DB.Boards.createget('empty');
+            game  = DB.Games.createget('default');
+            board = DB.Boards.createget('default');
             const fen = Config.fens.start;
-            DB.Boards.update('empty', { fen }, true);
-            // lastuuid = 'empty';
+            DB.Boards.update('default', { fen }, true);
+            // lastuuid = 'default';
 
         } else if (!uuid && lastuuid) {
             // there was a game, but user clicks menu

@@ -2,7 +2,6 @@
 import board_svg         from '../../extern/cm-chessboard/chessboard-sprite.svg';
 import {COLOR, MOVE_INPUT_MODE} from '../../extern/cm-chessboard/Chessboard';
 import { H } from '../services/helper';
-import playtemplates from './play-templates';
 
 const fens = H.create({
     empty: '8/8/8/8/8/8/8/8 w - - 0 1',
@@ -20,35 +19,25 @@ const pieces = H.create({
 });
 
 
-const playstemplates = [
-    {mode: 's-s', turn: 0 , uuid: '0000000A', subline: 'this is fun',
-        pgn: '', white: 'Stockfish', black: 'Stockfish', engine: 'stockfish',
-        depth: 5, timecontrol: 1,
+const availablePlays = [
+    {mode: 's-s', uuid: '0000000A', subline: 'this is fun',
+        white: 'Stockfish', black: 'Stockfish', engine: 'stockfish',
     },
 
-    {mode: 'h-s', turn: 0 , uuid: '0000000B', subline: 'beat the machine',
-        pgn: '', white: 'Human', black: 'Stockfish', engine: 'stockfish',
-        depth: 4, timecontrol: 1,
+    {mode: 'h-s', uuid: '0000000B', subline: 'beat the machine',
+        white: 'Human', black: 'Stockfish', engine: 'stockfish',
     },
 
-    {mode: 's-h', turn: 0 , uuid: '0000000C', subline: 'beat the machine',
-        pgn: '', white: 'Stockfish', black: 'Human', engine: 'stockfish',
-        depth: 3, timecontrol: 1,
+    {mode: 's-h', uuid: '0000000C', subline: 'beat the machine',
+        white: 'Stockfish', black: 'Human', engine: 'stockfish',
     },
 
 ];
 
-// const playstatetemplate = H.create({
-//     // timestamp: null, is in play
-//     moves: [],
-//     fen:   fens.start,
-//     play:  null,
-//     timecontrol: null,
-// });
-
 const gametemplateshort = H.create({
 
     uuid:        '00000000',     // string, 6 or 8 alphanums
+    mode:        'h-h',
     // STR (Seven Tag Roster)
     white:       'White',        // name of white player
     black:       'Black',        // name of black player
@@ -66,25 +55,11 @@ const gametemplateshort = H.create({
 
 });
 
-// const gametemplate = H.create({
-//     ...gametemplateshort,
-//     mode:       'h-h',          // indicates opponents s=stockfish, h= human, l=leela
-//     turn:       -3 ,            // Number, used to gen gen and display on board (-3 unknown, -2 empty board, -1 start, 0 after first ply)
-//     plycount:   0,              // # of halfmoves
-//     subline:    'this is fun',  // optional comment
-//     opening:    '',             // optional
-//     time:       10,             // optional, only for machine opponent
-//     depth:      3,              // optional,
-//     difficulty: 'rooky',        // optional, only for machine opponent
-//     timestamp:  1589137091395,  // game started or viewed
-// });
-
 const gametemplate = H.create({
-    // game        : {},
-    moves       : [],
+    moves:        [],
     score: {
-        maxcp       : 0,
-        maxmate     : 0,
+        maxcp:    0,
+        maxmate:  0,
     },
     buttons: {
         rotate:   true,
@@ -97,14 +72,14 @@ const gametemplate = H.create({
         evaluate: true,
     },
     flags : {
-        turn: '',     // turn w || b
-        over: false,  // game_over
-        chck: false,  // in_check
-        mate: false,  // check_mate
-        draw: false,  // in_draw
-        stal: false,  // in_stalemate
-        insu: false,  // insufficient_material
-        repe: false,  // in_threefold_repetition
+        turn:     '',     // turn w || b
+        over:     false,  // game_over
+        chck:     false,  // in_check
+        mate:     false,  // check_mate
+        draw:     false,  // in_draw
+        stal:     false,  // in_stalemate
+        insu:     false,  // insufficient_material
+        repe:     false,  // in_threefold_repetition
     },
 });
 
@@ -136,6 +111,8 @@ export default H.deepFreeze(H.create({
     pieces,
     opponents,
 
+    availablePlays,
+
     database: {
         updateInterval: 60 * 1000,
     },
@@ -143,13 +120,10 @@ export default H.deepFreeze(H.create({
     templates : {
         game:        gametemplate,
         gameshort:   gametemplateshort,
-        play:        playtemplates,
-        plays:       playstemplates,
-        boardstate:  boardtemplate,
+        board:       boardtemplate,
     },
     tableTemplates: {
         Games:   gametemplate,
-        Play:    playtemplates,
         Boards:  boardtemplate,
     },
 
@@ -222,7 +196,7 @@ export default H.deepFreeze(H.create({
                 markers:            ['marker4', 'marker5'],
             },
             responsive:             true,           // resizes the board on window resize, if true
-            animationDuration:      500,            // pieces animation duration in milliseconds
+            animationDuration:      300,            // pieces animation duration in milliseconds
             moveInputMode:          MOVE_INPUT_MODE.dragPiece, // set to MOVE_INPUT_MODE.dragPiece or MOVE_INPUT_MODE.dragMarker for interactive movement
         },
     }),

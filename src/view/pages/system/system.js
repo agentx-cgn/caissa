@@ -13,7 +13,7 @@ import JsonViewer    from './renderer/renderJson';
 const Json =  {
     name: 'Json',
     view ( {attrs : { tree } } ) {
-        return m('div.w-100.viewport-y.h-100', [
+        return m('div.w-100.viewport-y.h-100.bg-ccc', [
             m('div.f5.fior', { class: 'json-tree'}, [
                 m(JsonViewer, { tree, options: { collapseAfter: 1 } }),
             ]),

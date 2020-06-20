@@ -19,8 +19,9 @@ import {
 const DEBUG = true;
 
 const forms = {};
+const plays = game => game.mode !== 'h-h';
 
-Config.templates.plays.forEach( template =>  {
+Config.availablePlays.forEach( template =>  {
 
     const group = 'play-' + template.mode;
     const form = {
@@ -28,10 +29,10 @@ Config.templates.plays.forEach( template =>  {
         autosubmit: false,
         ...DB.Options.first[group],
         submit: (form) => {
-            let play = Tools.createPlayTemplate(template, form);
-            play = DB.Plays.create(play);
+            const play = Tools.createPlayTemplate(template, form);
+            DB.Games.create(play, true);
             DEBUG && console.log('plays.form.submitted', play.uuid, play.mode, play.white, play.black);
-            Caissa.route('/play/:uuid/', { uuid: play.uuid });
+            Caissa.route('/game/:turn/:uuid/', { uuid: play.uuid, turn: play.turn });
         },
     };
 
@@ -50,7 +51,7 @@ const Plays = Factory.create('Plays', {
 
             m(PageTitle,  'Start a new Game'),
             m(HeaderLeft, 'Play with Machines'),
-            m(FixedList, Config.templates.plays.map( play => {
+            m(FixedList, Config.availablePlays.map( play => {
 
                 const formdata = forms[play.mode];
                 const style = mode === play.mode
@@ -78,14 +79,14 @@ const Plays = Factory.create('Plays', {
 
             })),
 
-            m(HeaderLeft, 'Resume a Game (' + DB.Plays.length + ')'),
-            m(FlexListShrink, DB.Plays.list.map (play => {
+            m(HeaderLeft, 'Resume a Game (' + DB.Games.filter(plays).length + ')'),
+            m(FlexListShrink, DB.Games.filter(plays).map (play => {
                 const onclick = (e) => {e.redraw = false; Caissa.route('/play/:uuid/', {uuid: play.uuid});};
                 return m(FlexListPlayEntry, { onclick, play });
             })),
 
             m(Spacer),
-            m('button.pv1.mh3.mv1', {onclick: () => DB.Plays.clear() }, 'DB.Plays.clear()'),
+            m('button.pv1.mh3.mv1', {onclick: () => DB.Games.delete(plays) }, 'DB.Plays.clear()'),
             m('button.pv1.mh3.mv1', {onclick: () => DB.reset()       }, 'DB.reset()'),
 
         ]);

@@ -2,8 +2,9 @@
 import * as ls from 'local-storage';
 import { H }   from './helper';
 import Config  from '../data/config';
+// import DB from './database';
 
-const DEBUG = false;
+const DEBUG = true;
 
 const Table = function (tablename, dump=[], template={}) {
 
@@ -60,7 +61,6 @@ const Table = function (tablename, dump=[], template={}) {
             DEBUG && console.log('TAB.' + tablename, 'cleared', length, 'rows');
         },
         create (row, force=false) {
-            // row.uuid = H.shortuuid();
             cache.push(row);
             if (force){
                 self.persist();
@@ -81,19 +81,28 @@ const Table = function (tablename, dump=[], template={}) {
             DEBUG && console.log('TAB.' + tablename, 'createget', uuid);
             return row;
         },
-        delete (uuid, force=false) {
-            const idx = cache.findIndex( row => row.uuid === uuid);
-            if (idx > -1) {
-                cache.splice(idx, 1);
-                if (force){
-                    self.persist();
+        delete (what, force=true) {
+
+            if (typeof what === 'function'){
+                self.filter(what).forEach( row => {
+                    self.delete(row.uuid, false);
+                });
+                self.persist();
+
+            } else if (typeof what === 'string'){
+                const idx = cache.findIndex( row => row.uuid === what);
+                if (idx > -1) {
+                    cache.splice(idx, 1);
+                    if (force){
+                        self.persist();
+                    } else {
+                        isDirty = true;
+                    }
                 } else {
-                    isDirty = true;
+                    throw `ERROR ! DB.${tablename}.delete failed. ${what} not found`;
                 }
-            } else {
-                throw `ERROR ! DB.${tablename}.delete failed. ${uuid} not found`;
+                DEBUG && console.log('TAB.' + tablename, 'deleted', what);
             }
-            DEBUG && console.log('TAB.' + tablename, 'deleted', uuid);
         },
         update (uuid, diff, force=false) {
             const row  = self.find(uuid);
@@ -107,7 +116,7 @@ const Table = function (tablename, dump=[], template={}) {
             } else {
                 throw `ERROR ! DB.${tablename}.update failed. ${uuid} not found`;
             }
-            DEBUG && console.log('TAB.' + tablename, 'updated', uuid, H.shrink(diff));
+            DEBUG && console.log('TAB.' + tablename, 'updated', force ? 'force': '', uuid, H.shrink(diff));
             return row;
         },
         persist () {

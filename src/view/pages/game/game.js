@@ -29,8 +29,8 @@ const Game = Factory.create('Game', {
             if (game) {
                 DB.Games.update(uuid, { turn: ~~turn });
                 players    = game.white  + ' -<br>' + game.black;
-                resultline = game.result + ' '    + game.termination + ' ' + game.timecontrol;
-                Tools.scrollTurnIntoView(turn);
+                resultline = Tools.games.genResultLine(game);
+                Tools.games.scrollTurnIntoView(turn);
             }
         }
 

@@ -10,13 +10,12 @@ import Table   from './table';
 
 const SCHEME = '2020-06-17b';
 
-const tables = 'Boards Games Plays Options Usage'.split(' ');
+const tables = 'Boards Games Options Usage'.split(' ');
 const dumps  = {
     Usage:   [{uuid: '0', laststart: Date.now(), lastend: Date.now(), usage:0}],
     Options: [Options],
     Boards : [],
     Games :  [],
-    Plays :  [],
 };
 
 const DB =  {
@@ -25,11 +24,10 @@ const DB =  {
     all   () {
         return {
             scheme:  ls('scheme'),
-            usage:   ls('usage'),
-            options: ls('options'),
-            boards:  ls('boards'),
-            plays:   ls('plays'),
-            games:   ls('games'),
+            usage:   ls('Usage'),
+            options: ls('Options'),
+            boards:  ls('Boards'),
+            games:   ls('Games'),
         };
     },
     reset () {

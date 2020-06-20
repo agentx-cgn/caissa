@@ -24,11 +24,11 @@ const ConfigPages  = H.create({
     '/sources/':          [ Layout, Sources, Board,   { navi: '/sources/',  flags: ' sb ', title: 'Sources'}    ],
     '/games/':            [ Layout, Games,   Board,   { navi: '/games/',    flags: ' sb ', title: 'Games'}      ],
     '/games/:idx/':       [ Layout, Games,   Board,   { navi: '/games/',    flags: ' sb ', title: 'Games %s'}   ],
-    '/game/':             [ Layout, Game,    Board,   { navi: '/game/',     flags: ' sb ', title: 'Games'}      ],
+    // '/game/':             [ Layout, Game,    Board,   { navi: '/game/',     flags: ' sb ', title: 'Games'}      ],
     '/game/:turn/:uuid/': [ Layout, Game,    Board,   { navi: '/game/',     flags: ' sb ', title: 'Game %s'}    ],
     '/plays/':            [ Layout, Plays,   Board,   { navi: '/plays/',    flags: ' sb ', title: 'Plays'}      ],
     '/plays/:mode/':      [ Layout, Plays,   Board,   { navi: '/plays/',    flags: ' sb ', title: 'Plays'}      ],
-    '/play/:uuid/':       [ Layout, Play,    Board,   { navi: '/play/',     flags: ' sb ', title: 'Plays %s'}   ],
+    // '/play/:uuid/':       [ Layout, Play,    Board,   { navi: '/play/',     flags: ' sb ', title: 'Plays %s'}   ],
     '/analyzer/:fen/':    [ Layout, Game,    Board,   { navi: '/analyzer/', flags: ' sb ', title: 'Analyzer'}   ],
     '/options/':          [ Layout, Options, Board,   { navi: '/options/',  flags: ' sb ', title: 'Options'}    ],
 

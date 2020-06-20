@@ -13,32 +13,10 @@ import {FlexList, Spacer, Nothing}   from '../../components/misc';
 
 const Play = Factory.create('Play', {
 
-    // onbeforeremove ( ) {
-    //     isReady = false;
-    // },
-    // oninit  ( vnode ) {
-
-    //     const { uuid } = vnode.attrs;
-    //     const play = DB.Plays.list.filter( play => play.uuid = uuid);
-
-    //     Object.assign(state, Config.playstatetemplate, { play });
-
-    //     // console.log('play.oninit');
-    //     // Controller
-    //     //     .start(5 * 1000)
-    //     //     .then( () => {
-    //     //         console.log('play.oninit.done');
-    //     //         isReady = true;
-    //     //         Caissa.redraw();
-    //     //     })
-    //     // ;
-
-    // },
-
     view ( vnode ) {
 
         const { className, style, uuid } = vnode.attrs;
-        const play = DB.Plays.find(uuid);
+        const play = DB.Games.find(uuid);
 
         return m('div.page.play', { className, style },
 
