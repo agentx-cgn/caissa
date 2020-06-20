@@ -28,6 +28,11 @@ const playstemplates = [
 
     {mode: 'h-s', turn: 0 , uuid: '0000000B', subline: 'beat the machine',
         pgn: '', white: 'Human', black: 'Stockfish', engine: 'stockfish',
+        depth: 4, timecontrol: 1,
+    },
+
+    {mode: 's-h', turn: 0 , uuid: '0000000C', subline: 'beat the machine',
+        pgn: '', white: 'Stockfish', black: 'Human', engine: 'stockfish',
         depth: 3, timecontrol: 1,
     },
 
@@ -173,10 +178,11 @@ export default H.deepFreeze(H.create({
         {idx: 4, caption: 'localhost:3000/static/games.pgn',       value: 'http://localhost:3000/static/games.pgn'},
     ],
 
+    // still dummies
     openings : [
-        H.create({idx: 0, caption: 'OP01', value: 'OP01'}),
-        H.create({idx: 1, caption: 'OP02', value: 'OP02'}),
-        H.create({idx: 2, caption: 'OP03', value: 'OP03'}),
+        H.create({idx: 1, caption: 'OP01', value: 'OP01'}),
+        H.create({idx: 2, caption: 'OP02', value: 'OP02'}),
+        H.create({idx: 3, caption: 'OP03', value: 'OP03'}),
     ],
 
     timecontrols: [                          // initial | bonus

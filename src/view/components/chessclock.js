@@ -99,7 +99,7 @@ const ChessClock = Factory.create('ChessClock', {
     view ( vnode ) {
 
         const { player } = vnode.attrs;
-        const className  = m.cls({
+        const className  = H.classes({
             white:    player === 'w',
             black:    player === 'b',
             total:    player !== 'w' && player !== 'b',

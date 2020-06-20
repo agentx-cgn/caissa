@@ -16,6 +16,8 @@
   div.play-options input,
   div.default-options input {
     font-weight: 800;
+    font-size: 1rem;
+    padding: 4px 1rem;
   }
   div.play-options input[type="checkbox"],
   div.default-options input[type="checkbox"] {
@@ -26,6 +28,8 @@
   div.default-options input[type="number"] {
       font-family: 'Iosevka-Term-Medium';
       text-align: right;
+      font-size: 1rem;
+      padding: 4px 1rem;
   }
   div.play-options input[type="range"],
   div.default-options input[type="range"] {
@@ -37,7 +41,8 @@
       background-color: transparent;
   }
   div.default-options select option:hover {
-    background-color: #a89;
+    // background-color: #a89;
+    background-color: #0e62993b;
   }
   div.play-options select option,
   div.default-options select option {
@@ -56,10 +61,10 @@
   }
 
   div.play-options {
-    background-color: #bbb;
+    background-color: #0e629921;
     margin: 0 0 0.5rem 0;
     padding: 0.5rem 2rem;
-    border-top: 5px solid #89b;
+    // border-top: 5px solid #0e629921;
   }
   div.play-options div.group.title {
     font-weight: 800;

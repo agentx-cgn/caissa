@@ -19,7 +19,7 @@ page-title {
     text-align: left;
     font-family: 'SairaCondensed-Medium';
     background: rgb(136,102,102);
-    background: linear-gradient(0deg, rgba(136,102,102,1) 50%, rgba(119,85,85,1) 100%);
+    background: linear-gradient(0deg, #866 20%, #644 100%);
 }
 
 // div.title-left {
@@ -52,9 +52,8 @@ div.flexlistentry {
     cursor: pointer;
 }
 div.flexlistentry:hover {
-    background-color: #78a;
+    background-color: #0e62993b;
     color: white;
-    // transition: background-color 0.2s ease;
 }
 
 div.subline,

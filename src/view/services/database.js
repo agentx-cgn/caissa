@@ -8,6 +8,8 @@ import Config  from '../data/config';
 import { H }   from './helper';
 import Table   from './table';
 
+const SCHEME = '2020-06-17b';
+
 const tables = 'Boards Games Plays Options Usage'.split(' ');
 const dumps  = {
     Usage:   [{uuid: '0', laststart: Date.now(), lastend: Date.now(), usage:0}],
@@ -18,7 +20,7 @@ const dumps  = {
 };
 
 const DB =  {
-    scheme: '2020-06-17a',
+    scheme:    SCHEME,
     dump  () { console.log(JSON.stringify(localStorage, null, 2).replace(/\\"/g, '\''));},
     all   () {
         return {
@@ -58,10 +60,11 @@ const DB =  {
             if ( !test || false ) {
                 DB.reset();
 
-            } else if (DB.scheme !== ls('scheme')){
-                console.warn('WARN   :', 'New Scheme detected, please reset DB');
-
             } else {
+
+                if (DB.scheme !== ls('scheme')){
+                    console.warn('WARN   :', 'New Scheme detected, please reset DB');
+                }
 
                 tables.forEach(tablename => {
                     DB[tablename] = Table(
@@ -83,7 +86,7 @@ const DB =  {
             }
 
         } catch (e) {
-            console.warn('db.init.error', e);
+            console.error('DB.init.error', e);
             // throw 'DB.init() failed';
         }
 

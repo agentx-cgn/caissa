@@ -8,15 +8,21 @@ export default {
     },
 
     'play-h-s': {
-        depth: 3,
+        depth: 1,
         timecontrol:  {idx: 0, caption: '10 secs', value: `${ 1*10*1000}|0`},  // idx from Config.timecontrols
-        opening:      {idx: 0, label: 'OP01'},
+        opening:      {idx: 1, label: 'OP01'},
+    },
+
+    'play-s-h': {
+        depth: 2,
+        timecontrol:  {idx: 0, caption: '10 secs', value: `${ 1*10*1000}|0`},  // idx from Config.timecontrols
+        opening:      {idx: 2, label: 'OP02'},
     },
 
     'play-s-s': {
         depth: 3,
         timecontrol:  {idx: 0, caption: '10 secs', value: `${ 1*10*1000}|0`},  // idx from Config.timecontrols
-        opening:      {idx: 0, label: 'OP01'},
+        opening:      {idx: 3, label: 'OP03'},
     },
 
     'game-evaluator': {

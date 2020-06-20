@@ -46,7 +46,10 @@ const ChessBoard = Factory.create('ChessBoard', {
             game  = vnode.attrs.game;
             board = vnode.attrs.board;
 
-            chessBoard.view.handleResize();
+            try {
+                // svg may be not yet loaded
+                chessBoard.view.handleResize();
+            } catch(e){DEBUG && console.log('chessBoard.view.handleResize', e);}
 
             (chessBoard.getOrientation() !== board.orientation) && chessBoard.setOrientation(board.orientation);
             // Tools.board.resize(innerWidth, innerHeight);

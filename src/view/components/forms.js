@@ -23,10 +23,9 @@ const TimeStamp = function () {
     };
 };
 
-function renderFormGroup (group)  {
-
+function renderFormGroup (noheader, group)  {
     return m('[', [
-        m('div.group.title.sair', group.title),
+        !noheader && m('div.group.title.sair', group.title),
         ...group.controls
             .sort( (a, b) => a.sort - b.sort)
             .filter (control => control.active)
@@ -186,15 +185,15 @@ function renderGroupControl (control) {
 const Forms = Factory.create('Forms', {
     view( vnode ) {
 
-        const { formdata } = vnode.attrs;
+        const { formdata, noheader, className, style } = vnode.attrs;
 
-        return m('div.forms', vnode.attrs,
+        return m('div.forms', {className, style},
             FormGroups(formdata)
                 .filter(
                     form => form.group === formdata.group,
                 )
                 .sort( (a, b) => a.sort - b.sort )
-                .map( renderFormGroup )
+                .map( renderFormGroup.bind(null, !!noheader) )
             ,
         );
 

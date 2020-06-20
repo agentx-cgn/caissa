@@ -9,23 +9,13 @@ import Caissa, { Routes, DefaultRoute } from './view/caissa';
 
 const DEBUG = false;
 
-DEBUG && console.log('Info   :', 'Loaded imports after', Date.now() - window.t0, 'msecs', process.env.NODE_ENV);
+DEBUG && console.log('Info   :', process.env.NODE_ENV, 'loaded imports after', Date.now() - window.t0, 'msecs');
 
 module.hot && module.hot.accept();
 
 // window.H = H;
 window.Caissa = Caissa;
 Caissa.onafterImport();
-
-// Extend Mithril
-m.cls = (def = {}, sep = ' ', classes = '') => {
-    for (const cls in def) {
-        if (def[cls]) {
-            classes += `${classes && sep}` + cls;
-        }
-    }
-    return classes;
-};
 
 // Wire up mithril app to DOM
 const $root = document.body.querySelector('.root');

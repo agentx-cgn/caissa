@@ -12,18 +12,14 @@
 //    f5 =   1.0rem
 
 
-
 div.layout {
     height: 100%;
     flex-direction: column;
     display: flex;
 }
-
 header {
-    height: 2.625rem;
     width: 100%;
     nav {
-        height: 2.625rem;
         > label {
             left: 0;
             top: 0;
@@ -31,8 +27,8 @@ header {
     }
 }
 
-
-// BARS
+// BARS, Menus
+header, nav,
 div.board-bar-top,
 div.board-bar-bot,
 div.gm-bar-flags,
@@ -40,8 +36,6 @@ div.gm-bar-buttons {
     height: 2.625rem;
 }
 div.chessboard {
-    // height: calc(100vw - 356px);
-    // width:  calc(100vw - 356px);
     margin: -2px;
 }
 main {
@@ -56,7 +50,7 @@ main {
 div.pages {
     display: flex;
     position: relative;
-    width: calc(10 * 100vw);
+    width: calc(10 * 100vw); //TODO: ??
 }
 div.page {
     display: flex;
@@ -84,17 +78,17 @@ section.content {
 // show hamburger
 nav {
     height: auto;
-}
-nav ul {
-    display: none;
-}
-nav ul li {
-    display: block;
-}
-nav input:checked + ul {
-    width: 22.5rem;
-    top: 40px;
-    display: block;
+    ul {
+        display: none;
+        li {
+            display: block;
+        }
+    }
+    input:checked + ul {
+        width: 22.5rem;
+        top: 40px;
+        display: block;
+    }
 }
 
 // small screen (mobile)

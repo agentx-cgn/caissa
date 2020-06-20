@@ -308,6 +308,18 @@ const H = {
     },
 
 
+    /**    C S S     */
+
+    classes (def = {}, sep = ' ', classes = '') {
+        for (const cls in def) {
+            if (def[cls]) {
+                classes += `${classes && sep}` + cls;
+            }
+        }
+        return classes;
+    },
+
+
     /**    S T U F F     */
 
     interprete (val){

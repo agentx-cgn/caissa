@@ -20,7 +20,9 @@ import System from './system';
 const FormGroups = function ( formdata ) {
 
     return [
-        {   group: 'play-s-s',               sort: 20, title: 'Stockfish - Stockfish',         active: true,
+        {   group: 'uuid',                   sort: 0,  title: '',                              active: false,
+            controls: [],
+        },{ group: 'play-s-s',               sort: 20, title: 'Stockfish - Stockfish',         active: true,
             controls:
                 [  { caption: 'Depth',       sort: 10, type: 'range',                          active: true,
                     value: () => formdata.depth,

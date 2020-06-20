@@ -38,8 +38,7 @@ const Caissa = {
 
     //from loading screen
     start () {
-        document.body.removeChild($$('loading-screen'));
-        document.body.removeChild($$('loading-backdrop'));
+        document.body.removeChild($$('loading-container'));
     },
     // == window.onload
     onload () {
@@ -50,13 +49,13 @@ const Caissa = {
             : console.log ('Info   :', '... done after', 0, t, 'msecs')
         ;
         if (DB.Options.first['ui'].waitscreen) {
-            $$('loading-screen button.start').style.display        = 'inline-block';
-            $$('loading-screen button.reload').style.display       = 'inline-block';
-            $$('loading-screen button.a2home').style.display       = 'inline-block';
+            $$('loading-screen .start').style.display        = 'inline-block';
+            $$('loading-screen .reload').style.display       = 'inline-block';
+            $$('loading-screen .a2home').style.display       = 'inline-block';
+            $$('loading-screen .dump').style.display         = 'inline-block';
             $$('loading-screen .option-waitscreen').style.display  = 'inline-block';
         } else {
-            document.body.removeChild($$('loading-screen'));
-            document.body.removeChild($$('loading-backdrop'));
+            document.body.removeChild($$('loading-container'));
         }
         console.log(' ');
     },

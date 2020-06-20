@@ -13,7 +13,10 @@ import {
     FlexListShrink,
     FixedList,
     FlexListEntry,
-    FlexListPlayEntry } from '../../components/misc';
+    FlexListPlayEntry,
+    HeaderLeft} from '../../components/misc';
+
+const DEBUG = true;
 
 const forms = {};
 
@@ -27,7 +30,7 @@ Config.templates.plays.forEach( template =>  {
         submit: (form) => {
             let play = Tools.createPlayTemplate(template, form);
             play = DB.Plays.create(play);
-            console.log('plays.form.submitted', play.uuid, play.mode, play.white, play.black);
+            DEBUG && console.log('plays.form.submitted', play.uuid, play.mode, play.white, play.black);
             Caissa.route('/play/:uuid/', { uuid: play.uuid });
         },
     };
@@ -45,12 +48,13 @@ const Plays = Factory.create('Plays', {
 
         return m('div.page.plays', { className, style }, [
 
-            m(PageTitle, 'Start a new Play'),
+            m(PageTitle,  'Start a new Game'),
+            m(HeaderLeft, 'Play with Machines'),
             m(FixedList, Config.templates.plays.map( play => {
 
                 const formdata = forms[play.mode];
                 const style = mode === play.mode
-                    ? {marginBottom: '0px', backgroundColor: 'rgba(255,255,255,.2)'}
+                    ? { marginBottom: '0px', backgroundColor: '#0e62993b', color: 'white' }
                     : {}
                 ;
                 const onclick  = mode === play.mode
@@ -67,14 +71,14 @@ const Plays = Factory.create('Plays', {
                     ]),
 
                     play.mode === mode
-                        ? m(Forms, {formdata, class: 'play-options', style: 'background-color: rgba(255,255,255,.3)'})
+                        ? m(Forms, {formdata, noheader: true, className: 'play-options'})
                         : m(Nothing),
 
                 ]);
 
             })),
 
-            m(PageTitle, 'Resume a Play (' + DB.Games.length + ')'),
+            m(HeaderLeft, 'Resume a Game (' + DB.Plays.length + ')'),
             m(FlexListShrink, DB.Plays.list.map (play => {
                 const onclick = (e) => {e.redraw = false; Caissa.route('/play/:uuid/', {uuid: play.uuid});};
                 return m(FlexListPlayEntry, { onclick, play });
