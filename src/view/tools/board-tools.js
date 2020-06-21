@@ -1,12 +1,8 @@
 
-import Chess    from  'chess.js';
+import Chess         from  'chess.js';
 import {MARKER_TYPE} from '../../extern/cm-chessboard/Chessboard';
-import Dispatcher from '../services/dispatcher';
-import State from '../data/state';
-import Config from '../data/config';
-import { $$ }  from '../services/helper';
-
-const fire = Dispatcher.connect({name: 'board-tools'});
+import Config        from '../data/config';
+import { $$ }        from '../services/helper';
 
 export default {
 
@@ -74,7 +70,7 @@ export default {
             if (bm.from && po.from){
                 chessBoard.addArrow(po.from, po.to, {class: 'arrow ponder'});
                 chessBoard.addArrow(bm.from, bm.to, {class: 'arrow bestmove', onclick: function () {
-                    fire('board', 'move', [[arrows.bestmove.move]]);
+                    // fire('board', 'move', [[arrows.bestmove.move]]);
                 }});
             }
         }
@@ -124,17 +120,17 @@ export default {
     },
 
     // return game state as colors and boolean
-    updateFlags (chess) {
-        const flags = State.game.flags;
-        flags.turn = chess.turn();  // w/b
-        flags.over = chess.game_over();
-        flags.chck = chess.in_check();
-        flags.mate = chess.in_checkmate();
-        flags.draw = chess.in_draw();
-        flags.stal = chess.in_stalemate();
-        flags.insu = chess.insufficient_material();
-        flags.repe = chess.in_threefold_repetition();
-    },
+    // updateFlags (chess) {
+    //     const flags = State.game.flags;
+    //     flags.turn = chess.turn();  // w/b
+    //     flags.over = chess.game_over();
+    //     flags.chck = chess.in_check();
+    //     flags.mate = chess.in_checkmate();
+    //     flags.draw = chess.in_draw();
+    //     flags.stal = chess.in_stalemate();
+    //     flags.insu = chess.insufficient_material();
+    //     flags.repe = chess.in_threefold_repetition();
+    // },
 
     genCapturedPieces (fen) {
 

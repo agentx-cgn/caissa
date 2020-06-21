@@ -21,7 +21,7 @@ const DEBUG = true;
 const forms = {};
 const plays = game => game.mode !== 'h-h';
 
-Config.availablePlays.forEach( template =>  {
+Array.from(Config.availablePlays).forEach( template =>  {
 
     const group = 'play-' + template.mode;
     const form = {
@@ -51,7 +51,7 @@ const Plays = Factory.create('Plays', {
 
             m(PageTitle,  'Start a new Game'),
             m(HeaderLeft, 'Play with Machines'),
-            m(FixedList, Config.availablePlays.map( play => {
+            m(FixedList, Array.from(Config.availablePlays).map( play => {
 
                 const formdata = forms[play.mode];
                 const style = mode === play.mode

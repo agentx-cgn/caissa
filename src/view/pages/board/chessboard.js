@@ -1,14 +1,13 @@
 
-import { $$ } from '../../services/helper';
-import Factory from '../../components/factory';
-import Config   from '../../data/config';
-// import GameController from '../../controller/game-controller';
 import { Chessboard } from '../../../extern/cm-chessboard/Chessboard';
-import Tools from '../../tools/tools';
+import { $$ }         from '../../services/helper';
+import Factory        from '../../components/factory';
+import Config         from '../../data/config';
+import Tools          from '../../tools/tools';
 
-const DEBUG = false;
+const DEBUG = true;
 
-let chessBoard, board, game;
+let chessBoard, board, game, controller;
 
 const ChessBoard = Factory.create('ChessBoard', {
     onresize : Tools.board.resize,
@@ -17,13 +16,15 @@ const ChessBoard = Factory.create('ChessBoard', {
             $$('div.chessboard'),
             Config.board.config,
         );
+        chessBoard.disableContextInput();
         Tools.board.resize(innerWidth, innerHeight);
-        chessBoard.view.handleResize();
+        try {
+            // svg may be not yet loaded
+            chessBoard.view.handleResize();
+        } catch(e){DEBUG && console.log('chessBoard.oncreate.handleResize', e);}
         DEBUG && console.log('chessboard.oncreate');
     },
     onbeforeremove () {
-        // Removes the board from the DOM. Returns a Promise which will be resolved, after destruction.
-        // If a Promise is returned, Mithril only detaches the DOM element after the promise completes.
         return chessBoard.destroy().then( () => {
             chessBoard = undefined;
             DEBUG && console.log('chessboard.destroyed');
@@ -33,6 +34,7 @@ const ChessBoard = Factory.create('ChessBoard', {
 
         game  = vnode.attrs.game;
         board = vnode.attrs.board;
+        controller = vnode.attrs.controller;
 
         DEBUG && console.log('chessboard.view.cbgb', !!chessBoard, !!game, !!board);
         return m('div.chessboard');
@@ -45,26 +47,30 @@ const ChessBoard = Factory.create('ChessBoard', {
         } else {
             game  = vnode.attrs.game;
             board = vnode.attrs.board;
+            controller = vnode.attrs.controller;
+            chessBoard.disableMoveInput();
 
             try {
                 // svg may be not yet loaded
                 chessBoard.view.handleResize();
-            } catch(e){DEBUG && console.log('chessBoard.view.handleResize', e);}
+            } catch(e){DEBUG && console.log('chessBoard.onupdate.handleResize', e);}
 
             (chessBoard.getOrientation() !== board.orientation) && chessBoard.setOrientation(board.orientation);
             // Tools.board.resize(innerWidth, innerHeight);
             DEBUG && console.log('chessboard.onupdate.cbgb', !!chessBoard, !!game, !!board);
         }
 
-        // chessBoard.enableMoveInput(inputHandler({move: (...args) => {
-        //     console.log('board.onupdate.move', ...args);
-        // }}, chess), COLOR.white);
     },
     onafterupdates () {
 
         if (chessBoard && game && board) {
             DEBUG && console.log('chessboard.onafterupdates', board.fen);
-            chessBoard.setPosition(board.fen, true);
+            chessBoard
+                .setPosition(board.fen, true)
+                .then( () => {
+                    controller.listen(chessBoard);
+                })
+            ;
 
         } else {
             DEBUG && console.warn('chessboard.onafterupdates.cbgb', !!chessBoard, !!game, !!board);

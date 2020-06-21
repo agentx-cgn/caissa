@@ -117,7 +117,7 @@ function renderGroupControl (control) {
             ),
             ! control.attributes.list
                 ? m('span')
-                : m('datalist', {id: control.attributes.list}, control.datalist.map(entry => m('option', entry))),
+                : m('datalist', {id: control.attributes.list}, Array.from(control.datalist).map(entry => m('option', entry))),
 
         ];
 
@@ -143,7 +143,7 @@ function renderGroupControl (control) {
         return [
             m('div.control-label-100', read(control.caption)),
             m('div.control-100',
-                m('select.mh3', control.attributes, control.options.map( opt => m('option', opt) )),
+                m('select.mh3', control.attributes, Array.from(control.options).map( opt => m('option', opt) )),
             ),
         ];
 
@@ -154,23 +154,23 @@ function renderGroupControl (control) {
             m('div.tl.f5.pl3.pv2.w-100',
                 m('select.ph2.w-100', {style: 'padding-top: 2px; padding-bottom: 2px;'},
                     control.attributes,
-                    control.options.map( opt => m('option', {value: opt.idx, selected: opt.idx === index}, opt.caption) ),
+                    Array.from(control.options).map( opt => {
+                        return m('option', {value: opt.idx, selected: opt.idx === index}, opt.caption);
+                    }),
                 ),
             ),
 
         ];
 
     } else if (control.type === 'selectindexed-split') {
-        // const value = read(control.value);
-        // if (!value || value.idx === undefined){
-        //     console.log('form.error', control, value, value.idx);
-        // }
         const index = read(control.value).idx;
         return [
             m('div.control-label-40', read(control.caption)),
             m('div.control-60',
                 m('select.ph2.w-100', {style: 'padding-top: 2px; padding-bottom: 2px;',  ...control.attributes},
-                    control.options.map( opt => m('option', {value: opt.idx, selected: opt.idx === index}, opt.caption) ),
+                    Array.from(control.options).map( opt => {
+                        return m('option', {value: opt.idx, selected: opt.idx === index}, opt.caption);
+                    }),
                 ),
             ),
 

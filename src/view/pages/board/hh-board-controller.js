@@ -1,18 +1,44 @@
 
 import Chess        from 'chess.js';
+import { COLOR }    from '../../../extern/cm-chessboard/Chessboard';
 import Clock        from '../../components/chessclock';
 import Pool         from '../../services/engine/pool';
-import Dispatcher   from '../../services/dispatcher';
 import { H }        from '../../services/helper';
-
-const fire = Dispatcher.connect({ name: 'play-controller',
-
-});
+import InputController from './input-controller';
+import BoardController from './board-controller';
 
 // m('button.pv1.mh3.mv1', {onclick: () => Controller.start(60 * 1000) }, 'Controller.start(60secs)'),
 // m('button.pv1.mh3.mv1', {onclick: () => Controller.white.move() }, 'white.move()'),
 // m('button.pv1.mh3.mv1', {onclick: () => Controller.black.move() }, 'black.move()'),
 // m('button.pv1.mh3.mv1', {onclick: () => Controller.stop() }, 'Controller.stop'),
+
+class SSBoardController extends BoardController {
+
+    constructor (game, board) {
+        super(game, board);
+    }
+    newTurn (turn) {
+        this.turn = turn;
+        if (turn >= 0){
+            this.color = (turn % 2) ? COLOR.white : COLOR.black;
+        } else {
+            this.color = null;
+        }
+    }
+    listen (chessBoard) {
+        if (this.game.mode !== 'h-h' && this.game.mode !== 's-s' && this.isRunning){
+            chessBoard.enableMoveInput(InputController(this));
+        }
+    }
+    onmove (move) {
+        // {from: event.squareFrom, to: event.squareTo}
+        // update game with move
+        // redirect to new turn
+        console.log(move);
+    }
+
+}
+
 
 const controller = {
     doprocess : false,
@@ -48,8 +74,6 @@ const controller = {
 
             slots[0].name = 'white';
             slots[1].name = 'black';
-
-            fire('board', 'fen', [ controller.chess.fen() ]);
 
             Clock.start(timecontrol);
             Clock.over = (whitetime, blacktime) => {
@@ -87,8 +111,6 @@ const controller = {
 
         }
 
-        fire('board', 'fen', [ controller.chess.fen() ]);
-
         return controller.process;
 
     },
@@ -124,6 +146,6 @@ const controller = {
     },
 };
 
-export { controller as default };
+export default SSBoardController;
 
 

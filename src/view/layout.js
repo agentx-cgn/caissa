@@ -26,7 +26,9 @@ const Layout = Factory.create('Layout', {
             m('main', {}, [
                 m('section.pages', {}, m(Pages, { route, params }, Page)),
                 width >= 720
+                    // desktop with board or something
                     ? m('section.content', {}, m(Section, { route, params } ))
+                    // empty for mobile
                     : m('section.content', {}, m(Nothing))
                 ,
             ]),

@@ -1,11 +1,10 @@
 
 import { INPUT_EVENT_TYPE } from '../../../extern/cm-chessboard/Chessboard';
-import State        from '../../data/state';
 import Tools        from '../../tools/tools';
 
-const state = State.board;
+const InputController = function( controller ) {
 
-const GameController = function( board, chess ) {
+    const { chess, game, onmove } = controller;
 
     return function inputHandler(event) {
 
@@ -14,7 +13,7 @@ const GameController = function( board, chess ) {
         // console.log('event', event);
         switch (event.type) {
         case INPUT_EVENT_TYPE.moveStart:
-            state.moveStart = event.square;
+            game.moveStart = event.square;
             // Tools.updateArrows(chess, chessBoard, state);
             return true;
 
@@ -27,12 +26,13 @@ const GameController = function( board, chess ) {
             //     return result ? chess1.fen() : '';
             // },
 
-            state.moveStart = '';
+            game.moveStart = '';
             move   = {from: event.squareFrom, to: event.squareTo};
             result = Tools.isValid(chess, move);
 
             if (Tools.isValid(chess, move)) {
-                board.move([move]);
+                // board.move([move]);
+                onmove(move);
             } else {
                 console.log('illegal: ', move, result);
             }
@@ -40,11 +40,11 @@ const GameController = function( board, chess ) {
             return !!result;
 
         case INPUT_EVENT_TYPE.moveCanceled:
-            state.moveStart = '';
+            game.moveStart = '';
         }
 
     };
 
 };
 
-export default GameController;
+export default InputController;

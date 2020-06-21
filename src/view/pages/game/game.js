@@ -1,12 +1,11 @@
 import './game.scss';
 
 import Tools             from '../../tools/tools';
-// import { H }             from '../../services/helper';
 import DB                from '../../services/database';
 import Factory           from '../../components/factory';
+import Board             from '../board/board';
 import Moves             from './moves';
-import GameFlags         from './game-flags';
-import GameButtons       from './game-buttons';
+
 import { Spacer, GrowSpacer, PageTitle, TextCenter, Error, Nothing} from '../../components/misc';
 
 const Game = Factory.create('Game', {
@@ -34,6 +33,8 @@ const Game = Factory.create('Game', {
             : !game
                 ? m('div.page.game', { className, style }, m(Error, 'Game not found: ' + uuid))
                 : innerWidth >= 720
+
+                    // desktop, as page no board
                     ? m('div.page.game', { className, style }, [
                         m(PageTitle,     { className: 'gm-players tc'}, m.trust(players) ),
                         m(Moves,         { game }),
@@ -41,13 +42,13 @@ const Game = Factory.create('Game', {
                         m(TextCenter,    { class: 'gm-result', title: 'result termination timecontrol'}, resultline ),
                         m(GrowSpacer),
                     ])
+
+                    // mobile, as page with board
                     : m('div.page.game', { className, style }, [
                         m(PageTitle,     { className: 'gm-players tc' }, m.trust(players)),
                         m(Moves,         { game }),
                         m(Spacer),
-                        m(GameFlags,     { game }),
-                        m(Spacer),
-                        m(GameButtons,   { game }),
+                        m(Board,         { uuid, turn }),
                         m(Spacer),
                         m(TextCenter,    { class: 'gm-result', title: 'result termination timecontrol'}, resultline ),
                         m(GrowSpacer),

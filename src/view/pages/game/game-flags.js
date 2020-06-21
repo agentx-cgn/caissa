@@ -22,9 +22,8 @@
 import { H }    from '../../services/helper';
 import Factory  from '../../components/factory';
 
-const flagger = function (flags) {
+const flagger = function (f) {
 
-    const f        = flags;
     const cTrans   = 'c999 bg-999';
     const cActive  = 'dark-red';
     const cPlayer  = f.turn === 'w' ? 'ceee' : 'c333';
@@ -43,11 +42,10 @@ const flagger = function (flags) {
 
 const GameFlags = Factory.create('GameFlags', {
     view( vnode ) {
-        const { game } = vnode.attrs;
         return (
             m('div.gm-bar',
                 m('div.gm-flags',
-                    H.map(flagger(game.flags), (_, props) => {
+                    H.map(flagger(vnode.attrs.game.flags), (_, props) => {
                         return m(props.tag, {title: props.title, class: props.class});
                     }),
                 ),

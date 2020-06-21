@@ -5,7 +5,7 @@ import Help            from '../pages/help/help';
 import Options         from '../pages/options/options';
 import Games           from '../pages/games/games';
 import Plays           from '../pages/plays/plays';
-import Play            from '../pages/play/play';
+// import Play            from '../pages/play/play';
 import Board           from '../pages/board/board';
 import Game            from '../pages/game/game';
 import Sources         from '../pages/sources/sources';
@@ -13,10 +13,8 @@ import System          from '../pages/system/system';
 import {Nothing}       from '../components/misc';
 import { H }           from '../services/helper';
 
-// const CompPages = [Sources, Games, Game, Plays, Play, Options, System];
-
 const DefaultRoute = '/menu/';
-const CompPages    = [Menu, Sources, Games, Game, Options, System, Plays, Play];
+const CompPages    = [Menu, Sources, Games, Game, Options, System, Plays];
 const ConfigPages  = H.create({
 
     // Route                Layout  Page     Content    Navigation Feedback  Flags         Title

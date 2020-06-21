@@ -22,7 +22,7 @@ const Menu = Factory.create('Menu', {
         return m('div.page.menu', { className, style },
             m(FlexList, [
                 m(PageTitle, 'Menu'),
-                Config.navigation.map( ([route, params, entry]) => {
+                ...Array.from(Config.navigation).map( ([route, params, entry]) => {
                     return m(FlexListEntry, { class: '', onclick: clicker(route, params) }, [
                         m(HeaderLeft, [
                             m('i.menu.fa.fa-chess-board'),

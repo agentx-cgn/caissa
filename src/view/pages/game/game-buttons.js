@@ -6,33 +6,33 @@ import DB           from '../../services/database';
 import evaluate     from './game-evaluate';
 import GameProgress from './game-progress';
 
-let curgame;
+let curGame;
 
 function setTurn (diff) {
-    const turn = curgame.turn;
+    const turn = curGame.turn;
     return (
         diff === '0' ? 0 :
-        diff === 'e' ? curgame.moves.length -1 :
+        diff === 'e' ? curGame.moves.length -1 :
         turn === -2 && diff < 0  ? -2 :
-        turn === curgame.moves.length -1 && diff > 0  ? curgame.moves.length -1 :
+        turn === curGame.moves.length -1 && diff > 0  ? curGame.moves.length -1 :
         turn + diff
     );
 }
 
 const actions = {
-    back  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn('0'), uuid: curgame.uuid}, { replace: true }); return H.eat(e);},
-    left  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn(-1),  uuid: curgame.uuid}, { replace: true }); return H.eat(e);},
-    right (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn(+1),  uuid: curgame.uuid}, { replace: true }); return H.eat(e);},
-    fore  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn('e'), uuid: curgame.uuid}, { replace: true }); return H.eat(e);},
+    back  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn('0'), uuid: curGame.uuid}, { replace: true }); return H.eat(e);},
+    left  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn(-1),  uuid: curGame.uuid}, { replace: true }); return H.eat(e);},
+    right (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn(+1),  uuid: curGame.uuid}, { replace: true }); return H.eat(e);},
+    fore  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn('e'), uuid: curGame.uuid}, { replace: true }); return H.eat(e);},
     pause (e) { e.redraw = false; return H.eat(e);},
     play  (e) { e.redraw = false; return H.eat(e);},
-    eval  (e) { e.redraw = false; evaluate(curgame); return H.eat(e);},
+    eval  (e) { e.redraw = false; evaluate(curGame); return H.eat(e);},
     rotate (e) {
         e.redraw = false;
-        const board = DB.Boards.find(curgame.uuid);
+        const board = DB.Boards.find(curGame.uuid);
         if (board){
             const orientation = board.orientation === 'w' ? 'b' : 'w';
-            DB.Boards.update(curgame.uuid, {orientation});
+            DB.Boards.update(curGame.uuid, {orientation});
             Caissa.redraw();
         }
     },
@@ -58,8 +58,11 @@ const buttons = {
 
 const GameButtons = Factory.create('GameButtons', {
     view( vnode ) {
+
         const { game } = vnode.attrs;
-        curgame = game;
+        curGame = game;
+        // curController = controller;
+
         return m('div.gm-bar', [
             m('div.gm-buttons.f3',
                 H.map(buttons, (name, props) => {

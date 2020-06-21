@@ -43,18 +43,16 @@ const Navigation = Factory.create('Navigation', {
                 });
             }}),
 
-            m('ul', [
-                ...Config.navigation.map( ([route, params, entry]) => {
-                    // const [route, params, entry] = item;
-                    return m('li', {
-                        onclick: clicker(route, params),
-                        class: route.startsWith(navi) ? 'selected' : 'unselected'}, entry)
-                    ;
-                }),
+            m('ul', Array.from(Config.navigation).map( ([route, params, entry]) => {
+                return m('li', {
+                    onclick: clicker(route, params),
+                    class: route.startsWith(navi) ? 'selected' : 'unselected'}, entry)
+                ;
+            })),
                 // m('li.unselected', m('a.link', {target:'_blank', href: 'https://github.com/agentx-cgn/caissa'}, 'SOURCE')),
                 // m('li.unselected', m('a.link', {target:'_blank', href: 'https://caissa.js.org/'}, 'LIVE')),
 
-            ]),
+            // ]),
 
         ]);
     },

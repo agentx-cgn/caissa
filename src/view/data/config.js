@@ -9,30 +9,30 @@ const fens = H.create({
 });
 
 const pieces = H.create({
-    fens : {
+    fens : H.create({
         white:  'PPPPPPPPRNBQKBNR',
         black:  'pppppppprnbqkbnr',
         sorted: 'kqrbnp',
-    },
+    }),
     blacks: ['wk', 'wq', 'wr', 'wb', 'wn', 'wp' ],
     whites: ['bk', 'bq', 'br', 'bb', 'bn', 'bp' ],
 });
 
 
-const availablePlays = [
-    {mode: 's-s', uuid: '0000000A', subline: 'this is fun',
-        white: 'Stockfish', black: 'Stockfish', engine: 'stockfish',
-    },
+// const availablePlays = [
+//     H.create({mode: 's-s', uuid: '0000000A', subline: 'this is fun',
+//         white: 'Stockfish', black: 'Stockfish', engine: 'stockfish',
+//     }),
 
-    {mode: 'h-s', uuid: '0000000B', subline: 'beat the machine',
-        white: 'Human', black: 'Stockfish', engine: 'stockfish',
-    },
+//     H.create({mode: 'h-s', uuid: '0000000B', subline: 'beat the machine',
+//         white: 'Human', black: 'Stockfish', engine: 'stockfish',
+//     }),
 
-    {mode: 's-h', uuid: '0000000C', subline: 'beat the machine',
-        white: 'Stockfish', black: 'Human', engine: 'stockfish',
-    },
+//     H.create({mode: 's-h', uuid: '0000000C', subline: 'beat the machine',
+//         white: 'Stockfish', black: 'Human', engine: 'stockfish',
+//     }),
 
-];
+// ];
 
 const gametemplateshort = H.create({
 
@@ -105,31 +105,47 @@ const opponents = H.create({
 //     'https://en.wikipedia.com',
 // ].map(encodeURI);
 
-export default H.deepFreeze(H.create({
+// export default H.deepFreeze(H.create({
+export default H.deepFreezeCreate({
 
     fens,
     pieces,
     opponents,
 
-    availablePlays,
+    // availablePlays,
 
     database: {
         updateInterval: 60 * 1000,
     },
 
-    templates : {
+    availablePlays : [
+        H.create({mode: 's-s', uuid: '0000000A', subline: 'this is fun',
+            white: 'Stockfish', black: 'Stockfish', engine: 'stockfish',
+        }),
+
+        H.create({mode: 'h-s', uuid: '0000000B', subline: 'beat the machine',
+            white: 'Human', black: 'Stockfish', engine: 'stockfish',
+        }),
+
+        H.create({mode: 's-h', uuid: '0000000C', subline: 'beat the machine',
+            white: 'Stockfish', black: 'Human', engine: 'stockfish',
+        }),
+
+    ],
+
+    templates : H.create({
         game:        gametemplate,
         gameshort:   gametemplateshort,
         board:       boardtemplate,
-    },
-    tableTemplates: {
+    }),
+    tableTemplates: H.create({
         Games:   gametemplate,
         Boards:  boardtemplate,
-    },
+    }),
 
-    pagecache: {
+    pagecache: H.create({
         size: 5,
-    },
+    }),
 
     navigation : [
         ['/sources/',        {}, 'PGNS'],
@@ -250,4 +266,4 @@ export default H.deepFreeze(H.create({
         'P': 'o',
     }),
 
-}));
+});
