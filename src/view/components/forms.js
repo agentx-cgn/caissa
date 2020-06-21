@@ -1,5 +1,5 @@
 
-import { FormGroups }  from '../data/form-groups';
+import FormGroups      from '../data/form-groups';
 import { H }           from '../services/helper';
 import Factory         from './factory';
 

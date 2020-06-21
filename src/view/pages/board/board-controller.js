@@ -1,10 +1,15 @@
 
 import Chess           from 'chess.js';
 import { COLOR }       from '../../../extern/cm-chessboard/Chessboard';
+import { MARKER_TYPE } from '../../../extern/cm-chessboard/Chessboard';
+
 import Tools           from '../../tools/tools';
 import InputController from './input-controller';
 
 // basic controller, only controls decoration, buttons and flags
+
+const DEBUG = false;
+
 class BoardController {
 
     constructor (game, board) {
@@ -22,7 +27,7 @@ class BoardController {
         this.chess.load(Tools.board.game2fen(this.game));
         this.updateFlags();
         this.updateButtons();
-        this.updateDecoration();
+        this.updateMarker();
         this.chess.load(Tools.board.game2fen(this.game));
     }
     listen (chessBoard) {
@@ -47,23 +52,37 @@ class BoardController {
         flags.stal  = chess.in_stalemate();
         flags.insu  = chess.insufficient_material();
         flags.repe  = chess.in_threefold_repetition();
-        console.log('updateFlags.turn', flags.turn);
+        DEBUG && console.log('updateFlags.turn', flags.turn);
 
     }
     updateButtons () {
-        const btn = this.game.buttons;
-        const canplay  = !this.isRunning && this.mode !== 'h-h';
-        const canpause = this.isRunning  && this.mode !== 'h-h';
-        btn.rotate =   true;
-        btn.backward = this.turn > 0;
-        btn.forward =  this.turn < this.game.moves.length -1;
-        btn.left =     this.turn > -2;
-        btn.right =    this.turn < this.game.moves.length -1;
-        btn.play =     canplay;
-        btn.pause =    canpause;
-        btn.evaluate = this.game.moves.length > 0 && !this.isRunning;
+        const btn       = this.game.buttons;
+        const canplay   = !this.isRunning && this.mode !== 'h-h';
+        const canpause  =  this.isRunning && this.mode !== 'h-h';
+        btn.rotate      = true;
+        btn.backward    = this.turn > 0;
+        btn.forward     = this.turn < this.game.moves.length -1;
+        btn.left        = this.turn > -2;
+        btn.right       = this.turn < this.game.moves.length -1;
+        btn.play        = canplay;
+        btn.pause       = canpause;
+        btn.evaluate    = this.game.moves.length > 0 && !this.isRunning;
     }
     updateDecoration () {
+
+    }
+    updateMarker () {
+
+        const validSquares = this.chess.moves({verbose: true});
+        const markerType   = this.turn === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack;
+
+        // chessBoard.removeMarkers( null, null);
+
+        // if (state.illustrations.marker.attack){
+        //     validSquares.forEach( square => {
+        //         chessBoard.addMarker(square.to, markerType);
+        //     });
+        // }
 
     }
 

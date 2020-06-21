@@ -35,8 +35,11 @@ const Board = Factory.create('Board', {
     oncreate () {
         DEBUG && console.log('board.oncreate');
     },
-    onupdate () {
-        DEBUG && console.log('board.onupdate');
+    onupdate ( vnode ) {
+        DEBUG && console.log('board.onupdate', vnode);
+    },
+    onafterupdates () {
+
     },
     view ( vnode ) {
 

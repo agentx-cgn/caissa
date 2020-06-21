@@ -1,6 +1,6 @@
 
 import Chess         from  'chess.js';
-import {MARKER_TYPE} from '../../extern/cm-chessboard/Chessboard';
+// import {MARKER_TYPE} from '../../extern/cm-chessboard/Chessboard';
 import Config        from '../data/config';
 import { $$ }        from '../services/helper';
 
@@ -40,20 +40,20 @@ export default {
         return result ? chess1.fen() : '';
     },
 
-    updateMarker (chess, chessBoard, state) {
+    // updateMarker (chess, chessBoard, state) {
 
-        const validSquares = chess.moves({verbose: true});
-        const markerType = chess.turn() === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack;
+    //     const validSquares = chess.moves({verbose: true});
+    //     const markerType = chess.turn() === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack;
 
-        chessBoard.removeMarkers( null, null);
+    //     chessBoard.removeMarkers( null, null);
 
-        if (state.illustrations.marker.attack){
-            validSquares.forEach( square => {
-                chessBoard.addMarker(square.to, markerType);
-            });
-        }
+    //     if (state.illustrations.marker.attack){
+    //         validSquares.forEach( square => {
+    //             chessBoard.addMarker(square.to, markerType);
+    //         });
+    //     }
 
-    },
+    // },
 
     updateArrows (chess, chessBoard, state) {
 

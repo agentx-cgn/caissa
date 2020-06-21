@@ -11,7 +11,12 @@ let chessBoard, board, game, controller;
 
 const ChessBoard = Factory.create('ChessBoard', {
     onresize : Tools.board.resize,
-    oncreate () {
+    oncreate ( vnode ) {
+
+        game  = vnode.attrs.game;
+        board = vnode.attrs.board;
+        controller = vnode.attrs.controller;
+
         chessBoard = new Chessboard(
             $$('div.chessboard'),
             Config.board.config,
@@ -19,7 +24,7 @@ const ChessBoard = Factory.create('ChessBoard', {
         chessBoard.disableContextInput();
         Tools.board.resize(innerWidth, innerHeight);
         try {
-            // svg may be not yet loaded
+            // during hot updates svg may be not yet loaded
             chessBoard.view.handleResize();
         } catch(e){DEBUG && console.log('chessBoard.oncreate.handleResize', e);}
         DEBUG && console.log('chessboard.oncreate');
@@ -30,12 +35,7 @@ const ChessBoard = Factory.create('ChessBoard', {
             DEBUG && console.log('chessboard.destroyed');
         });
     },
-    view ( vnode ) {
-
-        game  = vnode.attrs.game;
-        board = vnode.attrs.board;
-        controller = vnode.attrs.controller;
-
+    view (  ) {
         DEBUG && console.log('chessboard.view.cbgb', !!chessBoard, !!game, !!board);
         return m('div.chessboard');
     },

@@ -141,7 +141,7 @@ const FormGroups = function ( formdata ) {
 
         },{ group: 'board-illustrations',    sort: 40, title: 'Illustrations',                 active: true,
             controls:
-                [  { caption: 'Best move',   sort: 10, type: 'checkbox',                       active:  true,
+                [  { caption: 'Best move',   sort: 10, type: 'checkbox',                       active: true,
                     value: () => formdata.bestmove,
                     attributes: {
                         type: 'checkbox',
@@ -226,4 +226,5 @@ const FormGroups = function ( formdata ) {
     ];
 };
 
-export { FormGroups };
+// export { FormGroups };
+export default FormGroups;
