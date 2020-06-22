@@ -3,8 +3,8 @@ import Caissa       from '../../caissa';
 import { H, $$ }    from '../../services/helper';
 import Factory      from '../../components/factory';
 import DB           from '../../services/database';
-import evaluate     from './game-evaluate';
-import GameProgress from './game-progress';
+import evaluate     from '../game/game-evaluate';
+import GameProgress from '../game/game-progress';
 
 let curGame;
 
@@ -56,10 +56,10 @@ const buttons = {
     rotate:   {onclick: actions.rotate, title: '', tag: 'i.gm-button.fa.fa-sync-alt'},
 };
 
-const GameButtons = Factory.create('GameButtons', {
+const BoardButtons = Factory.create('BoardButtons', {
     view( vnode ) {
 
-        const { game } = vnode.attrs;
+        const { game, board } = vnode.attrs;
         curGame = game;
         // curController = controller;
 
@@ -68,11 +68,11 @@ const GameButtons = Factory.create('GameButtons', {
                 H.map(buttons, (name, props) => {
 
                     const className = (
-                        name === 'spinner'  &&  game.buttons['evaluate'] ? 'dn'  :
-                        name === 'spinner'  && !game.buttons['evaluate'] ? 'dib' :
-                        name === 'evaluate' &&  game.buttons['evaluate'] ? 'dib' :
-                        name === 'evaluate' && !game.buttons['evaluate'] ? 'dn'  :
-                        game.buttons[name] ? 'dib' : 'vih'
+                        name === 'spinner'  &&  board.buttons['evaluate'] ? 'dn'  :
+                        name === 'spinner'  && !board.buttons['evaluate'] ? 'dib' :
+                        name === 'evaluate' &&  board.buttons['evaluate'] ? 'dib' :
+                        name === 'evaluate' && !board.buttons['evaluate'] ? 'dn'  :
+                        board.buttons[name] ? 'dib' : 'vih'
                     );
 
                     return m(
@@ -86,6 +86,6 @@ const GameButtons = Factory.create('GameButtons', {
     },
 });
 
-export default GameButtons;
+export default BoardButtons;
 
 

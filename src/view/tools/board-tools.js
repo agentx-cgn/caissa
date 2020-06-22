@@ -119,19 +119,6 @@ export default {
 
     },
 
-    // return game state as colors and boolean
-    // updateFlags (chess) {
-    //     const flags = State.game.flags;
-    //     flags.turn = chess.turn();  // w/b
-    //     flags.over = chess.game_over();
-    //     flags.chck = chess.in_check();
-    //     flags.mate = chess.in_checkmate();
-    //     flags.draw = chess.in_draw();
-    //     flags.stal = chess.in_stalemate();
-    //     flags.insu = chess.insufficient_material();
-    //     flags.repe = chess.in_threefold_repetition();
-    // },
-
     genCapturedPieces (fen) {
 
         if (fen === Config.fens.empty) {

@@ -40,12 +40,12 @@ const flagger = function (f) {
     };
 };
 
-const GameFlags = Factory.create('GameFlags', {
+const BoardFlags = Factory.create('BoardFlags', {
     view( vnode ) {
         return (
             m('div.gm-bar',
                 m('div.gm-flags',
-                    H.map(flagger(vnode.attrs.game.flags), (_, props) => {
+                    H.map(flagger(vnode.attrs.board.flags), (_, props) => {
                         return m(props.tag, {title: props.title, class: props.class});
                     }),
                 ),
@@ -54,4 +54,4 @@ const GameFlags = Factory.create('GameFlags', {
     },
 });
 
-export default GameFlags;
+export default BoardFlags;

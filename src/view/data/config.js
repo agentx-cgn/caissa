@@ -18,22 +18,6 @@ const pieces = H.create({
     whites: ['bk', 'bq', 'br', 'bb', 'bn', 'bp' ],
 });
 
-
-// const availablePlays = [
-//     H.create({mode: 's-s', uuid: '0000000A', subline: 'this is fun',
-//         white: 'Stockfish', black: 'Stockfish', engine: 'stockfish',
-//     }),
-
-//     H.create({mode: 'h-s', uuid: '0000000B', subline: 'beat the machine',
-//         white: 'Human', black: 'Stockfish', engine: 'stockfish',
-//     }),
-
-//     H.create({mode: 's-h', uuid: '0000000C', subline: 'beat the machine',
-//         white: 'Stockfish', black: 'Human', engine: 'stockfish',
-//     }),
-
-// ];
-
 const gametemplateshort = H.create({
 
     uuid:        '00000000',     // string, 6 or 8 alphanums
@@ -61,6 +45,14 @@ const gametemplate = H.create({
         maxcp:    0,
         maxmate:  0,
     },
+});
+
+const boardtemplate = H.create({
+    fen: '',
+    pgn: '',
+    orientation: COLOR.white,
+    moveStart: '',
+    bestmove: {move: {from: '', to: ''}, ponder: {from: '', to: ''}},
     buttons: {
         rotate:   true,
         backward: true,
@@ -81,15 +73,6 @@ const gametemplate = H.create({
         insu:     false,  // insufficient_material
         repe:     false,  // in_threefold_repetition
     },
-});
-
-const boardtemplate = H.create({
-    fen: '',
-    pgn: '',
-    orientation: COLOR.white,
-    moveStart: '',
-    bestmove: {move: {from: '', to: ''}, ponder: {from: '', to: ''}},
-
     // illustrations : CFG.board.illustrations,
 
 });

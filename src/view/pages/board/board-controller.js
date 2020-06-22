@@ -22,17 +22,24 @@ class BoardController {
         this.isRunning = false;
         this.update();
     }
-    update () {
+    update (chessBoard) {
+
         this.turn  = this.game.turn;
         this.chess.load(Tools.board.game2fen(this.game));
         this.updateFlags();
         this.updateButtons();
-        this.updateMarker();
         this.chess.load(Tools.board.game2fen(this.game));
+
+        if (chessBoard){
+            this.chessBoard = chessBoard;
+            this.listen();
+            this.updateMarker();
+        }
+
     }
-    listen (chessBoard) {
+    listen () {
         if (this.game.mode !== 'h-h' && this.game.mode !== 's-s' && this.isRunning){
-            chessBoard.enableMoveInput(InputController(this));
+            this.chessBoard.enableMoveInput(InputController(this));
         }
     }
     onmove (move) {
@@ -42,7 +49,7 @@ class BoardController {
         console.log(move);
     }
     updateFlags () {
-        const flags = this.game.flags;
+        const flags = this.board.flags;
         const chess = this.chess;
         flags.turn  = this.turn === -2 ? null : chess.turn();
         flags.over  = chess.game_over();
@@ -56,7 +63,7 @@ class BoardController {
 
     }
     updateButtons () {
-        const btn       = this.game.buttons;
+        const btn       = this.board.buttons;
         const canplay   = !this.isRunning && this.mode !== 'h-h';
         const canpause  =  this.isRunning && this.mode !== 'h-h';
         btn.rotate      = true;
@@ -76,7 +83,7 @@ class BoardController {
         const validSquares = this.chess.moves({verbose: true});
         const markerType   = this.turn === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack;
 
-        // chessBoard.removeMarkers( null, null);
+        this.chessBoard.removeMarkers( null, null);
 
         // if (state.illustrations.marker.attack){
         //     validSquares.forEach( square => {

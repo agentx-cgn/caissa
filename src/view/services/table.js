@@ -6,7 +6,7 @@ import Config  from '../data/config';
 
 const DEBUG = true;
 
-const Table = function (tablename, dump=[], template={}) {
+const Table = function (tablename, dump=[], tableTemplate={}) {
 
     let self, cache, interval, isDirty = true;
     let data = ls(tablename);
@@ -70,10 +70,10 @@ const Table = function (tablename, dump=[], template={}) {
             DEBUG && console.log('TAB.' + tablename, 'created', row.uuid);
             return row;
         },
-        createget (uuid) {
+        createget (uuid, template={}) {
             let row = self.find(uuid);
             if (row === null) {
-                row = H.create(H.deepcopy(template));
+                row = H.create(H.deepcopy(tableTemplate), template);
                 row.uuid = uuid;
                 cache.push(row);
                 isDirty = true;

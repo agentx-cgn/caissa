@@ -142,6 +142,10 @@ nav {
         }
 
     }
+    div.chessboard {
+        width: 364px;
+        height: 364px;
+    }
 
 }
 
@@ -196,13 +200,16 @@ nav {
             border-right: 1px solid white;
         }
     }
+    div.chessboard {
+        width: 364px;
+        height: 364px;
+    }
+
 }
 @media only screen and (min-width: 721px) {
     main {
         width: 100vw;
         margin: 0 auto;
-        // height: 100%;
-        // flex:   1 0;
     }
     section.pages {
         width: 360px;

@@ -68,7 +68,7 @@ const ChessBoard = Factory.create('ChessBoard', {
             chessBoard
                 .setPosition(board.fen, true)
                 .then( () => {
-                    controller.listen(chessBoard);
+                    controller.update(chessBoard);
                 })
             ;
 

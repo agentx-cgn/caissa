@@ -46,9 +46,9 @@ const Game = Factory.create('Game', {
                     // mobile, as page with board
                     : m('div.page.game', { className, style }, [
                         m(PageTitle,     { className: 'gm-players tc' }, m.trust(players)),
+                        m(Board,         { params: { uuid, turn } }),
                         m(Moves,         { game }),
                         m(Spacer),
-                        m(Board,         { uuid, turn }),
                         m(Spacer),
                         m(TextCenter,    { class: 'gm-result', title: 'result termination timecontrol'}, resultline ),
                         m(GrowSpacer),
