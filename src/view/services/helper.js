@@ -101,7 +101,9 @@ const H = {
         // overwrites arrays...
         for (const source of sources) {
             for (let [key, value] of Object.entries(source)) {
-                if (value instanceof Object && key in target) {
+                if (Array.isArray(value)){
+                    target[key] = [...value];
+                } else if (value instanceof Object && key in target) {
                     value = H.deepassign(target[key], value);
                 }
                 target[key] = value;

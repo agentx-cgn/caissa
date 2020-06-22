@@ -3,25 +3,21 @@ import board_svg         from '../../extern/cm-chessboard/chessboard-sprite.svg'
 import {COLOR, MOVE_INPUT_MODE} from '../../extern/cm-chessboard/Chessboard';
 import { H } from '../services/helper';
 
-const fens = H.create({
+const fens = {
     empty: '8/8/8/8/8/8/8/8 w - - 0 1',
     start: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-});
+};
 
-const pieces = H.create({
-    fens : H.create({
-        white:  'PPPPPPPPRNBQKBNR',
-        black:  'pppppppprnbqkbnr',
-        sorted: 'kqrbnp',
-    }),
-    blacks: ['wk', 'wq', 'wr', 'wb', 'wn', 'wp' ],
-    whites: ['bk', 'bq', 'br', 'bb', 'bn', 'bp' ],
-});
+const gametemplate = {
 
-const gametemplateshort = H.create({
-
-    uuid:        '00000000',     // string, 6 or 8 alphanums
+    uuid:        'G0000000',     // string, 6 or 8 alphanums
     mode:        'h-h',
+    turn:         -1,
+    moves:        [],
+    score: {
+        maxcp:    0,
+        maxmate:  0,
+    },
     // STR (Seven Tag Roster)
     white:       'White',        // name of white player
     black:       'Black',        // name of black player
@@ -37,23 +33,16 @@ const gametemplateshort = H.create({
     pgn:         '',             // game moves in pgn notation
     header:      {},            // from PGN parsing
 
-});
+};
 
-const gametemplate = H.create({
-    moves:        [],
-    score: {
-        maxcp:    0,
-        maxmate:  0,
-    },
-});
-
-const boardtemplate = H.create({
-    fen: '',
-    pgn: '',
+const boardtemplate = {
+    uuid:        'B0000000',
+    fen:         '',
+    moveStart:   '',
+    bestmove:    { move: {from: '', to: ''}, ponder: {from: '', to: ''}},
+    captured:    { white: [], black: []},
     orientation: COLOR.white,
-    moveStart: '',
-    bestmove: {move: {from: '', to: ''}, ponder: {from: '', to: ''}},
-    buttons: {
+    buttons:   {
         rotate:   true,
         backward: true,
         forward:  true,
@@ -73,72 +62,92 @@ const boardtemplate = H.create({
         insu:     false,  // insufficient_material
         repe:     false,  // in_threefold_repetition
     },
-    // illustrations : CFG.board.illustrations,
+    illustrations : {}, // coming from Options
 
-});
+};
 
-const opponents = H.create({
+const opponents = {
     'h': 'Human',
     'l': 'Leela',
     's': 'Stockfish',
-});
+};
 
 // const urls = [
 //     'https://google.com',
 //     'https://en.wikipedia.com',
 // ].map(encodeURI);
 
-// export default H.deepFreeze(H.create({
+// export default H.deepFreeze({
 export default H.deepFreezeCreate({
 
     fens,
-    pieces,
     opponents,
-
-    // availablePlays,
 
     database: {
         updateInterval: 60 * 1000,
     },
 
-    availablePlays : [
-        H.create({mode: 's-s', uuid: '0000000A', subline: 'this is fun',
-            white: 'Stockfish', black: 'Stockfish', engine: 'stockfish',
-        }),
+    templates : {
+        game:    gametemplate,
+        board:   boardtemplate,
+        plays:   [
+            {mode: 's-s', uuid: 'P1000000', subline: 'this is fun',
+                white: 'Stockfish', black: 'Stockfish', engine: 'stockfish',
+            },
 
-        H.create({mode: 'h-s', uuid: '0000000B', subline: 'beat the machine',
-            white: 'Human', black: 'Stockfish', engine: 'stockfish',
-        }),
+            {mode: 'h-s', uuid: 'P2000000', subline: 'beat the machine',
+                white: 'Human', black: 'Stockfish', engine: 'stockfish',
+            },
 
-        H.create({mode: 's-h', uuid: '0000000C', subline: 'beat the machine',
-            white: 'Stockfish', black: 'Human', engine: 'stockfish',
-        }),
+            {mode: 's-h', uuid: 'P3000000', subline: 'beat the machine',
+                white: 'Stockfish', black: 'Human', engine: 'stockfish',
+            },
 
-    ],
-
-    templates : H.create({
-        game:        gametemplate,
-        gameshort:   gametemplateshort,
-        board:       boardtemplate,
-    }),
-    tableTemplates: H.create({
+        ],
+    },
+    tableTemplates: {
         Games:   gametemplate,
         Boards:  boardtemplate,
-    }),
+    },
 
-    pagecache: H.create({
+    pieces: {
+        fens : {
+            white:  'PPPPPPPPRNBQKBNR',
+            black:  'pppppppprnbqkbnr',
+            sorted: 'kqrbnp',
+        },
+        // blacks: ['wk', 'wq', 'wr', 'wb', 'wn', 'wp' ],
+        // whites: ['bk', 'bq', 'br', 'bb', 'bn', 'bp' ],
+        font : {
+            'k': 'l',
+            'q': 'w',
+            'r': 't',
+            'b': 'n',
+            'n': 'j',
+            'p': 'o',
+            'K': 'l',
+            'Q': 'w',
+            'R': 't',
+            'B': 'n',
+            'N': 'j',
+            'P': 'o',
+        },
+
+    },
+
+    pagecache: {
         size: 5,
-    }),
+    },
 
     navigation : [
         ['/sources/',        {}, 'PGNS'],
         ['/games/',          {}, 'GAMES'],  // loads imported games so far
         ['/game/',           {}, 'GAME'],
         ['/plays/',          {}, 'PLAY'],
-        ['/analyzer/',       {}, 'ANALYSE'],
+        // ['/analyzer/',       {}, 'ANALYSE'],
         ['/system/:module/', {module: 'system'}, 'SYSTEM'],
         ['/options/',        {}, 'OPTIONS'],
-        ['/help/',           {}, 'HELP'],
+        // ['/help/',           {}, 'HELP'],
 
         // [`/info/${urls[1]}/`,   'INFO'],
         // ['/test',     'TEST'],
@@ -153,19 +162,19 @@ export default H.deepFreezeCreate({
 
     // still dummies
     openings : [
-        H.create({idx: 1, caption: 'OP01', value: 'OP01'}),
-        H.create({idx: 2, caption: 'OP02', value: 'OP02'}),
-        H.create({idx: 3, caption: 'OP03', value: 'OP03'}),
+        {idx: 1, caption: 'OP01', value: 'OP01'},
+        {idx: 2, caption: 'OP02', value: 'OP02'},
+        {idx: 3, caption: 'OP03', value: 'OP03'},
     ],
 
     timecontrols: [                          // initial | bonus
-        H.create({idx: 0, caption: '10 secs', value: `${ 1*10*1000}|0`}),
-        H.create({idx: 1, caption: '1 min',   value: `${ 1*60*1000}|0`}),
-        H.create({idx: 2, caption: '5 min',   value: `${ 5*60*1000}|0`}),
-        H.create({idx: 3, caption: '10 min',  value: `${10*60*1000}|0`}),
+        {idx: 0, caption: '10 secs', value: `${ 1*10*1000}|0`},
+        {idx: 1, caption: '1 min',   value: `${ 1*60*1000}|0`},
+        {idx: 2, caption: '5 min',   value: `${ 5*60*1000}|0`},
+        {idx: 3, caption: '10 min',  value: `${10*60*1000}|0`},
     ],
 
-    plays: H.create({
+    plays: {
         difficulties : {
             '0':   'looser',
             '3':   'rooky',
@@ -179,8 +188,8 @@ export default H.deepFreezeCreate({
             {uuid: '00000002', mode: 's-h', time: 10, depth: 3, subline: 'play black against Stockfish'},
             {uuid: '00000003', mode: 's-s', time: 10, depth: 3, subline: 'this is fun'                 },
         ],
-    }),
-    board: H.create({
+    },
+    board: {
         config: {
             position:               'empty',        // set as fen, 'start' or 'empty'
             orientation:            COLOR.white,    // white on bottom
@@ -198,9 +207,9 @@ export default H.deepFreezeCreate({
             animationDuration:      300,            // pieces animation duration in milliseconds
             moveInputMode:          MOVE_INPUT_MODE.dragPiece, // set to MOVE_INPUT_MODE.dragPiece or MOVE_INPUT_MODE.dragMarker for interactive movement
         },
-    }),
+    },
 
-    flagTitles : H.create({
+    flagTitles : {
         'n'  : 'a non-capture',
         'b'  : 'a pawn push of two squares',
         'e'  : 'an en passant capture',
@@ -209,8 +218,8 @@ export default H.deepFreezeCreate({
         'k'  : 'kingside castling',
         'q'  : 'queenside castling',
         'pc' : 'capture + promotion',
-    }),
-    flagColors: H.create({
+    },
+    flagColors: {
         w: {
             'n'  : '#fff',
             'b'  : 'darkgreen',
@@ -231,22 +240,6 @@ export default H.deepFreezeCreate({
             'q'  : 'darkgreen',
             'pc' : 'orange',
         },
-    }),
-    fontPieces : H.create({ // 'l w t n j o'
-        'k': 'l',
-        'q': 'w',
-        'r': 't',
-        'b': 'n',
-        'n': 'j',
-        'p': 'o',
-    }),
-    fontPiecesWhite : H.create({ // 'l w t n j o'
-        'K': 'l',
-        'Q': 'w',
-        'R': 't',
-        'B': 'n',
-        'N': 'j',
-        'P': 'o',
-    }),
+    },
 
 });

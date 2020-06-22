@@ -15,8 +15,7 @@ import BoardController   from './board-controller';
 
 const DEBUG = true;
 
-let width, lastturn, lastuuid='', game, board, controller;
-let fen, boardTemplate;
+let lastturn, lastuuid, game, board, controller, fen, captured, boardTemplate;
 
 function Controller (game, board) {
     return (
@@ -29,12 +28,6 @@ function Controller (game, board) {
 }
 
 const Board = Factory.create('Board', {
-    oncreate () {
-        DEBUG && console.log('board.oncreate');
-    },
-    onupdate ( vnode ) {
-        DEBUG && console.log('board.onupdate', vnode);
-    },
     view ( vnode ) {
 
         // keep the last board through page changes unless new uuid
@@ -50,26 +43,30 @@ const Board = Factory.create('Board', {
             game  = DB.Games.createget('default');
             board = DB.Boards.createget('default', boardTemplate);
             fen   = Config.fens.start;
-            DB.Boards.update('default', { fen }, true);
+            captured = Tools.board.genCapturedPieces(fen);
+            DB.Boards.update('default', { fen, captured }, true);
             controller = Controller(game, board);
             // lastuuid = 'default';
 
         } else if (!uuid && lastuuid) {
             // there was a game, but user strays away
-            boardTemplate = { illustrations: DB.Options.first['board-illustrations'] };
+            // boardTemplate = { illustrations: DB.Options.first['board-illustrations'] };
             game  = DB.Games.find(lastuuid);
-            board = DB.Boards.createget(lastuuid, boardTemplate);
+            board = DB.Boards.find(lastuuid);
             fen   = Tools.board.game2fen(game);
-            DB.Boards.update(lastuuid, { fen }, true);
+            captured = Tools.board.genCapturedPieces(fen);
+            DB.Boards.update(lastuuid, { fen, captured }, true);
             controller = Controller(game, board);
 
         } else if (uuid !== lastuuid) {
             // new game
             boardTemplate = { illustrations: DB.Options.first['board-illustrations'] };
+            //TODO: will fail if deeplink
             game  = DB.Games.find(uuid);
             board = DB.Boards.createget(uuid, boardTemplate);
             fen   = Tools.board.game2fen(game);
-            DB.Boards.update(uuid, { fen }, true);
+            captured = Tools.board.genCapturedPieces(fen);
+            DB.Boards.update(uuid, { fen, captured }, true);
             controller = Controller(game, board);
             lastuuid = uuid;
             lastturn = turn;
@@ -78,7 +75,9 @@ const Board = Factory.create('Board', {
             // new turn
             DB.Games.update(uuid, { turn: ~~turn });
             fen = Tools.board.game2fen(game);
-            DB.Boards.update(uuid, { fen }, true);
+            captured = Tools.board.genCapturedPieces(fen);
+            DB.Boards.update(uuid, { fen, captured }, true);
+            board = DB.Boards.find(uuid);
             controller.update();
             lastturn = turn;
 
@@ -92,10 +91,10 @@ const Board = Factory.create('Board', {
         const playerTop = board.orientation === 'w' ? 'w' : 'b';
         const playerBot = board.orientation === 'b' ? 'w' : 'b';
 
-        return width >= 720
+        return innerWidth >= 720
             // desktop
             ? m('[', [
-                m(BoardButtons, { board }),
+                m(BoardButtons, { game, board }),
                 m(BoardBar,     { game, board, pos: 'top', player: playerTop }),
                 m(ChessBoard,   { game, board, controller }),
                 m(BoardBar,     { game, board, pos: 'bot', player: playerBot }),
@@ -105,7 +104,7 @@ const Board = Factory.create('Board', {
             : m('[', [
                 m(BoardFlags,   { board }),
                 m(ChessBoard,   { game, board, controller }),
-                m(BoardButtons, { board }),
+                m(BoardButtons, { game, board }),
             ])
         ;
 

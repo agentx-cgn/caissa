@@ -21,22 +21,22 @@ const DEBUG = true;
 const forms = {};
 const plays = game => game.mode !== 'h-h';
 
-Array.from(Config.availablePlays).forEach( template =>  {
+Array.from(Config.templates.plays).forEach( play =>  {
 
-    const group = 'play-' + template.mode;
+    const group = 'play-' + play.mode;
     const form = {
         group,
         autosubmit: false,
         ...DB.Options.first[group],
         submit: (form) => {
-            const play = Tools.createPlayTemplate(template, form);
-            DB.Games.create(play, true);
-            DEBUG && console.log('plays.form.submitted', play.uuid, play.mode, play.white, play.black);
-            Caissa.route('/game/:turn/:uuid/', { uuid: play.uuid, turn: play.turn });
+            const game = Tools.createGamefromPlay(play, form);
+            DB.Games.create(game, true);
+            DEBUG && console.log('plays.form.submitted', game.uuid, game.mode, game.white, game.black);
+            Caissa.route('/game/:turn/:uuid/', { uuid: game.uuid, turn: game.turn });
         },
     };
 
-    forms[template.mode] = form;
+    forms[play.mode] = form;
 
 });
 
@@ -51,7 +51,7 @@ const Plays = Factory.create('Plays', {
 
             m(PageTitle,  'Start a new Game'),
             m(HeaderLeft, 'Play with Machines'),
-            m(FixedList, Array.from(Config.availablePlays).map( play => {
+            m(FixedList, Array.from(Config.templates.plays).map( play => {
 
                 const formdata = forms[play.mode];
                 const style = mode === play.mode

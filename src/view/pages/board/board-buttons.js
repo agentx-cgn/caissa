@@ -6,6 +6,8 @@ import DB           from '../../services/database';
 import evaluate     from '../game/game-evaluate';
 import GameProgress from '../game/game-progress';
 
+const DEBUG = true;
+
 let curGame;
 
 function setTurn (diff) {
@@ -60,6 +62,9 @@ const BoardButtons = Factory.create('BoardButtons', {
     view( vnode ) {
 
         const { game, board } = vnode.attrs;
+
+        DEBUG && console.log('BoardButtons.view', game);
+
         curGame = game;
         // curController = controller;
 

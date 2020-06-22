@@ -9,11 +9,9 @@ export default {
     game2fen (game) {
         const turn = ~~game.turn;
         return (
-            turn === -2
-                ? Config.fens.empty
-                : turn === -1
-                    ? Config.fens.start
-                    : game.moves[turn].fen
+            turn === -2 ? Config.fens.empty :
+            turn === -1 ? Config.fens.start :
+            game.moves[turn].fen
         );
     },
 
@@ -39,21 +37,6 @@ export default {
         const result = chess1.move(move);
         return result ? chess1.fen() : '';
     },
-
-    // updateMarker (chess, chessBoard, state) {
-
-    //     const validSquares = chess.moves({verbose: true});
-    //     const markerType = chess.turn() === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack;
-
-    //     chessBoard.removeMarkers( null, null);
-
-    //     if (state.illustrations.marker.attack){
-    //         validSquares.forEach( square => {
-    //             chessBoard.addMarker(square.to, markerType);
-    //         });
-    //     }
-
-    // },
 
     updateArrows (chess, chessBoard, state) {
 
@@ -122,28 +105,32 @@ export default {
     genCapturedPieces (fen) {
 
         if (fen === Config.fens.empty) {
-            return{ blacks: 'lwtnjo', whites: 'lwtnjo' };
+            return { black: 'lwtnjo'.split(''), white: 'lwtnjo'.split('') };
+
+        } else if (fen === Config.fens.start) {
+            return { black: [], white: [] };
+
+        } else {
+            const sorter = (a, b) => {
+                return (
+                    Config.pieces.fens.sorted.indexOf(a.toLowerCase()) -
+                    Config.pieces.fens.sorted.indexOf(b.toLowerCase())
+                );
+            };
+
+            let black = Config.pieces.fens.black;
+            let white = Config.pieces.fens.white;
+
+            fen.split(' ')[0].split('').forEach(letter => {
+                black = black.replace(letter, '');
+                white = white.replace(letter, '');
+            }),
+
+            black = black.split('').sort(sorter).map( letter => Config.pieces.font[letter] );
+            white = white.split('').sort(sorter).map( letter => Config.pieces.font[letter] );
+
+            return { black, white };
         }
-
-        const sorter = (a, b) => {
-            return (
-                Config.pieces.fens.sorted.indexOf(a.toLowerCase()) -
-                Config.pieces.fens.sorted.indexOf(b.toLowerCase())
-            );
-        };
-
-        let blacks = Config.pieces.fens.black;
-        let whites = Config.pieces.fens.white;
-
-        fen.split(' ')[0].split('').forEach(letter => {
-            blacks = blacks.replace(letter, '');
-            whites = whites.replace(letter, '');
-        }),
-
-        blacks = blacks.split('').sort(sorter).map( letter => Config.fontPieces[letter] );
-        whites = whites.split('').sort(sorter).map( letter => Config.fontPiecesWhite[letter] );
-
-        return { blacks, whites };
 
     },
 

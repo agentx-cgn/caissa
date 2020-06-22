@@ -59,7 +59,7 @@ const Tools = {
 
     },
 
-    createPlayTemplate (playtemplate, formdata) {
+    createGamefromPlay (playtemplate, formdata) {
 
         const play = {
             ...Config.templates.game,
@@ -77,7 +77,7 @@ const Tools = {
         play.turn = -1;
         play.uuid = H.hash(JSON.stringify(play));
 
-        console.log('createPlayTemplate', play);
+        console.log('createGamefromPlay', play);
 
         return play;
 

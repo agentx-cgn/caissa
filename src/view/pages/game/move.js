@@ -27,7 +27,7 @@ const ply = {
         const { game, player, move, back } = vnode.attrs;
 
         const width     = calcWidth(game, move);
-        const piece     = Config.fontPieces[move.piece];
+        const piece     = Config.pieces.font[move.piece];
         const onclick   = (e) => {
             e.redraw = false;
             Caissa.route('/game/:turn/:uuid/', {turn: move.turn, uuid: game.uuid}, { replace: true });

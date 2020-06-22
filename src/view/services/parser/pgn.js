@@ -21,7 +21,7 @@ const Parser = {
             lines = pgns.split(delimiter)
         ;
 
-        let rxp, game = H.create({ ...Config.templates.gameshort, header: {} });
+        let rxp, game = H.create({ ...Config.templates.game, header: {} });
 
         lines.forEach( (line) => {
 
@@ -33,7 +33,7 @@ const Parser = {
                 if (game.header.Event){
                     games.push(game);
                 }
-                game = H.create({ ...Config.templates.gameshort, header: {} });
+                game = H.create({ ...Config.templates.game, header: {} });
                 game.header[rxp[1]] = rxp[2];
 
             } else if (rxp !== null) {

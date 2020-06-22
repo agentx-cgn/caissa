@@ -5,7 +5,7 @@ import Caissa       from '../../caissa';
 import Factory      from '../../components/factory';
 import Config       from '../../data/config';
 
-import { FlexList, PageTitle, HeaderLeft, FlexListEntry }    from '../../components/misc';
+import { FlexList, PageTitle, TextLeft, FlexListEntry }    from '../../components/misc';
 
 const clicker  = (route, params) => {
     return (e) => {
@@ -24,9 +24,10 @@ const Menu = Factory.create('Menu', {
                 m(PageTitle, 'Menu'),
                 ...Array.from(Config.navigation).map( ([route, params, entry]) => {
                     return m(FlexListEntry, { class: '', onclick: clicker(route, params) }, [
-                        m(HeaderLeft, [
+                        m(TextLeft, {class: 'f3'}, [
                             m('i.menu.fa.fa-chess-board'),
                             entry,
+                            m('div.f5.c666.pb1', 'some clever hints'),
                         ]),
                     ]);
                 }),
