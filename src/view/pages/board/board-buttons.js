@@ -8,7 +8,7 @@ import GameProgress from '../game/game-progress';
 
 const DEBUG = true;
 
-let curGame;
+let curGame, curController;
 
 function setTurn (diff) {
     const turn = curGame.turn;
@@ -26,8 +26,8 @@ const actions = {
     left  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn(-1),  uuid: curGame.uuid}, { replace: true }); return H.eat(e);},
     right (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn(+1),  uuid: curGame.uuid}, { replace: true }); return H.eat(e);},
     fore  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn('e'), uuid: curGame.uuid}, { replace: true }); return H.eat(e);},
-    pause (e) { e.redraw = false; return H.eat(e);},
-    play  (e) { e.redraw = false; return H.eat(e);},
+    pause (e) { e.redraw = false; curController.pause();},
+    play  (e) { e.redraw = false; curController.play();},
     eval  (e) { e.redraw = false; evaluate(curGame); return H.eat(e);},
     rotate (e) {
         e.redraw = false;
@@ -61,12 +61,12 @@ const buttons = {
 const BoardButtons = Factory.create('BoardButtons', {
     view( vnode ) {
 
-        const { game, board } = vnode.attrs;
+        const { game, board, controller } = vnode.attrs;
 
-        DEBUG && console.log('BoardButtons.view', game);
+        DEBUG && console.log('BoardButtons.view', game.uuid, game.mode, game.turn);
 
         curGame = game;
-        // curController = controller;
+        curController = controller;
 
         return m('div.gm-bar', [
             m('div.gm-buttons.f3',
@@ -80,10 +80,7 @@ const BoardButtons = Factory.create('BoardButtons', {
                         board.buttons[name] ? 'dib' : 'vih'
                     );
 
-                    return m(
-                        props.tag,
-                        {title: props.title, onclick: props.onclick, className },
-                    );
+                    return m(props.tag, {title: props.title, onclick: props.onclick, className });
                 }),
             ),
             m(GameProgress, { game }),

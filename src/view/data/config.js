@@ -91,18 +91,11 @@ export default H.deepFreezeCreate({
         game:    gametemplate,
         board:   boardtemplate,
         plays:   [
-            {mode: 's-s', uuid: 'P1000000', subline: 'this is fun',
-                white: 'Stockfish', black: 'Stockfish', engine: 'stockfish',
-            },
-
-            {mode: 'h-s', uuid: 'P2000000', subline: 'beat the machine',
-                white: 'Human', black: 'Stockfish', engine: 'stockfish',
-            },
-
-            {mode: 's-h', uuid: 'P3000000', subline: 'beat the machine',
-                white: 'Stockfish', black: 'Human', engine: 'stockfish',
-            },
-
+            {mode: 'h-h', uuid: 'P0000000', subline: 'a classic',        white: '',          black: ''          },
+            {mode: 'x-x', uuid: 'P1000000', subline: 'no pressure',      white: 'White',     black: 'Black'     },
+            {mode: 's-s', uuid: 'P2000000', subline: 'this is fun',      white: 'Stockfish', black: 'Stockfish' },
+            {mode: 'h-s', uuid: 'P3000000', subline: 'beat the machine', white: 'Human',     black: 'Stockfish' },
+            {mode: 's-h', uuid: 'P4000000', subline: 'beat the machine', white: 'Stockfish', black: 'Human'     },
         ],
     },
     tableTemplates: {

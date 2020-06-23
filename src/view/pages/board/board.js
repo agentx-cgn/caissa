@@ -19,6 +19,7 @@ let lastturn, lastuuid, game, board, controller, fen, captured, boardTemplate;
 
 function Controller (game, board) {
     return (
+        game.mode === 'x-x' ? new BoardController(game, board) :
         game.mode === 'h-h' ? new BoardController(game, board) :
         game.mode === 'h-s' ? new SFBoardController(game, board) :
         game.mode === 's-h' ? new SFBoardController(game, board) :
@@ -33,7 +34,7 @@ const Board = Factory.create('Board', {
         // keep the last board through page changes unless new uuid
         // if no last uuid show default board, ready to interact
 
-        DEBUG && console.log('board.view', vnode.attrs.params);
+        DEBUG && console.log('Board.view', vnode.attrs.params);
 
         const { params: { uuid, turn } } = vnode.attrs;
 

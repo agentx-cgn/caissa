@@ -1,7 +1,7 @@
 import Chess from 'chess.js';
 import { H, $$ }  from '../services/helper';
 
-const chess = new Chess();
+// const chess = new Chess();
 
 export default {
 
@@ -69,6 +69,7 @@ export default {
         if (game.pgn === '') {
             return 0;
         } else {
+            const chess  = new Chess();
             !chess.load_pgn(game.pgn) && console.warn('gameLength.error', game);
             return chess.history().length;
         }

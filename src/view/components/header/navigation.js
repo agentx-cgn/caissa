@@ -1,10 +1,10 @@
 
-import {ConfigPages}  from '../../data/config-pages';
-import Factory      from '../../components/factory';
-import Config       from '../../data/config';
-import { H, $$ }    from '../../services/helper';
-import Caissa       from '../../caissa';
-import Backdrop     from '../backdrop';
+import { ConfigPages }  from '../../data/config-pages';
+import Factory          from '../../components/factory';
+import Config           from '../../data/config';
+import { $$ }           from '../../services/helper';
+import Caissa           from '../../caissa';
+import Backdrop         from '../backdrop';
 
 const Navigation = Factory.create('Navigation', {
 
@@ -15,9 +15,9 @@ const Navigation = Factory.create('Navigation', {
             return (e) => {
                 e.redraw = false;
                 Backdrop.hide();
-                Caissa.route(route, params);
                 $$('#toggle-mobile-menu').checked = false;
-                return H.eat(e);
+                Caissa.route(route, params);
+                // return H.eat(e);
             };
         };
 

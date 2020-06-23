@@ -1,9 +1,6 @@
 import Config  from '../../data/config';
-// import State   from '../../data/state';
 import { H }   from '../../services/helper';
 import Caissa  from '../../caissa';
-
-// const state = State.game;
 
 const clampScale = function (game, cp) {
     return H.scale(H.clamp(Math.abs(cp), 0.001, game.score.maxcp), 0, game.score.maxcp, 1, 20);

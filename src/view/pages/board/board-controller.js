@@ -1,14 +1,72 @@
 
 import Chess           from 'chess.js';
-import { COLOR }       from '../../../extern/cm-chessboard/Chessboard';
-import { MARKER_TYPE } from '../../../extern/cm-chessboard/Chessboard';
+import Caissa          from '../../caissa';
+import { H }           from '../../services/helper';
+// import { COLOR }       from '../../../extern/cm-chessboard/Chessboard';
+// import { MARKER_TYPE } from '../../../extern/cm-chessboard/Chessboard';
+import { INPUT_EVENT_TYPE } from '../../../extern/cm-chessboard/Chessboard';
 
 import Tools           from '../../tools/tools';
-import InputController from './input-controller';
+import DB from '../../services/database';
 
 // basic controller, only controls decoration, buttons and flags
+// moveInputMode: MOVE_INPUT_MODE.viewOnly,
+// set to MOVE_INPUT_MODE.dragPiece or MOVE_INPUT_MODE.dragMarker for interactive movement
 
-const DEBUG = false;
+const DEBUG = true;
+
+class Opponent {
+    constructor(color, mode) {
+        this.color = color;
+        this.mode  = mode;
+    }
+    tomove (chessBoard, onmovedone, onmovestart, onmovecancel ) {
+        this.chessBoard   = chessBoard;
+        this.movedone     = onmovedone;
+        this.movestart    = onmovestart;
+        this.movecancel   = onmovecancel;
+        this.fen          = chessBoard.getPosition();
+        this.chess        = new Chess();
+        this.chess.load(this.fen) && console.warn(this.fen);
+        this.chessBoard.enableMoveInput(this.dragHandler.bind(this), this.color);
+        // DEBUG && console.log('Opponent.tomove', this.color, this.fen);
+    }
+    towait () {
+
+    }
+    dragHandler(event) {
+
+        // DEBUG && console.log('dragHandler.event', this.color, event.type);
+
+        let move, result;
+        switch (event.type) {
+        case INPUT_EVENT_TYPE.moveStart:
+
+            this.movestart(event.square);
+            return true;
+
+        case INPUT_EVENT_TYPE.moveDone:
+
+            move   = { from: event.squareFrom, to: event.squareTo };
+            result = this.chess.move(move);
+
+            if (result) {
+                // DEBUG && console.log('dragHandler.legal: ',  this.color,  move, result);
+                this.movedone(move);
+            } else {
+                console.log(this.chess.ascii());
+                DEBUG && console.log('Opponent.illegal: ', this.color, move, result);
+            }
+
+            return !!result;
+
+        case INPUT_EVENT_TYPE.moveCanceled:
+            this.movecancel();
+        }
+
+    }
+
+}
 
 class BoardController {
 
@@ -17,36 +75,76 @@ class BoardController {
         this.mode      = game.mode;
         this.game      = game;
         this.board     = board;
+        this.mode      = game.mode;
         this.chess     = new Chess();
         this.turn      = game.turn;
-        this.isRunning = false;
+        // this.isRunning = false;
+        this.opponents = {
+            'w': new Opponent('w', this.mode[0]),
+            'b': new Opponent('b', this.mode[0]),
+            'n': { tomove: () => {}, towait: () => {} },
+        };
         this.update();
     }
     update (chessBoard) {
 
         this.turn  = this.game.turn;
-        this.chess.load(Tools.board.game2fen(this.game));
-        this.updateFlags();
-        this.updateButtons();
-        this.chess.load(Tools.board.game2fen(this.game));
+        this.fen   = Tools.board.game2fen(this.game);
+        this.chess.load(this.fen);
+        this.tomove = (
+            this.turn === -2 ? 'n' :
+            this.turn  %   2 ? 'w' : 'b'
+        );
+        this.towait = (
+            this.turn === -2 ? 'n' :
+            this.turn  %   2 ? 'b' : 'w'
+        );
 
         if (chessBoard){
             this.chessBoard = chessBoard;
-            this.listen();
+            this.updateFlags();
+            this.updateButtons();
             this.updateMarker();
+            this.listen();
         }
 
     }
     listen () {
-        if (this.game.mode !== 'h-h' && this.game.mode !== 's-s' && this.isRunning){
-            this.chessBoard.enableMoveInput(InputController(this));
+        if (this.turn !== -2){
+            this.opponents[this.tomove].tomove(
+                this.chessBoard,
+                this.onmovedone.bind(this),
+                this.onmovestart.bind(this),
+                this.onmovecancel.bind(this),
+            );
+            this.opponents[this.towait].towait(this.chessBoard);
         }
     }
-    onmove (move) {
-        // {from: event.squareFrom, to: event.squareTo}
-        // update game with move
-        // redirect to new turn
-        console.log(move);
+    onmovecancel () {
+        DEBUG && console.log('onmovecancel');
+    }
+    onmovedone ( move ) {
+        // check for first move of default
+        if (this.game.uuid === 'default'){
+            this.chess.header('White', 'Plunky', 'Black', 'Plinkie');
+            this.chess.move(move);
+            this.game.pgn = this.chess.pgn();
+            // this.game.moves.push(move);
+            this.game.moves = Tools.games.pgn2moves(this.game.pgn);
+            this.game.turn += 1;
+            this.game.timestamp = Date.now();
+            this.game.uuid = H.hash(String(this.game.timestamp));
+            // eslint-disable-next-line no-debugger
+            debugger;
+            DB.Games.create(this.game, true);
+            Caissa.route('/game/:turn/:uuid/', {turn: this.game.turn, uuid: this.game.uuid});
+
+        }
+
+        DEBUG && console.log('onmovedone', move);
+    }
+    onmovestart ( square ) {
+        DEBUG && console.log('onmovestart', square);
     }
     updateFlags () {
         const flags = this.board.flags;
@@ -80,8 +178,8 @@ class BoardController {
     }
     updateMarker () {
 
-        const validSquares = this.chess.moves({verbose: true});
-        const markerType   = this.turn === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack;
+        // const validSquares = this.chess.moves({verbose: true});
+        // const markerType   = this.turn === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack;
 
         this.chessBoard.removeMarkers( null, null);
 

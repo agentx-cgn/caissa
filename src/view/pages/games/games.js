@@ -8,7 +8,7 @@ import GamesList     from '../../components/gameslist';
 
 import { ListFilter, FlexListEntry, PageTitle } from '../../components/misc';
 
-const DEBUG = false;
+const DEBUG = true;
 
 const state = State.games;
 const read  = H.interprete;

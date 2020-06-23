@@ -67,11 +67,12 @@ const Tools = {
             ...formdata,
             ...Tools.resolvePlayers(playtemplate),
             difficulty: Tools.resolveDifficulty(formdata.depth),
+            timestamp: Date.now(),
         };
 
         delete play.autosubmit;
         delete play.group;
-        delete play.subline;
+        // delete play.subline;
         delete play.submit;
 
         play.turn = -1;

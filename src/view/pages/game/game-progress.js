@@ -4,8 +4,8 @@ import Factory  from '../../components/factory';
 let progressdom;
 
 const GameProgressBar = Factory.create('GameProgressBar', {
-    render ( width ) {
-        progressdom && (progressdom.innerHTML = `<div class="gm-progress" style="width:${width}%">`);
+    render ( percent ) {
+        progressdom && (progressdom.innerHTML = `<div class="gm-progress" style="width:${percent}%">`);
     },
     oncreate ({ dom }) {
         progressdom = dom;

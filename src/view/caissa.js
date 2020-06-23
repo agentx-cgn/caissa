@@ -7,20 +7,19 @@ import DB              from './services/database';
 import Events          from './services/events';
 import Factory         from './components/factory';
 import History         from './services/history';
-import State           from './data/state';
 
 // last :(
-import { ConfigPages } from './data/config-pages';
+import { ConfigPages, DefaultRoute } from './data/config-pages';
 
 const DEBUG = true;
 
 let redraws = 0, offset = 50;
 
-// available in cosole as window.Caissa
+// available in console as window.Caissa
 const Caissa = {
 
     // available for debugging
-    H, DB, State, System,
+    H, DB, System,
 
     // happens once in index.js
     onafterImport () {
@@ -131,7 +130,7 @@ const Caissa = {
 
 };
 
-const DefaultRoute = ConfigPages.DefaultRoute; //'/sources/';
+// const DefaultRoute = ConfigPages.DefaultRoute; //'/sources/';
 const Routes = H.transform(ConfigPages, Caissa.resolver);
 
 export {
