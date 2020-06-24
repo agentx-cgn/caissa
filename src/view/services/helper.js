@@ -9,7 +9,7 @@ const H = {
      * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
     */
 
-    // creates new object, like Object.assign, but removes prototype
+    // creates new object and removes prototype
     create () {
         const obj = !arguments.length ? {} : Object.assign.apply(null, arguments);
         Object.setPrototypeOf(obj, null);
@@ -77,7 +77,7 @@ const H = {
 
     // removes all undefined props & prototype, improves debugging readabilty
     strip (obj) {
-        const copy = H.create({}, obj);
+        const copy = H.create(obj);
         Object.entries(copy).forEach( entry => {
             const [key] = entry;
             if (typeof copy[key] === 'undefined'){

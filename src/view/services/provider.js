@@ -3,16 +3,16 @@ import Parser            from './parser/pgn';
 // import providerTemplates from '../data/provider';
 
 const ImportProvider = function (template) {
-    
-    const provider = { 
+
+    const provider = {
 
         ...template ,
-        
+
         error:    '',
         progress: 0,
         games:    [],
         header () {
-            return `${provider.caption} ${provider.games.length} Games`; 
+            return `${provider.caption} `;
         },
         fetch () {
             provider.progress = 10;
@@ -31,15 +31,15 @@ const ImportProvider = function (template) {
 
 const UrlProvider = function (template) {
 
-    const provider = { 
+    const provider = {
 
         ...template ,
-        
+
         error:    '',
         progress: 0,
         games:    [],
         header () {
-            return `${provider.games.length} downloaded Games`; 
+            return `${provider.games.length} downloaded Games`;
         },
         fetch () {
             provider.progress = 10;
@@ -74,7 +74,7 @@ const UrlProvider = function (template) {
 
 };
 
-export { 
+export {
     ImportProvider,
     UrlProvider,
 };

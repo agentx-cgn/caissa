@@ -18,20 +18,20 @@ const gametemplate = {
         maxcp:    0,
         maxmate:  0,
     },
-    // STR (Seven Tag Roster)
-    white:       'White',        // name of white player
-    black:       'Black',        // name of black player
-    event:       '',
-    site:        '',
-    round:       '',
-    date:        '',
-    result:      '',
-
-    //
-    termination: '',
-    timecontrol: '',
+    header:      {
+        // STR (Seven Tag Roster)
+        White:       'White',        // name of white player
+        Black:       'Black',        // name of black player
+        Event:       '',
+        Site:        'caissa.js.org',
+        Round:       '',
+        Date:        '',
+        Result:      '',
+        Termination: '',
+        TimeControl: '',
+    },            // from PGN parsing
     pgn:         '',             // game moves in pgn notation
-    header:      {},            // from PGN parsing
+    // timestamp
 
 };
 
@@ -91,11 +91,11 @@ export default H.deepFreezeCreate({
         game:    gametemplate,
         board:   boardtemplate,
         plays:   [
-            {mode: 'h-h', uuid: 'P0000000', subline: 'a classic',        white: '',          black: ''          },
-            {mode: 'x-x', uuid: 'P1000000', subline: 'no pressure',      white: 'White',     black: 'Black'     },
-            {mode: 's-s', uuid: 'P2000000', subline: 'this is fun',      white: 'Stockfish', black: 'Stockfish' },
-            {mode: 'h-s', uuid: 'P3000000', subline: 'beat the machine', white: 'Human',     black: 'Stockfish' },
-            {mode: 's-h', uuid: 'P4000000', subline: 'beat the machine', white: 'Stockfish', black: 'Human'     },
+            {mode: 'h-h', uuid: 'P0000000', subline: 'a classic',        header: { White: '',          Black: ''          }},
+            {mode: 'x-x', uuid: 'P1000000', subline: 'no pressure',      header: { White: 'White',     Black: 'Black'     }},
+            {mode: 's-s', uuid: 'P2000000', subline: 'this is fun',      header: { White: 'Stockfish', Black: 'Stockfish' }},
+            {mode: 'h-s', uuid: 'P3000000', subline: 'beat the machine', header: { White: 'Human',     Black: 'Stockfish' }},
+            {mode: 's-h', uuid: 'P4000000', subline: 'beat the machine', header: { White: 'Stockfish', Black: 'Human'     }},
         ],
     },
     tableTemplates: {
@@ -161,10 +161,10 @@ export default H.deepFreezeCreate({
     ],
 
     timecontrols: [                          // initial | bonus
-        {idx: 0, caption: '10 secs', value: `${ 1*10*1000}|0`},
-        {idx: 1, caption: '1 min',   value: `${ 1*60*1000}|0`},
-        {idx: 2, caption: '5 min',   value: `${ 5*60*1000}|0`},
-        {idx: 3, caption: '10 min',  value: `${10*60*1000}|0`},
+        {idx: 0, caption: '10 secs + 0', value: `${ 1*10*1000}+0`},
+        {idx: 1, caption: ' 1 min  + 0', value: `${ 1*60*1000}+0`},
+        {idx: 2, caption: ' 5 min  + 0', value: `${ 5*60*1000}+0`},
+        {idx: 3, caption: '10 min  + 0', value: `${10*60*1000}+0`},
     ],
 
     plays: {

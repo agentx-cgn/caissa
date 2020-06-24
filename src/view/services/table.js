@@ -72,7 +72,7 @@ const Table = function (tablename, dump=[], tableTemplate={}) {
         createget (uuid, template={}) {
             let row = self.find(uuid);
             if (row === undefined) {
-                row = H.create(H.deepcopy(tableTemplate), template);
+                row = H.create(tableTemplate, template);
                 row.uuid = uuid;
                 cache.push(row);
                 isDirty = true;

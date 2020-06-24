@@ -73,6 +73,10 @@ const Providers = {
         }
         return providerList;
     },
+    find (filter) {
+        return Providers.list().find(filter);
+
+    },
 };
 
 // Also needed if changes, think APIs

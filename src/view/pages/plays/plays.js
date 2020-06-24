@@ -74,11 +74,6 @@ const Plays = Factory.create('Plays', {
                         ? { marginBottom: '0px', backgroundColor: '#0e62993b', color: 'white' }
                         : {}
                     ;
-                    // const onclick  = mode === play.mode
-                    //     // just toggles
-                    //     ? (e) => {e.redraw = false; Caissa.route('/plays/',       {},                {replace: true});}
-                    //     : (e) => {e.redraw = false; Caissa.route('/plays/:mode/', {mode: play.mode}, {replace: true});}
-                    // ;
                     const clicker = play => {
                         return (
                             play.mode === 'x-x'
@@ -92,7 +87,7 @@ const Plays = Factory.create('Plays', {
                     return m('[', [
 
                         m(FlexListEntry, { onclick: clicker(play),  style }, [
-                            m('div.fiom.f4', play.white + ' vs. ' + play.black),
+                            m('div.fiom.f4', play.header.White + ' vs. ' + play.header.Black),
                             m('div.fior.f5', play.subline),
                         ]),
 

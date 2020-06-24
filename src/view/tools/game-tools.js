@@ -1,8 +1,6 @@
 import Chess from 'chess.js';
 import { H, $$ }  from '../services/helper';
 
-// const chess = new Chess();
-
 export default {
 
 
@@ -30,55 +28,73 @@ export default {
 
     genResultLine(game) {
         let accu = '';
-        game.result      && (accu += game.result + ' ');
-        game.termination && (accu += game.termination + ' ');
+        game.header.Result      && (accu += game.header.Result + ' ');
+        game.header.Termination && (accu += game.header.Termination + ' ');
         typeof game.timecontrol === 'object' && (accu += game.timecontrol.caption + ' ');
-        typeof game.timecontrol === 'string' && (accu += game.timecontrol + ' ');
+        typeof game.header.TimeControl === 'string' && (accu += game.header.TimeControl + ' ');
+        return accu;
+    },
+    genTimeLine(game) {
+        let accu = '';
+        game.date
+            ? (accu += game.date)
+            : game.timestamp
+                //TODO: make this locale
+                ? (accu += H.date2isoUtc(new Date(game.timestamp)))
+                : void(0)
+        ;
         return accu;
     },
 
     // full list of moves in current game
-    pgn2moves (pgn) {
+    updateMoves (game) {
 
-        if (pgn === '') { return [];}
+        if (game.pgn === '') {
+            game.moves    = [];
+            game.plycount = 0;
+            return;
+        }
 
         const chess  = new Chess();
         const chess1 = new Chess();
-        !chess.load_pgn(pgn) && console.warn('boardtools.load.pgn.failed', pgn);
+        !chess.load_pgn(game.pgn) && console.warn('gametools.updateMoves.failed', game.pgn);
 
-        return chess.history({verbose: true}).map( (move, idx) => {
-            chess1.move(move);
-            move.fen  = chess1.fen();
-            move.turn = idx;
-            return move;
-        });
-
-    },
-
-    lastMovePointer (list) {
-
-        return (
-            list.length % 2 === 0 ?
-                'b' + (~~(list.length/2) -1)    :
-                'w' + (~~(list.length/2))
-        );
+        chess.history({verbose: true})
+            .map( (move, idx) => {
+                chess1.move(move);
+                move.fen  = chess1.fen();
+                move.turn = idx;
+                game.moves.push(move);
+            })
+        ;
+        game.plycount = game.moves.length;
 
     },
 
-    gameLength (game) {
-        if (game.pgn === '') {
-            return 0;
-        } else {
-            const chess  = new Chess();
-            !chess.load_pgn(game.pgn) && console.warn('gameLength.error', game);
-            return chess.history().length;
-        }
-    },
+    // lastMovePointer (list) {
 
-    turn2pointer (turn) {
-        const color = ~~turn % 2 === 0 ? 'w' : 'b';
-        const move  = Math.floor(~~turn / 2) +1;
-        return color + move;
-    },
+    //     return (
+    //         list.length % 2 === 0 ?
+    //             'b' + (~~(list.length/2) -1)    :
+    //             'w' + (~~(list.length/2))
+    //     );
+
+    // },
+
+    // gameLength (game) {
+    //     if (game.pgn === '') {
+    //         return 0;
+    //     } else {
+    //         const chess  = new Chess();
+    //         !chess.load_pgn(game.pgn) && console.warn('gameLength.error', game);
+    //         return chess.history().length;
+    //     }
+    // },
+
+    // turn2pointer (turn) {
+    //     const color = ~~turn % 2 === 0 ? 'w' : 'b';
+    //     const move  = Math.floor(~~turn / 2) +1;
+    //     return color + move;
+    // },
 
 };

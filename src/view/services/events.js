@@ -1,7 +1,7 @@
 import { H }   from './helper';
 import DB      from './database';
 import Caissa  from '../caissa';
-import System  from '../data/state';
+import System  from '../data/system';
 import History from '../services/history';
 import Factory from '../components/factory';
 import Logger  from '../services/logger';

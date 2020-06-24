@@ -18,7 +18,7 @@ const Game = Factory.create('Game', {
 
         // there must be a game, //TODO: except deeplink
         game       = DB.Games.find(uuid);
-        players    = game.white  + ' -<br>' + game.black;
+        players    = game.header.White  + ' -<br>' + game.header.Black;
         resultline = Tools.games.genResultLine(game);
         DB.Games.update(uuid, { turn: ~~turn });
         Tools.games.scrollTurnIntoView(turn);

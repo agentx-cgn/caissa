@@ -134,10 +134,10 @@ class BoardController {
                 uuid:   H.hash(String(timestamp)),
                 mode:   'x-x',
                 turn :  0,
-                moves : Tools.games.pgn2moves(pgn),
                 pgn,
                 timestamp,
             });
+            Tools.games.updateMoves(game);
             DB.Games.create(game, true);
             Caissa.route('/game/:turn/:uuid/', {turn: game.turn, uuid: game.uuid});
 

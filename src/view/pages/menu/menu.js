@@ -22,7 +22,7 @@ const Menu = Factory.create('Menu', {
         return m('div.page.menu', { className, style },
             m(FlexList, [
                 m(PageTitle, 'Menu'),
-                //TODO: oly show 'Game', if at least one exists in DB
+                //TODO: only show 'Game', if at least one exists in DB
                 ...Array.from(Config.navigation).map( ([route, params, entry]) => {
                     return m(FlexListEntry, { class: '', onclick: clicker(route, params) }, [
                         m(TextLeft, {class: 'f3'}, [

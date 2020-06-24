@@ -12,11 +12,11 @@ const GamesList = Factory.create('GamesList', {
         return m(FlexList, {class: 'games-list'},
             vnode.attrs.games.map( game => m(GameEntry, { game, onclick: (e) => {
                 e.redraw = false;
-                const fullgame = H.create({},
+                const fullgame = H.create(
                     Config.templates.game,
                     game,
-                    { moves: Tools.games.pgn2moves(game.pgn) },
                 );
+                Tools.games.updateMoves(fullgame);
                 DB.Games.create(fullgame, true);
                 Caissa.route('/game/:turn/:uuid/', { uuid: fullgame.uuid, turn: fullgame.moves.length -1 });
             }})),
@@ -24,27 +24,20 @@ const GamesList = Factory.create('GamesList', {
     },
 });
 
-// STR (Seven Tag Roster)
-// white:      'White',        // name of white player
-// black:      'Black',        // name of black player
-// event:      '',
-// date:       '',
-// site:       '',
-// round:      '',
-// result:     '',
-
 const GameEntry = Factory.create('GameEntry', {
     view ( vnode ) {
 
         const { game, onclick } = vnode.attrs;
 
-        let line1 = `${game.white} - ${game.black}`;
-        let line2 = `${game.date} ${game.site} ${game.event}`;
+        let line1 = `${game.header.White} - ${game.header.Black}`;
+        let line2 = `${game.date} ${game.header.Site} ${game.header.Event}`;
         let line3 = '';
 
-        game.result      && (line3 += `<b>${game.result}</b>` + ' ');
-        game.termination && (line3 += game.termination + ' ');
-        game.timecontrol && (line3 += game.timecontrol + ' ');
+        game.header.Result      && (line3 += `<b>${game.header.Result}</b>` + ' ');
+        game.header.Termination && (line3 += game.header.Termination + ' ');
+        game.header.TimeControl && (line3 += game.header.TimeControl + ' ');
+        game.timestamp          && (line3 += H.date2isoUtc(new Date(game.timestamp)) + ' ');
+        game.plycount           && (line3 += game.plycount + ' plies ');
 
         if (line3.length < 18) {
             line2 = line3 + ' ' + line2;
