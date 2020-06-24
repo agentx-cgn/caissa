@@ -3,10 +3,7 @@ import { H, $$ }  from '../services/helper';
 
 export default {
 
-
     scrollTurnIntoView (turn, msecs=60) {
-
-        // if (state.moves.length){
         setTimeout( () => {
 
             const selectorElem = 'td[data-turn="' + turn + '"]';
@@ -22,8 +19,6 @@ export default {
             }
 
         }, msecs);
-        // }
-
     },
 
     genResultLine(game) {
@@ -46,7 +41,7 @@ export default {
         return accu;
     },
 
-    // full list of moves in current game
+    // generates full list of moves in game
     updateMoves (game) {
 
         if (game.pgn === '') {

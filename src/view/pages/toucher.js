@@ -3,6 +3,8 @@ import System     from '../data/system';
 import History    from '../services/history';
 import { $$ }     from '../services/helper';
 
+const DEBUG = false;
+
 const abs = Math.abs;
 let threshold = innerWidth / 3;
 
@@ -40,11 +42,8 @@ const touchSlider = {
             transRight      = transformRight;
             width           = pageWidth;
             threshold       = innerWidth / 4;
-
-            console.log('touchSlider.init', transformLeft, transformRight, pageWidth);
-            // slideLeft && console.log('left', slideLeft);
-            // slideRight && console.log('right', slideRight);
-        }, 0);
+            DEBUG && console.log('touchSlider.init', transformLeft, transformRight, pageWidth);
+        });
     },
     down (e) {
         if (touch.selektor && e.target.closest(touch.selektor)){

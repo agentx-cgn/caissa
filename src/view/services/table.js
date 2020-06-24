@@ -3,7 +3,7 @@ import * as ls from 'local-storage';
 import { H }   from './helper';
 import Config  from '../data/config';
 
-const DEBUG = true;
+const DEBUG = false;
 
 const Table = function (tablename, dump=[], tableTemplate={}) {
 

@@ -3,7 +3,7 @@ import Chess           from 'chess.js';
 import Caissa          from '../../caissa';
 import { H }           from '../../services/helper';
 // import { COLOR }       from '../../../extern/cm-chessboard/Chessboard';
-// import { MARKER_TYPE } from '../../../extern/cm-chessboard/Chessboard';
+import { MARKER_TYPE } from '../../../extern/cm-chessboard/Chessboard';
 import { INPUT_EVENT_TYPE } from '../../../extern/cm-chessboard/Chessboard';
 
 import Tools           from '../../tools/tools';
@@ -28,11 +28,11 @@ class Opponent {
         this.fen          = chessBoard.getPosition();
         this.chess        = new Chess();
         this.chess.load(this.fen) && console.warn(this.fen);
-        this.chessBoard.enableMoveInput(this.dragHandler.bind(this), this.color);
-        // DEBUG && console.log('Opponent.tomove', this.color, this.fen);
+        this.mode === 'x-x' && this.chessBoard.enableMoveInput(this.dragHandler.bind(this), this.color);
+        DEBUG && console.log('Opponent.tomove', this.color, this.fen);
     }
     towait () {
-
+        DEBUG && console.log('Opponent.towait', this.color, this.fen);
     }
     dragHandler(event) {
 
@@ -79,7 +79,8 @@ class BoardController {
         this.chess     = new Chess();
         this.turn      = game.turn;
         // this.isRunning = false;
-        this.opponents = {
+        this.validMoves = [];
+        this.opponents  = {
             'w': new Opponent('w', this.mode[0]),
             'b': new Opponent('b', this.mode[0]),
             'n': { tomove: () => {}, towait: () => {} },
@@ -99,12 +100,14 @@ class BoardController {
             this.turn === -2 ? 'n' :
             this.turn  %   2 ? 'b' : 'w'
         );
+        this.moves = this.chess.moves({verbose: true});
 
         if (chessBoard){
             this.chessBoard = chessBoard;
             this.updateFlags();
             this.updateButtons();
             this.updateMarker();
+            this.updateArrows();
             this.listen();
         }
 
@@ -118,10 +121,23 @@ class BoardController {
                 this.onmovecancel.bind(this),
             );
             this.opponents[this.towait].towait(this.chessBoard);
+            console.log('BoardController', 'towait:', this.towait, 'tomove:', this.tomove);
         }
     }
+    onfield (e) {
+        const idx    = e.target.dataset.index;
+        const square = Tools.board.squareIndexToField(idx);
+        const piece  = this.chessBoard.getPiece(square);
+        console.log(idx, square);
+        if (piece) {
+            this.validMoves = this.moves.filter(m => m.from === square);
+        } else {
+            this.validMoves = this.moves.filter(m => m.to === square);
+        }
+        Caissa.redraw();
+    }
     onmovecancel () {
-        DEBUG && console.log('onmovecancel');
+        DEBUG && console.log('BoardController.onmovecancel');
     }
     onmovedone ( move ) {
 
@@ -143,11 +159,12 @@ class BoardController {
 
         }
 
-        DEBUG && console.log('onmovedone', move);
+        DEBUG && console.log('BoardController.onmovedone', move);
     }
     onmovestart ( square ) {
         DEBUG && console.log('onmovestart', square);
     }
+
     updateFlags () {
         const flags = this.board.flags;
         const chess = this.chess;
@@ -159,7 +176,7 @@ class BoardController {
         flags.stal  = chess.in_stalemate();
         flags.insu  = chess.insufficient_material();
         flags.repe  = chess.in_threefold_repetition();
-        DEBUG && console.log('updateFlags.turn', flags.turn);
+        DEBUG && console.log('BoardController.updateFlags.turn', flags.turn);
 
     }
     updateButtons () {
@@ -174,22 +191,59 @@ class BoardController {
         btn.play        = canplay;
         btn.pause       = canpause;
         btn.evaluate    = this.game.moves.length > 0 && !this.isRunning;
+        DEBUG && console.log('BoardController.updateButtons', 'btn.play', btn.play);
     }
-    updateDecoration () {
+    updateArrows () {
+
+        const lasts = this.game.moves.slice(-2);
+
+        this.chessBoard.removeArrows( null );
+
+        if (this.board.illustrations.valid){
+            this.validMoves.forEach( move => {
+                this.chessBoard.addArrow(move.from, move.to, {class: 'arrow validmove'});
+            });
+        }
+
+        if (this.board.illustrations.last){
+            lasts.forEach( m => {
+                this.chessBoard.addArrow(m.from, m.to, {class: m.color === 'w' ? 'arrow last-white' : 'arrow last-black'});
+            });
+        }
+
+        if (this.board.illustrations.test){
+            this.chessBoard.addArrow('e2', 'e4', {class: 'arrow test'} );
+            this.chessBoard.addArrow('f2', 'h4', {class: 'arrow test'} );
+            this.chessBoard.addArrow('d2', 'c4', {class: 'arrow test'} );
+            this.chessBoard.addArrow('c2', 'a3', {class: 'arrow test'} );
+            this.chessBoard.addArrow('d7', 'd5', {class: 'arrow test'} );
+            this.chessBoard.addArrow('c7', 'c5', {class: 'arrow test'} );
+
+            this.chessBoard.addArrow('g7', 'g8', {class: 'arrow test'} );
+            this.chessBoard.addArrow('g7', 'h8', {class: 'arrow test'} );
+            this.chessBoard.addArrow('g7', 'h7', {class: 'arrow test'} );
+            this.chessBoard.addArrow('g7', 'h6', {class: 'arrow test'} );
+            this.chessBoard.addArrow('g7', 'g6', {class: 'arrow test'} );
+            this.chessBoard.addArrow('g7', 'f6', {class: 'arrow test'} );
+            this.chessBoard.addArrow('g7', 'f7', {class: 'arrow test'} );
+            this.chessBoard.addArrow('g7', 'f8', {class: 'arrow test'} );
+        }
 
     }
     updateMarker () {
 
         // const validSquares = this.chess.moves({verbose: true});
-        // const markerType   = this.turn === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack;
+        const markerType   = this.turn === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack;
 
         this.chessBoard.removeMarkers( null, null);
 
-        // if (state.illustrations.marker.attack){
-        //     validSquares.forEach( square => {
-        //         chessBoard.addMarker(square.to, markerType);
-        //     });
-        // }
+        if (this.board.illustrations.attack){
+            this.validMoves.forEach( square => {
+                this.chessBoard.addMarker(square.to, markerType);
+            });
+        }
+
+        DEBUG && console.log('BoardController.updateMarker');
 
     }
 

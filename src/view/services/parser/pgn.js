@@ -3,6 +3,8 @@ import Config from '../../data/config';
 import Tools  from '../../tools/tools';
 import { H }  from '../helper';
 
+const DEBUG = false;
+
 const Parser = {
     readGames (pgns, delimiter='\n', deleteComments=false) {
 
@@ -53,7 +55,7 @@ const Parser = {
             games.push(game);
         }
 
-        false && console.log('Info   :', 'Parsed', games.length, 'pgns in', Date.now() - t0, 'msecs');
+        DEBUG && console.log('Info   :', 'Parsed', games.length, 'pgns in', Date.now() - t0, 'msecs');
 
         return games;
 
@@ -66,15 +68,7 @@ const Parser = {
 
             game.uuid  = Tools.genGameHash(game);
 
-            console.log(H.shrink(game));
-
-            // STR (Seven Tag Roster) // event is handled above
-            // game.white = game.header.White ? game.header.White : 'White';
-            // game.black = game.header.Black ? game.header.Black : 'Black';
-
-            // game.header.Result      && ( game.result      = game.header.Result );
-            // game.header.Round       && ( game.round       = game.header.Round );
-            // game.header.Site        && ( game.site        = game.header.Site );
+            DEBUG && console.log(H.shrink(game));
             game.date  = (
                 game.header.Date       ? game.header.Date      :
                 game.header.EventDate  ? game.header.EventDate :
@@ -82,19 +76,10 @@ const Parser = {
                 '????.??.??'
             );
 
-            // dropping mode, fen
-            // game.header.Time        && ( game.time        = game.header.Time );
-            // game.header.Termination && ( game.termination = game.header.Termination );
-            // game.header.TimeControl && ( game.timecontrol = game.header.TimeControl );
-            // game.header.Eco         && ( game.eco         = game.header.Eco );
-            // game.header.PlyCount    && ( game.plycount    = ~~game.header.PlyCount );
-
             H.map(game.header, (key, val) => {
                 !val && delete game.header[key];
             });
             game.searchtext = H.map(game.header, (_, val) => val).join(' ').toLowerCase();
-
-            // game.searchtext = (game.date +' '+ (game.result||'') +' '+ game.white  +' '+ game.black  +' '+ (game.event||'')).toLowerCase();
 
             if (!game.pgn) {
                 // eslint-disable-next-line no-debugger

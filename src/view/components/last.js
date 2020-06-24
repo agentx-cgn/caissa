@@ -12,10 +12,10 @@ const Last = Factory.create('Last', {
         return m('div.last.dn');
     },
     onupdate ({attrs:{msecs}}) {
-        setTimeout( () => dispatcher.send('onafterupdates', { msecs }), 0);
+        setTimeout( () => dispatcher.send('onafterupdates', { msecs }));
     },
     oncreate ({attrs:{msecs}}) {
-        setTimeout( () => dispatcher.send('onafterupdates', { msecs }), 0);
+        setTimeout( () => dispatcher.send('onafterupdates', { msecs }));
     },
 
 });

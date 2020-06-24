@@ -5,7 +5,7 @@ import Factory        from '../../components/factory';
 import Config         from '../../data/config';
 import Tools          from '../../tools/tools';
 
-const DEBUG = true;
+const DEBUG = false;
 
 let chessBoard, board, game, controller;
 
@@ -16,6 +16,8 @@ const ChessBoard = Factory.create('ChessBoard', {
         game  = vnode.attrs.game;
         board = vnode.attrs.board;
         controller = vnode.attrs.controller;
+        $$('div.chessboard').addEventListener('mousedown', controller.onfield.bind(controller));
+        $$('div.chessboard').addEventListener('touchdown', controller.onfield.bind(controller));
 
         chessBoard = new Chessboard(
             $$('div.chessboard'),
@@ -29,10 +31,15 @@ const ChessBoard = Factory.create('ChessBoard', {
         });
     },
     onbeforeremove () {
+
+        $$('div.chessboard').removeEventListener('mousedown', controller.onfield);
+        $$('div.chessboard').removeEventListener('touchdown', controller.onfield);
+
         return chessBoard.destroy().then( () => {
             chessBoard = undefined;
             DEBUG && console.log('chessboard.destroyed');
         });
+
     },
     view (  ) {
         DEBUG && console.log('ChessBoard.view.cbgb', !!chessBoard, !!game, !!board);
