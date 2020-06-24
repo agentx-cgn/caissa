@@ -3,7 +3,7 @@ import * as ls from 'local-storage';
 import { H }   from './helper';
 import Config  from '../data/config';
 
-const DEBUG = false;
+const DEBUG = true;
 
 const Table = function (tablename, dump=[], tableTemplate={}) {
 
@@ -21,7 +21,7 @@ const Table = function (tablename, dump=[], tableTemplate={}) {
 
     }
 
-    function runUpdates (){
+    function runUpdates () {
         interval = setInterval( () => {
             if (isDirty){
                 self.persist();
@@ -44,10 +44,10 @@ const Table = function (tablename, dump=[], tableTemplate={}) {
             return cache;
         },
         get first () {
-            return cache[0] || null;
+            return cache[0] || undefined;
         },
-        find (uuid='0') {
-            return cache.find( row => row.uuid === uuid ) || null;
+        find (uuid) {
+            return cache.find( row => row.uuid === uuid ) || undefined;
         },
         filter (fn) {
             return cache.filter(fn);
@@ -57,7 +57,7 @@ const Table = function (tablename, dump=[], tableTemplate={}) {
             cache = dump;
             self.persist();
             isDirty = false;
-            DEBUG && console.log('TAB.' + tablename, 'cleared', length, 'rows');
+            DEBUG && console.log('TAB.' + tablename, 'cleared, with', length, 'rows');
         },
         create (row, force=false) {
             cache.push(row);
@@ -66,18 +66,18 @@ const Table = function (tablename, dump=[], tableTemplate={}) {
             } else {
                 isDirty = true;
             }
-            DEBUG && console.log('TAB.' + tablename, 'created', row.uuid);
+            DEBUG && console.log('TAB.' + tablename, 'created', row.uuid, force);
             return row;
         },
         createget (uuid, template={}) {
             let row = self.find(uuid);
-            if (row === null) {
+            if (row === undefined) {
                 row = H.create(H.deepcopy(tableTemplate), template);
                 row.uuid = uuid;
                 cache.push(row);
                 isDirty = true;
             }
-            DEBUG && console.log('TAB.' + tablename, 'createget', uuid);
+            DEBUG && console.log('TAB.' + tablename, 'createget', uuid, H.shrink(row));
             return row;
         },
         delete (what, force=true) {
@@ -86,7 +86,7 @@ const Table = function (tablename, dump=[], tableTemplate={}) {
                 self.filter(what).forEach( row => {
                     self.delete(row.uuid, false);
                 });
-                self.persist();
+                force && self.persist();
 
             } else if (typeof what === 'string'){
                 const idx = cache.findIndex( row => row.uuid === what);
@@ -100,7 +100,7 @@ const Table = function (tablename, dump=[], tableTemplate={}) {
                 } else {
                     throw `ERROR ! DB.${tablename}.delete failed. ${what} not found`;
                 }
-                DEBUG && console.log('TAB.' + tablename, 'deleted', what);
+                DEBUG && console.log('TAB.' + tablename, 'deleted', what.toString());
             }
         },
         update (uuid, diff, force=false) {

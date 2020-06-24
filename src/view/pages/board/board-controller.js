@@ -124,20 +124,22 @@ class BoardController {
         DEBUG && console.log('onmovecancel');
     }
     onmovedone ( move ) {
+
         // check for first move of default
         if (this.game.uuid === 'default'){
-            this.chess.header('White', 'Plunky', 'Black', 'Plinkie');
             this.chess.move(move);
-            this.game.pgn = this.chess.pgn();
-            // this.game.moves.push(move);
-            this.game.moves = Tools.games.pgn2moves(this.game.pgn);
-            this.game.turn += 1;
-            this.game.timestamp = Date.now();
-            this.game.uuid = H.hash(String(this.game.timestamp));
-            // eslint-disable-next-line no-debugger
-            debugger;
-            DB.Games.create(this.game, true);
-            Caissa.route('/game/:turn/:uuid/', {turn: this.game.turn, uuid: this.game.uuid});
+            const pgn = this.chess.pgn().trim();
+            const timestamp = Date.now();
+            const game = H.create(this.game, {
+                uuid:   H.hash(String(timestamp)),
+                mode:   'x-x',
+                turn :  0,
+                moves : Tools.games.pgn2moves(pgn),
+                pgn,
+                timestamp,
+            });
+            DB.Games.create(game, true);
+            Caissa.route('/game/:turn/:uuid/', {turn: game.turn, uuid: game.uuid});
 
         }
 

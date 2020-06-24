@@ -1,19 +1,16 @@
-import Move      from './move';
-import Factory   from '../../components/factory';
+import Move    from './move';
+import Factory from '../../components/factory';
 
 function renderMoves (game) {
 
     return game.moves
-        // creates moves as an array of two plys [white, black]
+        // turns list of moves [white, black, white,...] into
+        // list of pairs of plies [[white, black], [white, black],...]
         .reduce( (acc, val) => {
             val.color === 'w' ? (acc.push( [ val ] )) : (acc[acc.length -1].push( val ));
-            // if (val.color === 'w'){
-            //     acc.push( [ val ] );
-            // } else {
-            //     acc[acc.length -1].push(val);
-            // }
             return acc;
         }, [] )
+        // and then map to table rows <tr><td>white</td><td<black...
         .map( (move, idx) => {
             return m(Move, {
                 game,
@@ -29,6 +26,7 @@ function renderMoves (game) {
 const Moves = Factory.create('Moves', {
 
     view ( vnode ) {
+        //TODO: something for small screens
         return m('div.gm-moves.flex-shrink',
             m('table.w-100.collapse', renderMoves(vnode.attrs.game)),
         );

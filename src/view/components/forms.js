@@ -23,18 +23,6 @@ const TimeStamp = function () {
     };
 };
 
-function renderFormGroup (noheader, group)  {
-    return m('[', [
-        !noheader && m('div.group.title.sair', group.title),
-        ...group.controls
-            .sort( (a, b) => a.sort - b.sort)
-            .filter (control => control.active)
-            .map( control => m('div.control', renderGroupControl(control) ))
-        ,
-    ]);
-
-}
-
 function renderGroupControl (control) {
 
     // console.log('renderGroupControl', control);
@@ -179,6 +167,18 @@ function renderGroupControl (control) {
     } else {
         return control.type + ' unknown';
     }
+
+}
+
+function renderFormGroup (noheader, group)  {
+    return m('[', [
+        !noheader && m('div.group.title.sair', group.title),
+        ...group.controls
+            .sort( (a, b) => a.sort - b.sort)
+            .filter (control => control.active)
+            .map( control => m('div.control', renderGroupControl(control) ))
+        ,
+    ]);
 
 }
 

@@ -2,20 +2,26 @@
 // https://github.com/bevacqua/local-storage
 
 import * as ls from 'local-storage';
+import Caissa  from '../caissa';
 import System  from '../data/system';
 import Options from '../data/options';
 import Config  from '../data/config';
 import { H }   from './helper';
 import Table   from './table';
 
-const SCHEME = '2020-06-17b';
+const SCHEME = '2020-06-24a';
 
 const tables = 'Boards Games Options Usage'.split(' ');
 const dumps  = {
     Usage:   [{uuid: '0', laststart: Date.now(), lastend: Date.now(), usage:0}],
     Options: [Options],
-    Boards : [],
-    Games :  [],
+    Boards : [{ ...Config.templates.board }],
+    Games :  [H.create({
+        ...Config.templates.game,
+        ...Array.from(Config.templates.plays).find(p => p.mode === 'x-x'),
+        turn: -1,
+        uuid: 'default',
+    })],
 };
 
 const DB =  {
@@ -43,6 +49,8 @@ const DB =  {
                 Config.tableTemplates[tablename],
             );
         });
+        Caissa.route('/menu/');
+        location.reload();
 
     },
 

@@ -3,7 +3,8 @@ import './board.scss';
 
 import Factory           from '../../components/factory';
 import DB                from '../../services/database';
-import Config            from '../../data/config';
+// import { H }             from '../../services/helper';
+// import Config            from '../../data/config';
 import Tools             from '../../tools/tools';
 import BoardFlags        from './board-flags';
 import BoardButtons      from './board-buttons';
@@ -16,6 +17,10 @@ import BoardController   from './board-controller';
 const DEBUG = true;
 
 let lastturn, lastuuid, game, board, controller, fen, captured, boardTemplate;
+
+// function start (game) {
+//     return game.mode === 'x-x';
+// }
 
 function Controller (game, board) {
     return (
@@ -31,25 +36,29 @@ function Controller (game, board) {
 const Board = Factory.create('Board', {
     view ( vnode ) {
 
-        // keep the last board through page changes unless new uuid
-        // if no last uuid show default board, ready to interact
+        // at start, there is nothing, default is chosen
+        let { params: { uuid='default', turn=-1 } } = vnode.attrs;
 
-        DEBUG && console.log('Board.view', vnode.attrs.params);
+        // but don't replace current game with default
+        uuid === 'default' && lastuuid ? (uuid = lastuuid, turn = lastturn) : (void(0));
 
-        const { params: { uuid, turn } } = vnode.attrs;
+        DEBUG && console.log('Board.view', { uuid, turn });
 
         if (!uuid && !lastuuid) {
+            // eslint-disable-next-line no-debugger
+            debugger;
             // happens at start
-            boardTemplate = { illustrations: DB.Options.first['board-illustrations'] };
             game  = DB.Games.createget('default');
-            board = DB.Boards.createget('default', boardTemplate);
-            fen   = Config.fens.start;
-            captured = Tools.board.genCapturedPieces(fen);
-            DB.Boards.update('default', { fen, captured }, true);
+            board = DB.Boards.createget('default');
+            DB.Boards.update('default', {
+                illustrations: DB.Options.first['board-illustrations'] ,
+            }, true);
             controller = Controller(game, board);
-            // lastuuid = 'default';
 
         } else if (!uuid && lastuuid) {
+            // eslint-disable-next-line no-debugger
+            debugger;
+            DB.Boards.update('default', board);
             // there was a game, but user strays away
             // boardTemplate = { illustrations: DB.Options.first['board-illustrations'] };
             game  = DB.Games.find(lastuuid);
