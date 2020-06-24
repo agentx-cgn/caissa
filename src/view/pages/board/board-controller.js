@@ -128,12 +128,12 @@ class BoardController {
         const idx    = e.target.dataset.index;
         const square = Tools.board.squareIndexToField(idx);
         const piece  = this.chessBoard.getPiece(square);
-        console.log(idx, square);
-        if (piece) {
-            this.validMoves = this.moves.filter(m => m.from === square);
-        } else {
-            this.validMoves = this.moves.filter(m => m.to === square);
-        }
+        console.log(idx, square, piece);
+        this.validMoves = this.moves.filter( m => m.from === square || m.to === square );
+        // if (piece) {
+        // } else {
+        //     this.validMoves = this.moves.filter(m => m.to === square);
+        // }
         Caissa.redraw();
     }
     onmovecancel () {
