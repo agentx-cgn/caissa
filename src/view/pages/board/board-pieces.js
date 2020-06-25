@@ -57,8 +57,7 @@ export default {
                 const dropindex = zone.attributes['data-index'].nodeValue;
                 const dragpiece = drag.attributes['data-piece'].nodeValue;
                 event.target.style.fill = '';
-                fire('board', 'piece', ['add', dragpiece, Tools.squareIndexToField(dropindex)]);
-                // console.log('dropped', dragpiece, 'on', dropindex, Tools.squareIndexToField(dropindex));
+                fire('board', 'piece', ['add', dragpiece, Tools.Board.squareIndexToField(dropindex)]);
             },
             ondropdeactivate: function (event) {
                 // remove active dropzone feedback

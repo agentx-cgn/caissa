@@ -66,6 +66,9 @@ const Factory = {
 
         freezer.push(ice);
 
+        //TODO: How?
+        // Caissa.onComponentCreated(ice);
+
         return ice;
 
     },

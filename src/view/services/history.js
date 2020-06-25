@@ -1,7 +1,6 @@
 import { H }       from './helper';
 import { Nothing } from '../components/misc';
 import Caissa      from '../caissa';
-// import Tools       from '../tools/tools';
 
 const DEBUG = false;
 

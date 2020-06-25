@@ -4,18 +4,18 @@ import { COLOR }    from '../../../extern/cm-chessboard/Chessboard';
 import Clock        from '../../components/chessclock';
 import Pool         from '../../services/engine/pool';
 import { H }        from '../../services/helper';
-import InputController from './input-controller';
-import BoardController from './board-controller';
+// import InputController from './input-controller';
+// import BoardController from './board-controller';
 
 // m('button.pv1.mh3.mv1', {onclick: () => Controller.start(60 * 1000) }, 'Controller.start(60secs)'),
 // m('button.pv1.mh3.mv1', {onclick: () => Controller.white.move() }, 'white.move()'),
 // m('button.pv1.mh3.mv1', {onclick: () => Controller.black.move() }, 'black.move()'),
 // m('button.pv1.mh3.mv1', {onclick: () => Controller.stop() }, 'Controller.stop'),
 
-class SSBoardController extends BoardController {
+class SSBoardController  {
 
     constructor (game, board) {
-        super(game, board);
+        // super(game, board);
     }
     newTurn (turn) {
         this.turn = turn;
@@ -27,7 +27,7 @@ class SSBoardController extends BoardController {
     }
     listen (chessBoard) {
         if (this.game.mode !== 'h-h' && this.game.mode !== 's-s' && this.isRunning){
-            chessBoard.enableMoveInput(InputController(this));
+            // chessBoard.enableMoveInput(InputController(this));
         }
     }
     onmove (move) {

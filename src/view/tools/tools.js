@@ -5,6 +5,6 @@ import global   from './global-tools';
 
 export default {
     ...global,
-    board: { ...board },
-    games: { ...game },
+    Board: { ...board },
+    Games: { ...game },
 };

@@ -10,7 +10,7 @@ const DEBUG = false;
 let chessBoard, board, game, controller;
 
 const ChessBoard = Factory.create('ChessBoard', {
-    onresize : Tools.board.resize,
+    onresize : Tools.Board.resize,
     oncreate ( vnode ) {
 
         game  = vnode.attrs.game;
@@ -25,7 +25,7 @@ const ChessBoard = Factory.create('ChessBoard', {
         );
         chessBoard.initialization.then( () => {
             chessBoard.disableContextInput();
-            Tools.board.resize(innerWidth, innerHeight);
+            Tools.Board.resize(innerWidth, innerHeight);
             chessBoard.view.handleResize();
             DEBUG && console.log('ChessBoard.oncreate.then');
         });
@@ -62,7 +62,6 @@ const ChessBoard = Factory.create('ChessBoard', {
             } catch(e){DEBUG && console.log('ChessBoard.onupdate.handleResize', e);}
 
             (chessBoard.getOrientation() !== board.orientation) && chessBoard.setOrientation(board.orientation);
-            // Tools.board.resize(innerWidth, innerHeight);
             DEBUG && console.log('ChessBoard.onupdate.cbgb', !!chessBoard, !!game, !!board);
         }
 

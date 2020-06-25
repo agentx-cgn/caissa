@@ -1,7 +1,6 @@
 
 import Factory      from '../../components/factory';
 import ChessClock   from '../../components/chessclock';
-// import Tools        from '../../tools/tools';
 
 const BoardBar = Factory.create('BoardBar', {
     view (vnode) {

@@ -12,10 +12,10 @@ import BoardController from './board-controller';
 // m('button.pv1.mh3.mv1', {onclick: () => Controller.black.move() }, 'black.move()'),
 // m('button.pv1.mh3.mv1', {onclick: () => Controller.stop() }, 'Controller.stop'),
 
-class SSBoardController extends BoardController {
+class SSBoardController {
 
     constructor (game, board) {
-        super(game, board);
+        // super(game, board);
     }
     newTurn (turn) {
         this.turn = turn;
@@ -27,7 +27,7 @@ class SSBoardController extends BoardController {
     }
     listen (chessBoard) {
         if (this.game.mode !== 'h-h' && this.game.mode !== 's-s' && this.isRunning){
-            chessBoard.enableMoveInput(InputController(this));
+            // chessBoard.enableMoveInput(InputController(this));
         }
     }
     onmove (move) {

@@ -20,19 +20,18 @@ class Opponent {
         this.color = color;
         this.mode  = mode;
     }
-    tomove (chessBoard, onmovedone, onmovestart, onmovecancel ) {
-        this.chessBoard   = chessBoard;
-        this.movedone     = onmovedone;
-        this.movestart    = onmovestart;
-        this.movecancel   = onmovecancel;
-        this.fen          = chessBoard.getPosition();
+    tomove (controller) {
+        this.chessBoard   = controller.chessBoard;
+        this.movedone     = controller.onmovedone.bind(controller);
+        this.movestart    = controller.onmovestart.bind(controller);
+        this.movecancel   = controller.onmovecancel.bind(controller);
+        this.fen          = controller.chessBoard.getPosition();
         this.chess        = new Chess();
         this.chess.load(this.fen) && console.warn(this.fen);
-        this.mode === 'x-x' && this.chessBoard.enableMoveInput(this.dragHandler.bind(this), this.color);
         DEBUG && console.log('Opponent.tomove', this.color, this.fen);
     }
-    towait () {
-        DEBUG && console.log('Opponent.towait', this.color, this.fen);
+    towait (controller) {
+        DEBUG && console.log('Opponent.towait', this.color, controller.chessBoard.getPosition());
     }
     dragHandler(event) {
 
@@ -90,7 +89,7 @@ class BoardController {
     update (chessBoard) {
 
         this.turn  = this.game.turn;
-        this.fen   = Tools.board.game2fen(this.game);
+        this.fen   = Tools.Games.fen(this.game);
         this.chess.load(this.fen);
         this.tomove = (
             this.turn === -2 ? 'n' :
@@ -114,26 +113,28 @@ class BoardController {
     }
     listen () {
         if (this.turn !== -2){
-            this.opponents[this.tomove].tomove(
-                this.chessBoard,
-                this.onmovedone.bind(this),
-                this.onmovestart.bind(this),
-                this.onmovecancel.bind(this),
-            );
-            this.opponents[this.towait].towait(this.chessBoard);
+
+            const oppToMove   = this.opponents[this.tomove];
+            const oppToWait   = this.opponents[this.towait];
+            const dragHandler = oppToMove.dragHandler.bind(oppToMove);
+
+            if (this.mode === 'x-x'){
+                this.chessBoard.enableMoveInput(dragHandler, this.color);
+            }
+
+            oppToMove.tomove(this);
+            oppToWait.towait(this);
+
             console.log('BoardController', 'towait:', this.towait, 'tomove:', this.tomove);
         }
     }
+    // user clicks/touches board
     onfield (e) {
         const idx    = e.target.dataset.index;
-        const square = Tools.board.squareIndexToField(idx);
+        const square = Tools.Board.squareIndexToField(idx);
         const piece  = this.chessBoard.getPiece(square);
         console.log(idx, square, piece);
         this.validMoves = this.moves.filter( m => m.from === square || m.to === square );
-        // if (piece) {
-        // } else {
-        //     this.validMoves = this.moves.filter(m => m.to === square);
-        // }
         Caissa.redraw();
     }
     onmovecancel () {
@@ -153,9 +154,21 @@ class BoardController {
                 pgn,
                 timestamp,
             });
-            Tools.games.updateMoves(game);
+            Tools.Games.updateMoves(game);
             DB.Games.create(game, true);
             Caissa.route('/game/:turn/:uuid/', {turn: game.turn, uuid: game.uuid});
+
+        } else {
+            // eslint-disable-next-line no-debugger
+            // debugger;
+            this.chess.move(move);
+            move.fen   = this.chess.fen();
+            move.turn  = this.turn +1;
+            move.color = this.tomove;
+            this.game.moves.push(move);
+            this.game.turn = this.turn +1;
+            DB.Games.update(this.game.uuid, this.game, true);
+            Caissa.route('/game/:turn/:uuid/', {turn: this.game.turn, uuid: this.game.uuid}, {replace: true});
 
         }
 
@@ -248,5 +261,14 @@ class BoardController {
     }
 
 }
+
+        // chess.put({ type: chess.PAWN, color: chess.BLACK }, 'a5')
+        // chess.put({ type: 'k', color: 'w' }, 'h1')
+        // chess.remove('h1')
+
+        // if (action === 'add') {
+        //     const type = piece[1], color = piece[0];
+        //     chess.put({ type, color}, field);
+        //     chessBoard.setPosition(chess.fen(), true);
 
 export default BoardController;

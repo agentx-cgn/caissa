@@ -21,9 +21,9 @@ const Game = Factory.create('Game', {
         game       = DB.Games.find(uuid);
         board      = DB.Boards.find(uuid);
         players    = game.header.White  + ' -<br>' + game.header.Black;
-        resultline = Tools.games.genResultLine(game);
+        resultline = Tools.Games.resultLine(game);
         DB.Games.update(uuid, { turn: ~~turn });
-        Tools.games.scrollTurnIntoView(turn);
+        Tools.Games.scrollTurnIntoView(turn);
 
         return innerWidth >= 720
 

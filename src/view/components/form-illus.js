@@ -1,7 +1,7 @@
 
 import Factory from './factory';
 import Forms   from './forms';
-import Caissa  from '../caissa';
+// import Caissa  from '../caissa';
 import DB      from '../services/database';
 
 const FormIllus = Factory.create('FormIllus', {

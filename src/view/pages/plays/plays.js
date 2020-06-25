@@ -31,7 +31,7 @@ Array.from(Config.templates.plays)
             autosubmit: false,
             ...DB.Options.first[group],
             submit: (form) => {
-                const game = Tools.createGamefromPlay(play, form);
+                const game = Tools.Games.fromPlay(play, form);
                 DB.Games.create(game, true);
                 DEBUG && console.log('plays.form.submitted', game.uuid, game.mode, game.white, game.black);
                 Caissa.route('/game/:turn/:uuid/', { uuid: game.uuid, turn: game.turn });

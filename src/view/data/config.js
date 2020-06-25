@@ -8,6 +8,14 @@ const fens = {
     start: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
 };
 
+const moveTemplate = {
+    turn:  null,
+    fen:   '',
+    from:  '',
+    to:    '',
+    color: '',
+};
+
 const gametemplate = {
 
     uuid:        'G0000000',     // string, 6 or 8 alphanums
@@ -88,6 +96,7 @@ export default H.deepFreezeCreate({
     },
 
     templates : {
+        move:    moveTemplate,
         game:    gametemplate,
         board:   boardtemplate,
         plays:   [

@@ -27,11 +27,11 @@ const Caissa = {
         Events.listen();
     },
 
-    onregister : function (text) {
-        offset += 50;
+    onComponentCreated : function (comp) {
+        offset += 16;
         setTimeout( function () {
             const $msgs = $$('loading-screen .messages');
-            $msgs.innerHTML += '<br>' + text;
+            $msgs.innerHTML += '<br>' + comp.name;
         }, offset);
     },
 
@@ -53,6 +53,10 @@ const Caissa = {
             $$('loading-screen .a2home').style.display       = 'inline-block';
             $$('loading-screen .dump').style.display         = 'inline-block';
             $$('loading-screen .option-waitscreen').style.display  = 'inline-block';
+            $$('loading-screen .option-username').style.display    = 'inline-block';
+            $$('loading-screen input.chkwaitscreen').checked       = true;
+            $$('loading-screen input.txtusername').value           = DB.Options.first['user-data'].name;
+
         } else {
             document.body.removeChild($$('loading-container'));
         }

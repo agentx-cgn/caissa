@@ -113,55 +113,7 @@ export default {
 
     },
 
-    // return game state as colors and boolean
-    updateFlags (chess) {
-        const flags = State.game.flags;
-        flags.turn = chess.turn();  // w/b
-        flags.over = chess.game_over();
-        flags.chck = chess.in_check();
-        flags.mate = chess.in_checkmate();
-        flags.draw = chess.in_draw();
-        flags.stal = chess.in_stalemate();
-        flags.insu = chess.insufficient_material();
-        flags.repe = chess.in_threefold_repetition();
-    },
-
-    genCapturedPieces (fen) {
-
-        const sorter = (a, b) => {
-            return (
-                Config.pieces.fens.sorted.indexOf(a.toLowerCase()) -
-                Config.pieces.fens.sorted.indexOf(b.toLowerCase())
-            );
-        };
-
-        let blacks = Config.pieces.fens.black;
-        let whites = Config.pieces.fens.white;
-
-        fen.split(' ')[0].split('').forEach(letter => {
-            blacks = blacks.replace(letter, '');
-            whites = whites.replace(letter, '');
-        }),
-
-        // blacks = blacks.split('').sort(sorter).map( letter => 'b' + letter);
-        // whites = whites.split('').sort(sorter).map( letter => 'w' + letter.toLowerCase());
-        blacks = blacks.split('').sort(sorter).map( letter => Config.fontPieces[letter] );
-        whites = whites.split('').sort(sorter).map( letter => Config.fontPiecesWhite[letter] );
-
-        return { blacks, whites };
-
-    },
-
-    squareIndexToField (index) {
-
-        let row = Math.floor(index/8) + 1;
-        let col = index % 8;
-        let letter = String.fromCharCode(97 + col);
-
-        return letter + row;
 
 
-
-    },
 
 };

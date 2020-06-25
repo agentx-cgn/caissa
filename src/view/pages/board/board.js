@@ -10,7 +10,7 @@ import BoardFlags        from './board-flags';
 import BoardButtons      from './board-buttons';
 import BoardBar          from './board-bar';
 import ChessBoard        from './chessboard';
-import SFBoardController from './sf-board-controller';
+// import SFBoardController from './sf-board-controller';
 import BoardController   from './board-controller';
 // import { Nothing }       from '../../components/misc';
 
@@ -26,9 +26,9 @@ function Controller (game, board) {
     return (
         game.mode === 'x-x' ? new BoardController(game, board) :
         game.mode === 'h-h' ? new BoardController(game, board) :
-        game.mode === 'h-s' ? new SFBoardController(game, board) :
-        game.mode === 's-h' ? new SFBoardController(game, board) :
-        game.mode === 's-s' ? new SFBoardController(game, board) :
+        // game.mode === 'h-s' ? new SFBoardController(game, board) :
+        // game.mode === 's-h' ? new SFBoardController(game, board) :
+        // game.mode === 's-s' ? new SFBoardController(game, board) :
         console.log('wtf')
     );
 }
@@ -63,8 +63,8 @@ const Board = Factory.create('Board', {
             // boardTemplate = { illustrations: DB.Options.first['board-illustrations'] };
             game  = DB.Games.find(lastuuid);
             board = DB.Boards.find(lastuuid);
-            fen   = Tools.board.game2fen(game);
-            captured = Tools.board.genCapturedPieces(fen);
+            fen   = Tools.Games.fen(game);
+            captured = Tools.Board.captured(fen);
             DB.Boards.update(lastuuid, { fen, captured }, true);
             controller = Controller(game, board);
 
@@ -74,8 +74,8 @@ const Board = Factory.create('Board', {
             //TODO: will fail if deeplink
             game  = DB.Games.find(uuid);
             board = DB.Boards.createget(uuid, boardTemplate);
-            fen   = Tools.board.game2fen(game);
-            captured = Tools.board.genCapturedPieces(fen);
+            fen   = Tools.Games.fen(game);
+            captured = Tools.Board.captured(fen);
             DB.Boards.update(uuid, { fen, captured }, true);
             controller = Controller(game, board);
             lastuuid = uuid;
@@ -84,8 +84,8 @@ const Board = Factory.create('Board', {
         } else if (turn !== lastturn) {
             // new turn
             DB.Games.update(uuid, { turn: ~~turn });
-            fen = Tools.board.game2fen(game);
-            captured = Tools.board.genCapturedPieces(fen);
+            fen = Tools.Games.fen(game);
+            captured = Tools.Board.captured(fen);
             DB.Boards.update(uuid, { fen, captured }, true);
             board = DB.Boards.find(uuid);
             controller.update();

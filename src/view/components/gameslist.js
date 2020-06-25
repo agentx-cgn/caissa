@@ -16,7 +16,7 @@ const GamesList = Factory.create('GamesList', {
                     Config.templates.game,
                     game,
                 );
-                Tools.games.updateMoves(fullgame);
+                Tools.Games.updateMoves(fullgame);
                 DB.Games.create(fullgame, true);
                 Caissa.route('/game/:turn/:uuid/', { uuid: fullgame.uuid, turn: fullgame.moves.length -1 });
             }})),

@@ -6,15 +6,6 @@ import { $$ }        from '../services/helper';
 
 export default {
 
-    game2fen (game) {
-        const turn = ~~game.turn;
-        return (
-            turn === -2 ? Config.fens.empty :
-            turn === -1 ? Config.fens.start :
-            game.moves[turn].fen
-        );
-    },
-
     resize (innerWidth, innerHeight) {
         if ( innerWidth >= 720 ) {
 
@@ -102,7 +93,7 @@ export default {
 
     },
 
-    genCapturedPieces (fen) {
+    captured (fen) {
 
         if (fen === Config.fens.empty) {
             return { black: 'lwtnjo'.split(''), white: 'lwtnjo'.split('') };

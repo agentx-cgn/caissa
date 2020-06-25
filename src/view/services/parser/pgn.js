@@ -66,7 +66,7 @@ const Parser = {
 
             // https://en.wikipedia.org/wiki/Portable_Game_Notation#Tag_pairs
 
-            game.uuid  = Tools.genGameHash(game);
+            game.uuid  = Tools.Games.hash(game);
 
             DEBUG && console.log(H.shrink(game));
             game.date  = (

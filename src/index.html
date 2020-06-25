@@ -81,6 +81,9 @@
             function saveOption (ctrl) {
                 Caissa.DB.Options.update('0', {ui:{waitscreen: !ctrl.checked}}, true);
             }
+            function saveName (ctrl) {
+                Caissa.DB.Options.update('0', {'user-data':{name: ctrl.value}}, true);
+            }
 
 
             // if('serviceWorker' in navigator) {
@@ -115,10 +118,14 @@
                     <div class="option-waitscreen" style="margin-top: 20px;width: 100%; text-align: center;">
                         <label>
                             Don't show again
-                            <input type="checkbox" onchange="saveOption(this)" />
+                            <input type="checkbox" class="chkwaitscreen" onchange="saveOption(this)" />
                         </label>
 
                     </div>
+                    <div class="option-username" style="margin-top: 20px;width: 100%; text-align: center;">
+                        <input class="txtusername" playholder="enter user name" oninput="saveName(this)" />
+                    </div>
+
                 </loading-text>
                 <loading-messages style="display: block; margin-top: 1rem">
                     huhu huhu

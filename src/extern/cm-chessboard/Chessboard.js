@@ -157,8 +157,8 @@ export class Chessboard {
 
     addArrow(from, to, attributes) {
         this.state.addArrow(
-            this.state.squareToIndex(from), 
-            this.state.squareToIndex(to), 
+            this.state.squareToIndex(from),
+            this.state.squareToIndex(to),
             from + to,
             attributes
         )
