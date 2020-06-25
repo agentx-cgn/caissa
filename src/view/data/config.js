@@ -14,6 +14,8 @@ const moveTemplate = {
     from:  '',
     to:    '',
     color: '',
+    piece: '',
+    san:   '',
 };
 
 const gametemplate = {

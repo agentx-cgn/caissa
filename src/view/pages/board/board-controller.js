@@ -142,9 +142,11 @@ class BoardController {
     }
     onmovedone ( move ) {
 
+        this.chess.move(move);
+        const fullmove = this.chess.history({verbose: true}).slice(-1)[0];
+
         // check for first move of default
         if (this.game.uuid === 'default'){
-            this.chess.move(move);
             const pgn = this.chess.pgn().trim();
             const timestamp = Date.now();
             const game = H.create(this.game, {
@@ -159,14 +161,10 @@ class BoardController {
             Caissa.route('/game/:turn/:uuid/', {turn: game.turn, uuid: game.uuid});
 
         } else {
-            // eslint-disable-next-line no-debugger
-            // debugger;
-            this.chess.move(move);
-            move.fen   = this.chess.fen();
-            move.turn  = this.turn +1;
-            move.color = this.tomove;
-            this.game.moves.push(move);
-            this.game.turn = this.turn +1;
+            fullmove.fen   = this.chess.fen();
+            fullmove.turn  = this.turn +1;
+            this.game.moves.push(fullmove);
+            this.game.turn = fullmove.turn;
             DB.Games.update(this.game.uuid, this.game, true);
             Caissa.route('/game/:turn/:uuid/', {turn: this.game.turn, uuid: this.game.uuid}, {replace: true});
 
@@ -189,7 +187,7 @@ class BoardController {
         flags.stal  = chess.in_stalemate();
         flags.insu  = chess.insufficient_material();
         flags.repe  = chess.in_threefold_repetition();
-        DEBUG && console.log('BoardController.updateFlags.turn', flags.turn);
+        // DEBUG && console.log('BoardController.updateFlags.turn', flags.turn);
 
     }
     updateButtons () {
@@ -204,7 +202,7 @@ class BoardController {
         btn.play        = canplay;
         btn.pause       = canpause;
         btn.evaluate    = this.game.moves.length > 0 && !this.isRunning;
-        DEBUG && console.log('BoardController.updateButtons', 'btn.play', btn.play);
+        // DEBUG && console.log('BoardController.updateButtons', 'btn.play', btn.play);
     }
     updateArrows () {
 
@@ -256,7 +254,7 @@ class BoardController {
             });
         }
 
-        DEBUG && console.log('BoardController.updateMarker');
+        // DEBUG && console.log('BoardController.updateMarker');
 
     }
 
