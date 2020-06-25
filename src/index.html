@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <script>
+            window.t0 = Date.now();
+            console.log('Info   :', 'Initializing...');
+        </script>
 
         <title>Caissa</title>
 
@@ -68,9 +72,6 @@
         </style>
 
         <script>
-            var offset = 16;
-            window.t0 = Date.now();
-            console.log('Info   :', 'Initializing...');
 
             if (location.hash.includes('debug')){
                 window.onerror = function (...args) {
@@ -79,10 +80,10 @@
                 }
             }
             function saveOption (ctrl) {
-                Caissa.DB.Options.update('0', {ui:{waitscreen: !ctrl.checked}}, true);
+                Caissa.DB.Options.update('0', { ui: { waitscreen: !ctrl.checked } }, true);
             }
             function saveName (ctrl) {
-                Caissa.DB.Options.update('0', {'user-data':{name: ctrl.value}}, true);
+                Caissa.DB.Options.update('0', { 'user-data': { name: ctrl.value } }, true);
             }
 
 

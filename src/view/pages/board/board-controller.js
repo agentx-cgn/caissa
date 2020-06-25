@@ -1,13 +1,12 @@
 
 import Chess           from 'chess.js';
 import Caissa          from '../../caissa';
+import DB              from '../../services/database';
 import { H }           from '../../services/helper';
-// import { COLOR }       from '../../../extern/cm-chessboard/Chessboard';
-import { MARKER_TYPE } from '../../../extern/cm-chessboard/Chessboard';
-import { INPUT_EVENT_TYPE } from '../../../extern/cm-chessboard/Chessboard';
-
 import Tools           from '../../tools/tools';
-import DB from '../../services/database';
+
+import { MARKER_TYPE, INPUT_EVENT_TYPE } from '../../../extern/cm-chessboard/Chessboard';
+
 
 // basic controller, only controls decoration, buttons and flags
 // moveInputMode: MOVE_INPUT_MODE.viewOnly,
@@ -17,21 +16,26 @@ const DEBUG = true;
 
 class Opponent {
     constructor(color, mode) {
-        this.color = color;
-        this.mode  = mode;
+        this.color = color; // w, b, n
+        this.mode  = mode;  // x, h, s,
+    }
+    update (controller) {
+        this.fen          = Tools.Games.fen(controller.game);
+        this.chess        = new Chess();
+        !this.chess.load(this.fen) && console.warn('Opponent.update.load.failed', this.fen);
+        // DEBUG && console.log('Opponent.update', this.color, this.mode, this.fen);
+
     }
     tomove (controller) {
-        this.chessBoard   = controller.chessBoard;
+        this.update(controller);
         this.movedone     = controller.onmovedone.bind(controller);
         this.movestart    = controller.onmovestart.bind(controller);
         this.movecancel   = controller.onmovecancel.bind(controller);
-        this.fen          = controller.chessBoard.getPosition();
-        this.chess        = new Chess();
-        this.chess.load(this.fen) && console.warn(this.fen);
         DEBUG && console.log('Opponent.tomove', this.color, this.fen);
     }
     towait (controller) {
-        DEBUG && console.log('Opponent.towait', this.color, controller.chessBoard.getPosition());
+        this.update(controller);
+        DEBUG && console.log('Opponent.towait', this.color, this.fen);
     }
     dragHandler(event) {
 
@@ -51,10 +55,14 @@ class Opponent {
 
             if (result) {
                 // DEBUG && console.log('dragHandler.legal: ',  this.color,  move, result);
-                this.movedone(move);
+                const fullmove = this.chess.history({verbose: true}).slice(-1)[0];
+                const pgn = this.chess.pgn().trim();
+                fullmove.fen = this.chess.fen();
+                this.movedone(fullmove, pgn);
+
             } else {
-                console.log(this.chess.ascii());
-                DEBUG && console.log('Opponent.illegal: ', this.color, move, result);
+                DEBUG && console.log(this.chess.ascii());
+                DEBUG && console.log('Opponent.illegal.move: ', this.color, move, result);
             }
 
             return !!result;
@@ -77,20 +85,25 @@ class BoardController {
         this.mode      = game.mode;
         this.chess     = new Chess();
         this.turn      = game.turn;
-        // this.isRunning = false;
-        this.validMoves = [];
-        this.opponents  = {
+        this.squareMoves = [];
+        this.validMoves  = [];
+        this.opponents   = {
             'w': new Opponent('w', this.mode[0]),
             'b': new Opponent('b', this.mode[0]),
             'n': { tomove: () => {}, towait: () => {} },
         };
         this.update();
     }
+    // also called from board.view after new turn, and chessboard.onafterupdates
     update (chessBoard) {
 
         this.turn  = this.game.turn;
         this.fen   = Tools.Games.fen(this.game);
-        this.chess.load(this.fen);
+        !this.chess.load(this.fen) && console.warn('BoardController.update.load.failed', this.fen);
+        this.validMoves = this.chess.moves({verbose: true});
+
+        DEBUG && console.log('BoardController.update', this.turn, chessBoard);
+
         this.tomove = (
             this.turn === -2 ? 'n' :
             this.turn  %   2 ? 'w' : 'b'
@@ -99,7 +112,6 @@ class BoardController {
             this.turn === -2 ? 'n' :
             this.turn  %   2 ? 'b' : 'w'
         );
-        this.moves = this.chess.moves({verbose: true});
 
         if (chessBoard){
             this.chessBoard = chessBoard;
@@ -116,9 +128,9 @@ class BoardController {
 
             const oppToMove   = this.opponents[this.tomove];
             const oppToWait   = this.opponents[this.towait];
-            const dragHandler = oppToMove.dragHandler.bind(oppToMove);
 
             if (this.mode === 'x-x'){
+                const dragHandler = oppToMove.dragHandler.bind(oppToMove);
                 this.chessBoard.enableMoveInput(dragHandler, this.color);
             }
 
@@ -133,21 +145,19 @@ class BoardController {
         const idx    = e.target.dataset.index;
         const square = Tools.Board.squareIndexToField(idx);
         const piece  = this.chessBoard.getPiece(square);
-        console.log(idx, square, piece);
-        this.validMoves = this.moves.filter( m => m.from === square || m.to === square );
+        this.squareMoves = this.validMoves.filter( m => m.from === square || m.to === square );
+        DEBUG && console.log('Controller.onfield', idx, square, piece);
         Caissa.redraw();
     }
     onmovecancel () {
         DEBUG && console.log('BoardController.onmovecancel');
     }
-    onmovedone ( move ) {
+    onmovedone ( move, pgn ) {
 
         this.chess.move(move);
-        const fullmove = this.chess.history({verbose: true}).slice(-1)[0];
 
-        // check for first move of default
+        // if first move of default, create new game and reroute to
         if (this.game.uuid === 'default'){
-            const pgn = this.chess.pgn().trim();
             const timestamp = Date.now();
             const game = H.create(this.game, {
                 uuid:   H.hash(String(timestamp)),
@@ -160,11 +170,12 @@ class BoardController {
             DB.Games.create(game, true);
             Caissa.route('/game/:turn/:uuid/', {turn: game.turn, uuid: game.uuid});
 
+        // update move with turn, game with move and reroute to next turn
         } else {
-            fullmove.fen   = this.chess.fen();
-            fullmove.turn  = this.turn +1;
-            this.game.moves.push(fullmove);
-            this.game.turn = fullmove.turn;
+            move.turn = this.turn +1;
+            this.game.moves.push(move);
+            //TODO: should not be needed
+            this.game.turn = move.turn;
             DB.Games.update(this.game.uuid, this.game, true);
             Caissa.route('/game/:turn/:uuid/', {turn: this.game.turn, uuid: this.game.uuid}, {replace: true});
 
@@ -173,7 +184,8 @@ class BoardController {
         DEBUG && console.log('BoardController.onmovedone', move);
     }
     onmovestart ( square ) {
-        DEBUG && console.log('onmovestart', square);
+        const piece  = this.chessBoard.getPiece(square);
+        DEBUG && console.log('onmovestart', piece, square);
     }
 
     updateFlags () {
@@ -211,7 +223,7 @@ class BoardController {
         this.chessBoard.removeArrows( null );
 
         if (this.board.illustrations.valid){
-            this.validMoves.forEach( move => {
+            this.squareMoves.forEach( move => {
                 this.chessBoard.addArrow(move.from, move.to, {class: 'arrow validmove'});
             });
         }
@@ -249,7 +261,7 @@ class BoardController {
         this.chessBoard.removeMarkers( null, null);
 
         if (this.board.illustrations.attack){
-            this.validMoves.forEach( square => {
+            this.squareMoves.forEach( square => {
                 this.chessBoard.addMarker(square.to, markerType);
             });
         }

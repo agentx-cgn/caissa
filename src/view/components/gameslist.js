@@ -11,14 +11,18 @@ const GamesList = Factory.create('GamesList', {
     view ( vnode ) {
         return m(FlexList, {class: 'games-list'},
             vnode.attrs.games.map( game => m(GameEntry, { game, onclick: (e) => {
+
+                if (!DB.Games.exists(game.uuid)) {
+                    game = H.create(
+                        Config.templates.game,
+                        game,
+                    );
+                    Tools.Games.updateMoves(game);
+                    DB.Games.create(game, true);
+                }
                 e.redraw = false;
-                const fullgame = H.create(
-                    Config.templates.game,
-                    game,
-                );
-                Tools.Games.updateMoves(fullgame);
-                DB.Games.create(fullgame, true);
-                Caissa.route('/game/:turn/:uuid/', { uuid: fullgame.uuid, turn: fullgame.moves.length -1 });
+                Caissa.route('/game/:turn/:uuid/', { uuid: game.uuid, turn: game.moves.length -1 });
+
             }})),
         );
     },

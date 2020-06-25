@@ -13,10 +13,10 @@ const Table = function (tablename, dump=[], tableTemplate={}) {
     if (!data){
         ls(tablename, dump);
         cache = dump;
-        DEBUG && console.log('TAB.' + tablename, 'initialized', dump);
+        DEBUG && console.log('TAB.' + tablename, 'initialized', cache);
 
     } else {
-        cache = ls(tablename);
+        cache = data;
         DEBUG && console.log('TAB.' + tablename, 'loaded', cache);
 
     }
@@ -24,7 +24,7 @@ const Table = function (tablename, dump=[], tableTemplate={}) {
     function runUpdates () {
         interval = setInterval( () => {
             if (isDirty){
-                self.persist();
+                self.persist(true);
             }
         }, Config.database.updateInterval || 60 * 1000);
     }
@@ -46,36 +46,34 @@ const Table = function (tablename, dump=[], tableTemplate={}) {
         get first () {
             return cache[0] || undefined;
         },
+        exists (uuid) {
+            return !!cache.find( row => row.uuid === uuid );
+        },
         find (uuid) {
             return cache.find( row => row.uuid === uuid ) || undefined;
         },
         filter (fn) {
             return cache.filter(fn);
         },
-        clear () {
+        clear (force=true) {
             const length = cache.length;
             cache = dump;
-            self.persist();
-            isDirty = false;
+            self.persist(force);
             DEBUG && console.log('TAB.' + tablename, 'cleared, with', length, 'rows');
         },
         create (row, force=false) {
             cache.push(row);
-            if (force){
-                self.persist();
-            } else {
-                isDirty = true;
-            }
+            self.persist(force);
             DEBUG && console.log('TAB.' + tablename, 'created', row.uuid, force);
             return row;
         },
-        createget (uuid, template={}) {
+        createget (uuid, template={}, force=false) {
             let row = self.find(uuid);
             if (row === undefined) {
                 row = H.create(tableTemplate, template);
                 row.uuid = uuid;
                 cache.push(row);
-                isDirty = true;
+                self.persist(force);
             }
             DEBUG && console.log('TAB.' + tablename, 'createget', uuid, H.shrink(row));
             return row;
@@ -86,17 +84,13 @@ const Table = function (tablename, dump=[], tableTemplate={}) {
                 self.filter(what).forEach( row => {
                     self.delete(row.uuid, false);
                 });
-                force && self.persist();
+                self.persist(force);
 
             } else if (typeof what === 'string'){
                 const idx = cache.findIndex( row => row.uuid === what);
                 if (idx > -1) {
                     cache.splice(idx, 1);
-                    if (force){
-                        self.persist();
-                    } else {
-                        isDirty = true;
-                    }
+                    self.persist(force);
                 } else {
                     throw `ERROR ! DB.${tablename}.delete failed. ${what} not found`;
                 }
@@ -106,24 +100,25 @@ const Table = function (tablename, dump=[], tableTemplate={}) {
         update (uuid, diff, force=false) {
             const row  = self.find(uuid);
             if (row !== null) {
+                // must keep outside references working
                 H.deepassign(row, diff);
-                if (force){
-                    self.persist();
-                } else {
-                    isDirty = true;
-                }
+                self.persist(force);
             } else {
                 throw `ERROR ! DB.${tablename}.update failed. ${uuid} not found`;
             }
             DEBUG && console.log('TAB.' + tablename, 'updated', force ? 'force': '', uuid, H.shrink(diff));
             return row;
         },
-        persist () {
-            if (ls(tablename, cache)){
-                isDirty = false;
-                // DEBUG && console.log('TAB.' + tablename, 'saved', cache.length, 'rows');
+        persist (force) {
+            if ( force ) {
+                if (ls(tablename, cache)){
+                    isDirty = false;
+                    // DEBUG && console.log('TAB.' + tablename, 'saved', cache.length, 'rows');
+                } else {
+                    throw `ERROR ! DB.${tablename}.persist failed`;
+                }
             } else {
-                throw `ERROR ! DB.${tablename}.persist failed`;
+                isDirty = true;
             }
         },
 

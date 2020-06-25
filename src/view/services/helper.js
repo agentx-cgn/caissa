@@ -216,40 +216,42 @@ const H = {
 
     /**    I D S     */
 
+    // http://davidjohnstone.net/pages/hash-collision-probability
+    // 32bit has a 1% chance of collision with 10,000 item
     hash (string) {
         let i, char, hash = 0;
-        if (string.length == 0) {
-            return hash.toString(36);
+        if (string.length === 0) {
+            throw('Can\'t do this');
         }
         for (i = 0; i < string.length; i++) {
-            char = string.charCodeAt(i);
-            hash = ((hash<<5) - hash) + char;
-            hash = hash & hash;
+            char  = string.charCodeAt(i);
+            hash  = (( hash << 5) - hash) + char;
+            hash |= 0;
         }
         return hash.toString(36);
     },
-    uuid () {
-        // http://www.ietf.org/rfc/rfc4122.txt
-        // https://github.com/tc39/proposal-uuid
-        const s = [];
-        const hexDigits = '0123456789abcdef';
-        for (let i = 0; i < 36; i++) {
-            s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-        }
-        s[14] = '4';  // bits 12-15 of the time_hi_and_version field to 0010
-        s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
-        s[8] = s[13] = s[18] = s[23] = '-';
+    // uuid () {
+    //     // http://www.ietf.org/rfc/rfc4122.txt
+    //     // https://github.com/tc39/proposal-uuid
+    //     const s = [];
+    //     const hexDigits = '0123456789abcdef';
+    //     for (let i = 0; i < 36; i++) {
+    //         s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+    //     }
+    //     s[14] = '4';  // bits 12-15 of the time_hi_and_version field to 0010
+    //     s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+    //     s[8] = s[13] = s[18] = s[23] = '-';
 
-        const uuid = s.join('');
-        return uuid;
-    },
-    shortuuid() {
-        let part1 = (Math.random() * 4665679) | 0;
-        let part2 = (Math.random() * 4665679) | 0;
-        part1  = ('0000' + part1.toString(36)).slice(-4);
-        part2  = ('0000' + part2.toString(36)).slice(-4);
-        return part1 + part2;
-    },
+    //     const uuid = s.join('');
+    //     return uuid;
+    // },
+    // shortuuid() {
+    //     let part1 = (Math.random() * 4665679) | 0;
+    //     let part2 = (Math.random() * 4665679) | 0;
+    //     part1  = ('0000' + part1.toString(36)).slice(-4);
+    //     part2  = ('0000' + part2.toString(36)).slice(-4);
+    //     return part1 + part2;
+    // },
 
 
     /**    T I M E     */

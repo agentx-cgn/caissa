@@ -16,7 +16,7 @@ import BoardController   from './board-controller';
 
 const DEBUG = true;
 
-let lastturn, lastuuid, game, board, controller, fen, captured, boardTemplate;
+let lastturn, lastuuid, game, board, controller, fen, captured;
 
 // function start (game) {
 //     return game.mode === 'x-x';
@@ -38,42 +38,16 @@ const Board = Factory.create('Board', {
 
         // at start, there is nothing, default is chosen
         let { params: { uuid='default', turn=-1 } } = vnode.attrs;
+        const illustrations = DB.Options.first['board-illustrations'];
 
         // but don't replace current game with default
         uuid === 'default' && lastuuid ? (uuid = lastuuid, turn = lastturn) : (void(0));
 
-        DEBUG && console.log('Board.view', { uuid, turn });
-
-        if (!uuid && !lastuuid) {
-            // eslint-disable-next-line no-debugger
-            debugger;
-            // happens at start
-            game  = DB.Games.createget('default');
-            board = DB.Boards.createget('default');
-            DB.Boards.update('default', {
-                illustrations: DB.Options.first['board-illustrations'] ,
-            }, true);
-            controller = Controller(game, board);
-
-        } else if (!uuid && lastuuid) {
-            // eslint-disable-next-line no-debugger
-            debugger;
-            DB.Boards.update('default', board);
-            // there was a game, but user strays away
-            // boardTemplate = { illustrations: DB.Options.first['board-illustrations'] };
-            game  = DB.Games.find(lastuuid);
-            board = DB.Boards.find(lastuuid);
-            fen   = Tools.Games.fen(game);
-            captured = Tools.Board.captured(fen);
-            DB.Boards.update(lastuuid, { fen, captured }, true);
-            controller = Controller(game, board);
-
-        } else if (uuid !== lastuuid) {
-            // new game
-            boardTemplate = { illustrations: DB.Options.first['board-illustrations'] };
-            //TODO: will fail if deeplink
+        if (uuid !== lastuuid) {
+            // new game, TODO: will fail if deeplink
+            DEBUG && console.log('Board.view.newgame', { uuid, turn }, lastuuid, lastturn);
             game  = DB.Games.find(uuid);
-            board = DB.Boards.createget(uuid, boardTemplate);
+            board = DB.Boards.createget(uuid, { illustrations });
             fen   = Tools.Games.fen(game);
             captured = Tools.Board.captured(fen);
             DB.Boards.update(uuid, { fen, captured }, true);
@@ -83,6 +57,7 @@ const Board = Factory.create('Board', {
 
         } else if (turn !== lastturn) {
             // new turn
+            DEBUG && console.log('Board.view.newturn', { uuid, turn }, lastuuid, lastturn);
             DB.Games.update(uuid, { turn: ~~turn });
             fen = Tools.Games.fen(game);
             captured = Tools.Board.captured(fen);
@@ -93,6 +68,7 @@ const Board = Factory.create('Board', {
 
         } else {
             // means no change...?
+            DEBUG && console.log('Board.view.nochange', { uuid, turn }, lastuuid, lastturn);
             // click on same move
             // eslint-disable-next-line no-debugger
             // debugger;

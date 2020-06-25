@@ -38,7 +38,6 @@ const system = {
             document.documentElement.webkitRequestFullScreen)
         ;
     }(),
-
     wasm : function () {
         return typeof WebAssembly === 'object' && WebAssembly.validate(Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00));
     }(),
@@ -47,6 +46,7 @@ const system = {
         for (const substr of x64) if (navigator.userAgent.indexOf(substr) >= 0) return true;
         return navigator.platform === 'Linux x86_64' || navigator.platform === 'MacIntel' || navigator.platform === 'Linux aarch64' ;
     }(),
+    BigInt : !!window.BigInt,
 
     screen: {
         width:         screen.width,
