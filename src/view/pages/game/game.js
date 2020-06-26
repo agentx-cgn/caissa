@@ -15,36 +15,44 @@ const Game = Factory.create('Game', {
 
         const { params: { uuid='default', turn=-1 }, className, style } = vnode.attrs;
 
-        let game, board, players, resultline;
+        // there must be a complete game + turn, //TODO: except deeplink
+        const game       = DB.Games.find(uuid);
+        const board      = DB.Boards.find(uuid);
 
-        // there must be a game, //TODO: except deeplink
-        game       = DB.Games.find(uuid);
-        board      = DB.Boards.find(uuid);
-        players    = game.header.White  + ' -<br>' + game.header.Black;
-        resultline = Tools.Games.resultLine(game);
-        DB.Games.update(uuid, { turn: ~~turn });
+        if(!game || !board) {
+            // game of board are not properly prepared... :(
+            // eslint-disable-next-line no-debugger
+            debugger;
+        }
+
+        // bc board.buttons.actions
+        DB.Games.update(game.uuid, { turn });
+
+        const titlePlayers = Tools.Format.titlePlayers(game);
+        const lineResult   = Tools.Format.lineResult(game);
+
+        //TODO: only if large Moves
         Tools.Games.scrollTurnIntoView(turn);
 
         return innerWidth >= 720
 
             // desktop, as page no board
             ? m('div.page.game', { className, style }, [
-                m(PageTitle,     { className: 'gm-players tc'}, m.trust(players) ),
+                m(PageTitle,     { className: 'gm-players tc'}, titlePlayers ),
                 m(FormIllus,     { board }),
                 m(Moves,         { game }),
                 m(Spacer),
-                m(TextCenter,    { class: 'gm-result', title: 'result termination timecontrol'}, resultline ),
+                m(TextCenter,    { class: 'gm-result', title: 'result termination timecontrol'}, lineResult ),
                 m(GrowSpacer),
             ])
 
             // mobile, as page with inline board
             : m('div.page.game', { className, style }, [
-                m(PageTitle,     { className: 'gm-players tc' }, m.trust(players)),
+                m(PageTitle,     { className: 'gm-players tc' }, titlePlayers),
                 m(Board,         { params: { uuid, turn } }),
                 m(Moves,         { game }),
                 m(Spacer),
-                m(Spacer),
-                m(TextCenter,    { class: 'gm-result', title: 'result termination timecontrol'}, resultline ),
+                m(TextCenter,    { class: 'gm-result', title: 'result termination timecontrol'}, lineResult ),
                 m(GrowSpacer),
             ]);
 

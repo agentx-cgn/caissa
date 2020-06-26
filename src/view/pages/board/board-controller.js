@@ -1,12 +1,12 @@
 
 import Chess           from 'chess.js';
 import Caissa          from '../../caissa';
+import Config          from '../../data/config';
 import DB              from '../../services/database';
 import { H }           from '../../services/helper';
 import Tools           from '../../tools/tools';
 
 import { MARKER_TYPE, INPUT_EVENT_TYPE } from '../../../extern/cm-chessboard/Chessboard';
-
 
 // basic controller, only controls decoration, buttons and flags
 // moveInputMode: MOVE_INPUT_MODE.viewOnly,
@@ -23,19 +23,17 @@ class Opponent {
         this.fen          = Tools.Games.fen(controller.game);
         this.chess        = new Chess();
         !this.chess.load(this.fen) && console.warn('Opponent.update.load.failed', this.fen);
-        // DEBUG && console.log('Opponent.update', this.color, this.mode, this.fen);
-
     }
     tomove (controller) {
         this.update(controller);
         this.movedone     = controller.onmovedone.bind(controller);
         this.movestart    = controller.onmovestart.bind(controller);
         this.movecancel   = controller.onmovecancel.bind(controller);
-        DEBUG && console.log('Opponent.tomove', this.color, this.fen);
+        DEBUG && console.log('Opponent.tomove', {color: this.color, mode: this.mode});
     }
     towait (controller) {
         this.update(controller);
-        DEBUG && console.log('Opponent.towait', this.color, this.fen);
+        DEBUG && console.log('Opponent.towait', {color: this.color, mode: this.mode});
     }
     dragHandler(event) {
 
@@ -79,12 +77,13 @@ class BoardController {
 
     constructor (game, board) {
 
-        this.mode      = game.mode;
-        this.game      = game;
-        this.board     = board;
-        this.mode      = game.mode;
-        this.chess     = new Chess();
-        this.turn      = game.turn;
+        this.mode        = game.mode;
+        this.uuid        = game.uuid;
+        this.game        = game;
+        this.board       = board;
+        this.mode        = game.mode;
+        this.chess       = new Chess();
+        this.turn        = game.turn;
         this.squareMoves = [];
         this.validMoves  = [];
         this.opponents   = {
@@ -102,7 +101,7 @@ class BoardController {
         !this.chess.load(this.fen) && console.warn('BoardController.update.load.failed', this.fen);
         this.validMoves = this.chess.moves({verbose: true});
 
-        DEBUG && console.log('BoardController.update', this.turn, chessBoard);
+        DEBUG && console.log('BoardController.update', {uuid: this.uuid, turn: this.turn}, 'vaildmoves', this.validMoves.length);
 
         this.tomove = (
             this.turn === -2 ? 'n' :
@@ -140,6 +139,10 @@ class BoardController {
             console.log('BoardController', 'towait:', this.towait, 'tomove:', this.tomove);
         }
     }
+    step (turn) {
+        DB.Games.update(this.game.uuid, { turn });
+        Caissa.route('/game/:turn/:uuid/', { turn, uuid: this.game.uuid }, { replace: true });
+    }
     // user clicks/touches board
     onfield (e) {
         const idx    = e.target.dataset.index;
@@ -156,11 +159,12 @@ class BoardController {
 
         this.chess.move(move);
 
-        // if first move of default, create new game and reroute to
+        // if first move of default, create new game + board and reroute to
         if (this.game.uuid === 'default'){
             const timestamp = Date.now();
+            const uuid = H.hash(String(timestamp));
             const game = H.create(this.game, {
-                uuid:   H.hash(String(timestamp)),
+                uuid,
                 mode:   'x-x',
                 turn :  0,
                 pgn,
@@ -168,13 +172,13 @@ class BoardController {
             });
             Tools.Games.updateMoves(game);
             DB.Games.create(game, true);
+            DB.Boards.create(H.clone(Config.templates.board, { uuid }));
             Caissa.route('/game/:turn/:uuid/', {turn: game.turn, uuid: game.uuid});
 
         // update move with turn, game with move and reroute to next turn
         } else {
             move.turn = this.turn +1;
             this.game.moves.push(move);
-            //TODO: should not be needed
             this.game.turn = move.turn;
             DB.Games.update(this.game.uuid, this.game, true);
             Caissa.route('/game/:turn/:uuid/', {turn: this.game.turn, uuid: this.game.uuid}, {replace: true});

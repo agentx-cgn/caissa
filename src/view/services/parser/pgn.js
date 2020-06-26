@@ -23,7 +23,7 @@ const Parser = {
             lines = pgns.split(delimiter)
         ;
 
-        let rxp, game = H.create(H.deepcopy(Config.templates.game));
+        let rxp, game = H.clone(Config.templates.game);
 
         lines.forEach( (line) => {
 
@@ -35,7 +35,7 @@ const Parser = {
                 if (game.header.Event){
                     games.push(game);
                 }
-                game = H.create(H.deepcopy(Config.templates.game));
+                game = H.clone(Config.templates.game);
                 game.header[rxp[1]] = rxp[2];
 
             } else if (rxp !== null) {

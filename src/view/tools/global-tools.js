@@ -18,7 +18,7 @@ const globaltools = {
 
         const diffs = Config.plays.difficulties;
 
-        let hit = diffs['0'];
+        let hit    = diffs['0'];
         let result = hit;
 
         H.range(0, 31).forEach( num => {

@@ -31,7 +31,7 @@ Array.from(Config.templates.plays)
             autosubmit: false,
             ...DB.Options.first[group],
             submit: (form) => {
-                const game = Tools.Games.fromPlay(play, form);
+                const game = Tools.Games.fromPlayForm(play, form);
                 DB.Games.create(game, true);
                 DEBUG && console.log('plays.form.submitted', game.uuid, game.mode, game.white, game.black);
                 Caissa.route('/game/:turn/:uuid/', { uuid: game.uuid, turn: game.turn });
@@ -43,13 +43,11 @@ Array.from(Config.templates.plays)
 ;
 
 function startGame(playTemplate) {
-    const game = {
-        ...Config.templates.game,
-        ...playTemplate,
+    const game = H.clone(Config.templates.game, playTemplate, {
         turn: -1,
         uuid:  H.hash(String(Date.now())),
         timestamp: Date.now(),
-    };
+    });
     DB.Games.create(game, true);
     Caissa.route('/game/:turn/:uuid/', { uuid: game.uuid, turn: game.turn });
 }

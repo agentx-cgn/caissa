@@ -1,7 +1,7 @@
 
 import Chess         from  'chess.js';
 // import {MARKER_TYPE} from '../../extern/cm-chessboard/Chessboard';
-import Config        from '../data/config';
+// import Config        from '../data/config';
 import { $$ }        from '../services/helper';
 
 export default {
@@ -89,38 +89,6 @@ export default {
             // validSquares.forEach( square => {
             //     chessBoard.addArrow(square.from, square.to, arrowType);
             // });
-        }
-
-    },
-
-    captured (fen) {
-
-        if (fen === Config.fens.empty) {
-            return { black: 'lwtnjo'.split(''), white: 'lwtnjo'.split('') };
-
-        } else if (fen === Config.fens.start) {
-            return { black: [], white: [] };
-
-        } else {
-            const sorter = (a, b) => {
-                return (
-                    Config.pieces.fens.sorted.indexOf(a.toLowerCase()) -
-                    Config.pieces.fens.sorted.indexOf(b.toLowerCase())
-                );
-            };
-
-            let black = Config.pieces.fens.black;
-            let white = Config.pieces.fens.white;
-
-            fen.split(' ')[0].split('').forEach(letter => {
-                black = black.replace(letter, '');
-                white = white.replace(letter, '');
-            }),
-
-            black = black.split('').sort(sorter).map( letter => Config.pieces.font[letter] );
-            white = white.split('').sort(sorter).map( letter => Config.pieces.font[letter] );
-
-            return { black, white };
         }
 
     },

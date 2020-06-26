@@ -1,5 +1,6 @@
 import Config  from '../../data/config';
 import { H }   from '../../services/helper';
+import DB      from '../../services/database';
 import Caissa  from '../../caissa';
 
 const clampScale = function (game, cp) {
@@ -27,6 +28,7 @@ const ply = {
         const piece     = Config.pieces.font[move.piece];
         const onclick   = (e) => {
             e.redraw = false;
+            DB.Games.update(game.uuid, { turn: move.turn });
             Caissa.route('/game/:turn/:uuid/', {turn: move.turn, uuid: game.uuid}, { replace: true });
         };
 

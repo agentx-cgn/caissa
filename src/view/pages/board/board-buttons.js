@@ -1,6 +1,6 @@
 
 import Caissa       from '../../caissa';
-import { H, $$ }    from '../../services/helper';
+import { H }        from '../../services/helper';
 import Factory      from '../../components/factory';
 import DB           from '../../services/database';
 import evaluate     from '../game/game-evaluate';
@@ -22,27 +22,19 @@ function setTurn (diff) {
 }
 
 const actions = {
-    back  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn('0'), uuid: curGame.uuid}, { replace: true }); return H.eat(e);},
-    left  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn(-1),  uuid: curGame.uuid}, { replace: true }); return H.eat(e);},
-    right (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn(+1),  uuid: curGame.uuid}, { replace: true }); return H.eat(e);},
-    fore  (e) { e.redraw = false; Caissa.route('/game/:turn/:uuid/', {turn: setTurn('e'), uuid: curGame.uuid}, { replace: true }); return H.eat(e);},
-    pause (e) { e.redraw = false; curController.pause();},
-    play  (e) { e.redraw = false; curController.play();},
-    eval  (e) { e.redraw = false; evaluate(curGame); return H.eat(e);},
+    back  (e)  { e.redraw = false; curController.step(setTurn('0')) ;},
+    left  (e)  { e.redraw = false; curController.step(setTurn( -1)) ;},
+    right (e)  { e.redraw = false; curController.step(setTurn( +1)) ;},
+    fore  (e)  { e.redraw = false; curController.step(setTurn('e')) ;},
+    pause (e)  { e.redraw = false; curController.pause();},
+    play  (e)  { e.redraw = false; curController.play();},
+    eval  (e)  { e.redraw = false; evaluate(curGame);},
     rotate (e) {
         e.redraw = false;
         const board = DB.Boards.find(curGame.uuid);
-        if (board){
-            const orientation = board.orientation === 'w' ? 'b' : 'w';
-            DB.Boards.update(curGame.uuid, {orientation});
-            Caissa.redraw();
-        }
-    },
-    toggle (e) {
-        // TODO: use state.ui
-        $$('section.section-left').classList.toggle('collapsed');
-        e.redraw = false;
-        return H.eat(e);
+        const orientation = board.orientation === 'w' ? 'b' : 'w';
+        DB.Boards.update(curGame.uuid, {orientation});
+        Caissa.redraw();
     },
 };
 
@@ -65,7 +57,7 @@ const BoardButtons = Factory.create('BoardButtons', {
 
         DEBUG && console.log('BoardButtons.view', game.uuid, game.mode, game.turn);
 
-        curGame = game;
+        curGame       = game;
         curController = controller;
 
         return m('div.gm-bar', [
@@ -89,5 +81,3 @@ const BoardButtons = Factory.create('BoardButtons', {
 });
 
 export default BoardButtons;
-
-

@@ -15,6 +15,12 @@ const H = {
         Object.setPrototypeOf(obj, null);
         return obj;
     },
+    clone (...args) {
+        const obj = Object.assign.apply(null, [ {}, ...args ]);
+        const clone = H.deepcopy(obj);
+        Object.setPrototypeOf(clone, null);
+        return clone;
+    },
     clear (obj) {
         Object.keys(obj).forEach( prop => delete obj[prop] );
         return obj;

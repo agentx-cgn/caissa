@@ -6,21 +6,6 @@ import globaltools from './global-tools';
 
 const gametools = {
 
-    resolvePlayers (game) {
-
-        const opponents = Config.opponents;
-        const username = DB.Options.first['user-data'].name;
-
-        const w = game.mode[0];
-        const b = game.mode[2];
-
-        return {
-            white: opponents[w] === 'Human' ? username : opponents[w],
-            black: opponents[b] === 'Human' ? username : opponents[b],
-        };
-
-    },
-
     // used for terminated games
     hash (game) {
         const unique = JSON.stringify({
@@ -43,6 +28,39 @@ const gametools = {
             game.moves[turn].fen
         );
     },
+    captured (game) {
+
+        const fen = gametools.fen(game);
+
+        if (fen === Config.fens.empty) {
+            return { black: 'lwtnjo'.split(''), white: 'lwtnjo'.split('') };
+
+        } else if (fen === Config.fens.start) {
+            return { black: [], white: [] };
+
+        } else {
+            const sorter = (a, b) => {
+                return (
+                    Config.pieces.fens.sorted.indexOf(a.toLowerCase()) -
+                    Config.pieces.fens.sorted.indexOf(b.toLowerCase())
+                );
+            };
+
+            let black = Config.pieces.fens.black;
+            let white = Config.pieces.fens.white;
+
+            fen.split(' ')[0].split('').forEach(letter => {
+                black = black.replace(letter, '');
+                white = white.replace(letter, '');
+            }),
+
+            black = black.split('').sort(sorter).map( letter => Config.pieces.font[letter] );
+            white = white.split('').sort(sorter).map( letter => Config.pieces.font[letter] );
+
+            return { black, white };
+        }
+
+    },
 
     scrollTurnIntoView (turn, msecs=60) {
         setTimeout( () => {
@@ -62,14 +80,6 @@ const gametools = {
         }, msecs);
     },
 
-    resultLine(game) {
-        let accu = '';
-        game.header.Result      && (accu += game.header.Result + ' ');
-        game.header.Termination && (accu += game.header.Termination + ' ');
-        typeof game.timecontrol === 'object' && (accu += game.timecontrol.caption + ' ');
-        typeof game.header.TimeControl === 'string' && (accu += game.header.TimeControl + ' ');
-        return accu;
-    },
     timeLine(game) {
         let accu = '';
         game.date
@@ -82,26 +92,40 @@ const gametools = {
         return accu;
     },
 
-    fromPlay (playtemplate, formdata) {
+    resolvePlayers (game) {
 
-        const play = {
-            ...Config.templates.game,
-            ...playtemplate,
-            ...formdata,
-            ...gametools.resolvePlayers(playtemplate),
-            difficulty: globaltools.resolveDifficulty(formdata.depth),
-            timestamp: Date.now(),
+        const opponents = Config.opponents;
+        const username = DB.Options.first['user-data'].name;
+
+        const w = game.mode[0];
+        const b = game.mode[2];
+
+        return {
+            white: opponents[w] === 'Human' ? username : opponents[w],
+            black: opponents[b] === 'Human' ? username : opponents[b],
         };
 
-        delete play.autosubmit;
-        delete play.group;
-        // delete play.subline;
-        delete play.submit;
+    },
+
+    fromPlayForm (playtemplate, formdata) {
+
+        const { white, black } = gametools.resolvePlayers(playtemplate);
+
+        const play = H.clone(Config.templates.game, playtemplate, formdata, {
+            difficulty: globaltools.resolveDifficulty(formdata.depth),
+            timestamp: Date.now(),
+        });
 
         play.turn = -1;
         play.uuid = H.hash(JSON.stringify(play));
+        play.header.White = white;
+        play.header.Black = black;
 
-        console.log('createGamefromPlay', play);
+        delete play.autosubmit;
+        delete play.group;
+        delete play.submit;
+
+        console.log('games.fromPlayForm', play);
 
         return play;
 
