@@ -83,7 +83,6 @@ class BoardController {
         this.board       = board;
         this.mode        = game.mode;
         this.chess       = new Chess();
-        this.turn        = game.turn;
         this.squareMoves = [];
         this.validMoves  = [];
         this.opponents   = {
@@ -96,7 +95,7 @@ class BoardController {
     // also called from board.view after new turn, and chessboard.onafterupdates
     update (chessBoard) {
 
-        this.turn  = this.game.turn;
+        this.turn  = ~~this.game.turn;
         this.fen   = Tools.Games.fen(this.game);
         !this.chess.load(this.fen) && console.warn('BoardController.update.load.failed', this.fen);
         this.validMoves = this.chess.moves({verbose: true});
@@ -150,7 +149,7 @@ class BoardController {
         const piece  = this.chessBoard.getPiece(square);
         this.squareMoves = this.validMoves.filter( m => m.from === square || m.to === square );
         DEBUG && console.log('Controller.onfield', idx, square, piece);
-        Caissa.redraw();
+        // Caissa.redraw();
     }
     onmovecancel () {
         DEBUG && console.log('BoardController.onmovecancel');
@@ -260,7 +259,7 @@ class BoardController {
     updateMarker () {
 
         // const validSquares = this.chess.moves({verbose: true});
-        const markerType   = this.turn === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack;
+        const markerType   = this.color === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack;
 
         this.chessBoard.removeMarkers( null, null);
 

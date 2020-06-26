@@ -16,8 +16,8 @@ const ChessBoard = Factory.create('ChessBoard', {
         game  = vnode.attrs.game;
         board = vnode.attrs.board;
         controller = vnode.attrs.controller;
-        $$('div.chessboard').addEventListener('mousedown', controller.onfield.bind(controller));
-        $$('div.chessboard').addEventListener('touchdown', controller.onfield.bind(controller));
+        $$('div.chessboard').addEventListener('click', controller.onfield.bind(controller));
+        // $$('div.chessboard').addEventListener('touchdown', controller.onfield.bind(controller));
 
         chessBoard = new Chessboard(
             $$('div.chessboard'),

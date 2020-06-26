@@ -7,7 +7,7 @@ import FormIllus  from '../../components/form-illus';
 import Board      from '../board/board';
 import Moves      from './moves';
 
-import { Spacer, GrowSpacer, PageTitle, TextCenter} from '../../components/misc';
+import { Spacer, GrowSpacer, PageTitle, TextCenter } from '../../components/misc';
 
 const Game = Factory.create('Game', {
 
@@ -26,13 +26,13 @@ const Game = Factory.create('Game', {
         }
 
         // bc board.buttons.actions
-        DB.Games.update(game.uuid, { turn });
+        DB.Games.update(game.uuid, { turn: ~~turn });
 
         const titlePlayers = Tools.Format.titlePlayers(game);
         const lineResult   = Tools.Format.lineResult(game);
 
         //TODO: only if large Moves
-        Tools.Games.scrollTurnIntoView(turn);
+        Tools.Games.scrollTurnIntoView(~~turn);
 
         return innerWidth >= 720
 
@@ -49,12 +49,14 @@ const Game = Factory.create('Game', {
             // mobile, as page with inline board
             : m('div.page.game', { className, style }, [
                 m(PageTitle,     { className: 'gm-players tc' }, titlePlayers),
-                m(Board,         { params: { uuid, turn } }),
+                m(Board,         { params: { uuid, turn: ~~turn } }),
                 m(Moves,         { game }),
                 m(Spacer),
                 m(TextCenter,    { class: 'gm-result', title: 'result termination timecontrol'}, lineResult ),
                 m(GrowSpacer),
-            ]);
+            ])
+
+        ;
 
     },
 });
