@@ -22,31 +22,43 @@
 import { H }    from '../../services/helper';
 import Factory  from '../../components/factory';
 
-const flagger = function (f) {
+const flagger = function (game, f) {
 
-    const cTrans   = 'c999 bg-999';
-    const cActive  = 'dark-red';
-    const cPlayer  = f.turn === 'w' ? 'ceee' : 'c333';
+    let cTransp, cActive, cPlayer;
+
+    if (game.turn === -2){
+        // empty board
+        cTransp  = cActive = cPlayer = 'ctb10';
+
+    } else {
+        cTransp  = 'ctb10 bg-trans';
+        cActive  = 'ctr20';
+        cPlayer  = f.turn === 'w' ? 'ceee' : 'c333';
+    }
 
     return {
-        turn: {tag: 'i.gm-flag.fa.fa-chess-queen',   class: f.over ? cTrans  : cPlayer, title: 'turn'},
-        chck: {tag: 'i.gm-flag.fa.fa-plus',          class: f.chck ? cPlayer : cTrans,  title: 'check'},
-        mate: {tag: 'i.gm-flag.fa.fa-hashtag',       class: f.mate ? cPlayer : cTrans,  title: 'checkmate'},
-        draw: {tag: 'i.gm-flag.fa.fa-handshake',     class: f.draw ? cActive : cTrans,  title: 'draw'},
-        stal: {tag: 'div.gm-flag.dib.mh1',           class: f.stal ? cActive : cTrans,  title: 'stalemate'},
-        insu: {tag: 'i.gm-flag.fa.fa-hands',         class: f.insu ? cActive : cTrans,  title: 'isufficient material'},
-        repe: {tag: 'i.gm-flag.fa.fa-list-ol',       class: f.repe ? cActive : cTrans,  title: 'threefold repetition'},
-        over: {tag: 'i.gm-flag.fa.fa-chess-board',   class: f.over ? cActive : cTrans,  title: 'game over'},
+        turn: {tag: 'i.gm-flag.fa.fa-chess-queen',   class: f.over ? cTransp : cPlayer,  title: 'turn'},
+        chck: {tag: 'i.gm-flag.fa.fa-plus',          class: f.chck ? cPlayer : cTransp,  title: 'check'},
+        mate: {tag: 'i.gm-flag.fa.fa-hashtag',       class: f.mate ? cPlayer : cTransp,  title: 'checkmate'},
+
+        draw: {tag: 'i.gm-flag.fa.fa-handshake',     class: f.draw ? cActive : cTransp,  title: 'draw'},
+        stal: {tag: 'div.gm-flag.dib.mh1',           class: f.stal ? cActive : cTransp,  title: 'stalemate'},
+        insu: {tag: 'i.gm-flag.fa.fa-hands',         class: f.insu ? cActive : cTransp,  title: 'isufficient material'},
+        repe: {tag: 'i.gm-flag.fa.fa-list-ol',       class: f.repe ? cActive : cTransp,  title: 'threefold repetition'},
+        over: {tag: 'i.gm-flag.fa.fa-chess-board',   class: f.over ? cActive : cTransp,  title: 'game over'},
     };
 };
 
 const BoardFlags = Factory.create('BoardFlags', {
-    view( vnode ) {
+    view( { attrs: { game, board: { flags } } } ) {
         return (
             m('div.gm-bar',
                 m('div.gm-flags',
-                    H.map(flagger(vnode.attrs.board.flags), (_, props) => {
-                        return m(props.tag, {title: props.title, class: props.class});
+                    H.map(flagger(game, flags), (_, props) => {
+                        return m(props.tag, {
+                            title: props.title,
+                            class: props.class,
+                        });
                     }),
                 ),
             )

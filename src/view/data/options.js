@@ -36,11 +36,11 @@ export default {
     'board-illustrations' : {
         pinning   : true,
         bestmove  : true,
-        ponder    : true,
         lastmove  : true,
         availmoves: true,
         attack    : true,
         valid     : true,
+        test      : false,
     },
 
     'board-decoration': {

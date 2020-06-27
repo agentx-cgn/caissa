@@ -17,6 +17,7 @@ const GamesList = Factory.create('GamesList', {
                     Tools.Games.updateMoves(game);
                     DB.Games.create(game, true);
                     DB.Games.update(game.uuid, { turn: game.moves.length -1 }, true);
+                    DB.Boards.create(H.clone(Config.templates.board, { uuid: game.uuid }));
                 }
                 e.redraw = false;
                 Caissa.route('/game/:turn/:uuid/', { uuid: game.uuid, turn: game.moves.length -1 });

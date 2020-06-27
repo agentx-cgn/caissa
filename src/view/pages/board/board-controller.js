@@ -98,9 +98,12 @@ class BoardController {
         this.turn  = ~~this.game.turn;
         this.fen   = Tools.Games.fen(this.game);
         !this.chess.load(this.fen) && console.warn('BoardController.update.load.failed', this.fen);
+
+        this.color      = this.chess.turn();
+        this.lastMove   = this.game.moves.slice(-1)[0];
         this.validMoves = this.chess.moves({verbose: true});
 
-        DEBUG && console.log('BoardController.update', {uuid: this.uuid, turn: this.turn}, 'vaildmoves', this.validMoves.length);
+        DEBUG && console.log('BoardController.update', {uuid: this.uuid, turn: this.turn}, 'validmoves', this.validMoves.length);
 
         this.tomove = (
             this.turn === -2 ? 'n' :
@@ -111,12 +114,12 @@ class BoardController {
             this.turn  %   2 ? 'b' : 'w'
         );
 
+        this.updateFlags();
+        this.updateButtons();
+
         if (chessBoard){
             this.chessBoard = chessBoard;
-            this.updateFlags();
-            this.updateButtons();
-            this.updateMarker();
-            this.updateArrows();
+            this.updateIllustration();
             this.listen();
         }
 
@@ -124,8 +127,8 @@ class BoardController {
     listen () {
         if (this.turn !== -2){
 
-            const oppToMove   = this.opponents[this.tomove];
-            const oppToWait   = this.opponents[this.towait];
+            const oppToMove = this.opponents[this.tomove];
+            const oppToWait = this.opponents[this.towait];
 
             if (this.mode === 'x-x'){
                 const dragHandler = oppToMove.dragHandler.bind(oppToMove);
@@ -149,7 +152,7 @@ class BoardController {
         const piece  = this.chessBoard.getPiece(square);
         this.squareMoves = this.validMoves.filter( m => m.from === square || m.to === square );
         DEBUG && console.log('Controller.onfield', idx, square, piece);
-        // Caissa.redraw();
+        this.updateIllustration();
     }
     onmovecancel () {
         DEBUG && console.log('BoardController.onmovecancel');
@@ -207,8 +210,8 @@ class BoardController {
     }
     updateButtons () {
         const btn       = this.board.buttons;
-        const canplay   = !this.isRunning && this.mode !== 'h-h';
-        const canpause  =  this.isRunning && this.mode !== 'h-h';
+        const canplay   = !this.isRunning && this.mode !== 'h-h' && this.mode !== 'x-x';
+        const canpause  =  this.isRunning && this.mode !== 'h-h' && this.mode !== 'x-x';
         btn.rotate      = true;
         btn.backward    = this.turn > 0;
         btn.forward     = this.turn < this.game.moves.length -1;
@@ -217,11 +220,17 @@ class BoardController {
         btn.play        = canplay;
         btn.pause       = canpause;
         btn.evaluate    = this.game.moves.length > 0 && !this.isRunning;
+        //TODO: When is a game terminated?
         // DEBUG && console.log('BoardController.updateButtons', 'btn.play', btn.play);
     }
+    updateIllustration () {
+        // chessboard on page w/ dn has height 0
+        if (this.chessBoard && this.chessBoard.view.height && this.game.turn !== -2){
+            this.updateArrows();
+            this.updateMarker();
+        }
+    }
     updateArrows () {
-
-        const lasts = this.game.moves.slice(-2);
 
         this.chessBoard.removeArrows( null );
 
@@ -232,9 +241,8 @@ class BoardController {
         }
 
         if (this.board.illustrations.last){
-            lasts.forEach( m => {
-                this.chessBoard.addArrow(m.from, m.to, {class: m.color === 'w' ? 'arrow last-white' : 'arrow last-black'});
-            });
+            const m = this.lastMove;
+            this.chessBoard.addArrow(m.from, m.to, {class: m.color === 'w' ? 'arrow last-white' : 'arrow last-black'});
         }
 
         if (this.board.illustrations.test){
@@ -264,7 +272,7 @@ class BoardController {
         this.chessBoard.removeMarkers( null, null);
 
         if (this.board.illustrations.attack){
-            this.squareMoves.forEach( square => {
+            this.validMoves.forEach( square => {
                 this.chessBoard.addMarker(square.to, markerType);
             });
         }

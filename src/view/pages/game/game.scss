@@ -49,36 +49,48 @@ div.gm-moves {
     overflow-x: hidden;
     overflow-y: auto;
 }
-tr.gm-move {
+span.gm-move {
+    display: inline-block;
+}
+.gm-move {
     cursor: pointer;
 }
-tr.gm-move:hover {
+
+.gm-move:hover {
     background-color: #a78e8e;
 }
 
 td.gm-move-space {
     width: 1rem;
 }
-td.gm-move-num {
+td.gm-move-num,
+span.gm-move-num {
     text-align: right;
     font-family: 'Iosevka-Term-Medium';
     font-size: 1rem; //f5
     font-weight: 800;
     color: #555;
 }
+span.gm-move-num {
+    font-size: 0.75rem
+}
 .gm-move-num:after {
     content: '.';
 }
 
-td.gm-ply-pic-w {
-    // td.tc.f4.pa0.chess
+.gm-ply-pic-w {
     text-align: center;
     font-size: 1.25rem;
     padding: 0;
     font-family: 'Chess';
     color: #eee;
 }
-td.gm-ply-pic-b {
+span.gm-ply-pic-w {
+    font-size: 0.75rem;
+    padding-left: 2px;
+}
+
+.gm-ply-pic-b {
     // td.tc.f4.pa0.chess
     text-align: center;
     font-size: 1.25rem;
@@ -86,30 +98,38 @@ td.gm-ply-pic-b {
     font-family: 'Chess';
     color: #333;
 }
+span.gm-ply-pic-b {
+    font-size: 0.75rem;
+    padding-left: 2px;
+}
 
-td.gm-ply-san-w {
+.gm-ply-san-w {
     // td.tl.fiom.f5
     text-align: left;
     font-family: 'Iosevka-Term-Medium';
     font-size: 1rem;
     color: #eee;
 }
-td.gm-ply-san-b {
+span.gm-ply-san-w {
+    font-size: 0.75rem;
+}
+
+.gm-ply-san-b {
     // td.tl.fiom.f5
     text-align: left;
     font-family: 'Iosevka-Term-Medium';
     font-size: 1rem;
     color: #333;
 }
+span.gm-ply-san-b {
+    font-size: 0.75rem;
+}
 
-td.gm-ply-val-w {
-    // td.f6
+.gm-ply-val-w {
     font-size: 0.5rem;
     min-width: 20px
 }
-
-
-td.gm-ply-val-b {
+.gm-ply-val-b {
     // td.f6
     font-size: 0.5rem;
     min-width: 20px
@@ -136,17 +156,17 @@ i.gm-flag {
 div.gm-buttons {
     width: 100%;
     height: 100%;
-    color: white;
+    // color: white;
     text-align: center;
 }
 
 i.gm-button:hover {
-    color: #000;
+    color: #fff;
     background-color: #a78e8e;
 }
 i.gm-button,
 i.gm-spinner {
-    color: #ddd;
+    // color: #ddd;
     padding: 0.8rem 0.3rem 0.55rem 0.3rem;
     font-size: 1.3rem;
 }

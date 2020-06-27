@@ -75,22 +75,26 @@ const touchSlider = {
 
             // console.log('touchSlider.move', History.canBack, touch.diff.x, threshold);
 
-            if (slideLeft && History.canBack && touch.diff.x < 0){
-                if (abs(touch.diff.x) > threshold){
-                    slideLeft.addEventListener(endEvent, touchSlider.onafterback);
-                    slideLeft.classList.add('slide-transition');
-                } else {
-                    slideLeft.style.transform = 'translateX(' + abs(touch.diff.x) + 'px)';
-                }
-            }
+            if (abs(touch.diff.x) > 3 * abs(touch.diff.y)){
 
-            if (slideRight && History.canFore && touch.diff.x > 0){
-                if (abs(touch.diff.x) > threshold){
-                    slideRight.addEventListener(endEvent, touchSlider.onafterfore);
-                    slideRight.classList.add('slide-transition');
-                } else {
-                    slideRight.style.transform = 'translateX(' + ( 2 * width - abs(touch.diff.x) ) + 'px)';
+                if (slideLeft && History.canBack && touch.diff.x < 0){
+                    if (abs(touch.diff.x) > threshold){
+                        slideLeft.addEventListener(endEvent, touchSlider.onafterback);
+                        slideLeft.classList.add('slide-transition');
+                    } else {
+                        slideLeft.style.transform = 'translateX(' + abs(touch.diff.x) + 'px)';
+                    }
                 }
+
+                if (slideRight && History.canFore && touch.diff.x > 0){
+                    if (abs(touch.diff.x) > threshold){
+                        slideRight.addEventListener(endEvent, touchSlider.onafterfore);
+                        slideRight.classList.add('slide-transition');
+                    } else {
+                        slideRight.style.transform = 'translateX(' + ( 2 * width - abs(touch.diff.x) ) + 'px)';
+                    }
+                }
+
             }
 
         }

@@ -33,8 +33,8 @@ const Options = Factory.create('Options', {
                     return m(Forms, {formdata, noheader: false, className: 'default-options group-' + formgroup});
                 }),
             ]),
-            m('div.mv1.ph3.w-100.tc',
-                m('button.w-80.pv1', { onclick: () => DB.reset() },        'Defaults'),
+            m('div.mv1.ph3.w-100.tc.pv2',
+                m('button.w-80.pv1', { style: 'border-radius: 15px', onclick: () => DB.reset() },        'Defaults'),
             ),
 
         ]);

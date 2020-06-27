@@ -66,10 +66,10 @@ const BoardButtons = Factory.create('BoardButtons', {
 
                     const className = (
                         name === 'spinner'  &&  board.buttons['evaluate'] ? 'dn'  :
-                        name === 'spinner'  && !board.buttons['evaluate'] ? 'dib' :
-                        name === 'evaluate' &&  board.buttons['evaluate'] ? 'dib' :
+                        name === 'spinner'  && !board.buttons['evaluate'] ? 'ctw80' :
+                        name === 'evaluate' &&  board.buttons['evaluate'] ? 'ctw80' :
                         name === 'evaluate' && !board.buttons['evaluate'] ? 'dn'  :
-                        board.buttons[name] ? 'dib' : 'vih'
+                        board.buttons[name] ? 'ctw80' : 'ctb10'
                     );
 
                     return m(props.tag, {title: props.title, onclick: props.onclick, className });

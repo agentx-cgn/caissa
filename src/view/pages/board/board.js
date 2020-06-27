@@ -67,11 +67,11 @@ const Board = Factory.create('Board', {
                 m(BoardBar,     { game, board, pos: 'top', player: playerTop }),
                 m(ChessBoard,   { game, board, controller }),
                 m(BoardBar,     { game, board, pos: 'bot', player: playerBot }),
-                m(BoardFlags,   { board }),
+                m(BoardFlags,   { game, board }),
             ])
             // mobile
             : m('[', [
-                m(BoardFlags,   { board }),
+                m(BoardFlags,   { game, board }),
                 m(ChessBoard,   { game, board, controller }),
                 m(BoardButtons, { game, board, controller }),
             ])
