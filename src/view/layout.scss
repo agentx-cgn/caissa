@@ -45,13 +45,13 @@ main {
     flex: 1 0;
     display: flex;
     flex-direction: row;
-    background-color: #fff;
 }
 
 div.pages {
     display: flex;
     position: relative;
     width: calc(10 * 100vw); //TODO: ??
+    background-color: #683d3d85;
 }
 div.page {
     display: flex;
@@ -63,7 +63,7 @@ div.page {
     max-width: 100%;
 }
 div.slide {
-    background-color: #aaa;
+    // background-color: #aaa;
 }
 section.pages {
     height: 100%;
@@ -90,6 +90,15 @@ nav {
         top: 40px;
         display: block;
     }
+}
+
+.page-slide {
+    border-left:  1px solid white;
+    border-right: 1px solid white;
+    transition-property: transform;
+    transition-duration: 400ms;
+    transition-timing-function: ease-out;
+    transition-delay: 0ms;
 }
 
 // small screen (mobile)
@@ -131,21 +140,23 @@ nav {
             // background-color: #578;
 
         }
-        &.slide-transition {
-            transition-property: transform;
-            transition-duration: 400ms;
-            transition-timing-function: ease-out;
-            transition-delay: 0;
-            transform: translateX(100vw) !important;
+        &.trans-left {
+            -webkit-transform: translateX(0) !important;
+            transform: translateX(0) !important;
+        }
+        &.trans-center {
             -webkit-transform: translateX(100vw) !important;
-            border-left: 1px solid white;
-            border-right: 1px solid white;
+            transform: translateX(100vw) !important;
+        }
+        &.trans-right {
+            -webkit-transform: translateX(calc(2 * 100vw)) !important;
+            transform: translateX(calc(2 * 100vw)) !important;
         }
 
     }
     div.chessboard {
-        width: 364px;
-        height: 364px;
+        width:  calc(100vw + 4px);
+        height: calc(100vw + 4px);
     }
 
 }
@@ -166,7 +177,6 @@ nav {
     div.pages {
         left: -360px;
         height: 100%;
-        background-color: lightcoral;
     }
     div.slide {
         position: absolute;
@@ -190,15 +200,17 @@ nav {
             // background-color: #578;
 
         }
-        &.slide-transition {
-            transition-property: transform;
-            transition-duration: 400ms;
-            transition-timing-function: ease-out;
-            transition-delay: 0;
-            transform: translateX(360px) !important;
+        &.trans-left {
+            -webkit-transform: translateX(0) !important;
+            transform: translateX(0) !important;
+        }
+        &.trans-center {
             -webkit-transform: translateX(360px) !important;
-            border-left:  1px solid white;
-            border-right: 1px solid white;
+            transform: translateX(360px) !important;
+        }
+        &.trans-right {
+            -webkit-transform: translateX(calc(2 * 360px)) !important;
+            transform: translateX(calc(2 * 360px)) !important;
         }
     }
     div.chessboard {
@@ -241,13 +253,17 @@ nav {
             // background-color: #578;
 
         }
-        &.slide-transition {
-            transition-property: transform;
-            transition-duration: 400ms;
-            transition-timing-function: ease-out;
-            transition-delay: 0;
-            transform: translateX(360px) !important;
+        &.trans-left {
+            -webkit-transform: translateX(0) !important;
+            transform: translateX(0) !important;
+        }
+        &.trans-center {
             -webkit-transform: translateX(360px) !important;
+            transform: translateX(360px) !important;
+        }
+        &.trans-right {
+            -webkit-transform: translateX(calc(2 * 360px)) !important;
+            transform: translateX(calc(2 * 360px)) !important;
         }
     }
 

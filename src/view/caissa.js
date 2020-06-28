@@ -78,7 +78,7 @@ const Caissa = {
         }
 
         // take over error handling
-        window.onrror = function () {
+        window.onerror = function () {
             console.warn('Error :', arguments);
         };
         window.onunhandledrejection = function (e) {

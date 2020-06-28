@@ -182,7 +182,7 @@ i.gm-spinner.dn {
 
 div.game-entry {
     padding: 0.125rem 1rem ;
-    margin: 0.25rem 0;
+    margin: 0.4rem 0;
     background-color: transparent;
     cursor: pointer;
 }
@@ -193,14 +193,15 @@ div.game-entry:hover {
 }
 div.game-line1 {
     font-family: 'Iosevka-Term-Medium';
-    color: #333
+    color: #ddd;
+    font-size: 1.4rem;
 }
 div.game-line2 {
     font-family: 'Iosevka-Term-Medium';
-    color: #ddd;
+    color: #ccc;
     margin: 0.125rem 0;
 }
 div.game-line3 {
     font-family: 'Iosevka-Term-Regular';
-    color: #ddd;
+    color: #ccc;
 }

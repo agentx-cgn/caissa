@@ -33,7 +33,8 @@ const GrowSpacer = {
 const ListFilter = {
     view ( vnode ) {
         const { oninput } = vnode.attrs;
-        return m('input[type=text].w-100.mb2', {
+        return m('input[type=text].w-100.pv2.ph3.bg-ddd.f4', {
+            style: 'border: 0',
             oninput,
             placeholder: 'type to filter',
         });

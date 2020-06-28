@@ -56,7 +56,7 @@ const Games = Factory.create('Games', {
                 m('div.source-subline.f5.ellipsis', provider.subline),
 
                 provider.games.length
-                    ? m('div.source-loaded', provider.games.length + ' games loaded')
+                    ? m('div.games-loaded', provider.games.length + ' games loaded')
                     : '',
                 provider.error
                     ? m('div.source-error.f5.mv1', provider.error)

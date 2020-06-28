@@ -12,7 +12,7 @@ import { MARKER_TYPE, INPUT_EVENT_TYPE } from '../../../extern/cm-chessboard/Che
 // moveInputMode: MOVE_INPUT_MODE.viewOnly,
 // set to MOVE_INPUT_MODE.dragPiece or MOVE_INPUT_MODE.dragMarker for interactive movement
 
-const DEBUG = true;
+const DEBUG = false;
 
 class Opponent {
     constructor(color, mode) {
@@ -138,7 +138,7 @@ class BoardController {
             oppToMove.tomove(this);
             oppToWait.towait(this);
 
-            console.log('BoardController', 'towait:', this.towait, 'tomove:', this.tomove);
+            DEBUG && console.log('BoardController', 'towait:', this.towait, 'tomove:', this.tomove);
 
             // throw('Gotcha');
         }

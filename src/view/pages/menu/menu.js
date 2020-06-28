@@ -1,5 +1,6 @@
 
 import './menu.scss';
+import iconChess from './../../../assets/static/chess.128.trans.png';
 
 import Caissa       from '../../caissa';
 import Factory      from '../../components/factory';
@@ -26,9 +27,12 @@ const Menu = Factory.create('Menu', {
                 ...Array.from(Config.navigation).map( ([route, params, entry]) => {
                     return m(FlexListEntry, { class: '', onclick: clicker(route, params) }, [
                         m(TextLeft, {class: 'f3'}, [
-                            m('i.menu.fa.fa-chess-board'),
+                            params.src
+                                ? m('img', {style: 'padding-right: 14px; vertical-align: top', src: params.src, width: 22, height: 22})
+                                : m('i.menu.fa.' + params.ico)
+                            ,
                             entry,
-                            m('div.f5.c666.pb1', 'some clever hints'),
+                            m('div.f5.pb1.cddd', 'some clever hints'),
                         ]),
                     ]);
                 }),

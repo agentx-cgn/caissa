@@ -2,6 +2,7 @@
 import board_svg         from '../../extern/cm-chessboard/chessboard-sprite.svg';
 import {COLOR, MOVE_INPUT_MODE} from '../../extern/cm-chessboard/Chessboard';
 import { H } from '../services/helper';
+import iconChess from './../../assets/static/chess.128.trans.png';
 
 const fens = {
     empty: '8/8/8/8/8/8/8/8 w - - 0 1',
@@ -144,13 +145,14 @@ export default H.deepFreezeCreate({
     },
 
     navigation : [
-        ['/sources/',        {}, 'PGNS'],
-        ['/games/',          {}, 'GAMES'],  // loads imported games so far
-        ['/game/',           {}, 'GAME'],
-        ['/plays/',          {}, 'PLAY'],
+        ['/sources/',        {ico: 'fa-chess-queen'}, 'PGNS'],
+        ['/games/',          {src: iconChess}, 'GAMES'],  // loads imported games so far
+        ['/game/',           {src: iconChess}, 'GAME'],
+        ['/plays/',          {src: iconChess}, 'PLAY'],
+        ['/system/:module/', {ico: 'fa-microchip', module: 'system'}, 'SYSTEM'],
+        ['/options/',        {ico: 'fa-cogs'}, 'OPTIONS'],
+
         // ['/analyzer/',       {}, 'ANALYSE'],
-        ['/system/:module/', {module: 'system'}, 'SYSTEM'],
-        ['/options/',        {}, 'OPTIONS'],
         // ['/help/',           {}, 'HELP'],
 
         // [`/info/${urls[1]}/`,   'INFO'],

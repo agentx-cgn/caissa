@@ -4,15 +4,14 @@ import History        from '../services/history';
 import Factory        from '../components/factory';
 import { CompPages }  from '../data/config-pages';
 import System         from '../data/system';
-import touchSlider    from './toucher';
+import touchSlider    from '../services/toucher';
 
-const DEBUG = false;
+const DEBUG = true;
 
 let
-    anim,
-    endEvent = System.transitionEnd,
-    transLeft, transCenter, transRight,
-    pageWidth
+    anim, pageWidth,
+    transLeft, transCenter, transRight, transLeftCancel, transRightCancel,
+    endEvent = System.transitionEnd
 ;
 
 const Pages = Factory.create('Pages', {
@@ -32,14 +31,13 @@ const Pages = Factory.create('Pages', {
         touchSlider.remove();
     },
     onresize (width, height) {
-        if (width <= 360){
-            pageWidth = width;
-            transLeft   = 'translateX(    0)';
+        transLeft   = 'translateX(    0)';
+        if (width < 360){
+            pageWidth   = width;
             transCenter = 'translateX( 100vw )';
             transRight  = 'translateX( calc(2*100vw) )';
         } else {
-            pageWidth = 360;
-            transLeft   = 'translateX(    0)';
+            pageWidth   = 360;
             transCenter = 'translateX( 360px )';
             transRight  = 'translateX( 720px )';
         }
@@ -75,23 +73,25 @@ const Pages = Factory.create('Pages', {
                 if ($Comp){
                     $Comp.classList.remove('dn');
                     if (isLeft){
-                        $Comp.classList.add('slide', 'left');
-                        $Comp.setAttribute('style', 'z-index: 12; transform: ' + transLeft + ';');
+                        $Comp.classList.add('slide', 'left', 'trans-left');
+                        $Comp.setAttribute('style', 'z-index: 12');
                     }
                     if (isCenter) {
-                        $Comp.classList.add('slide', 'center');
-                        $Comp.setAttribute('style', 'z-index: 11; transform: ' + transCenter + ';');
+                        $Comp.classList.add('slide', 'center', 'trans-center');
+                        $Comp.setAttribute('style', 'z-index: 11;');
                     }
                     if (isRight) {
-                        $Comp.classList.add('slide', 'right');
-                        $Comp.setAttribute('style', 'z-index: 12; transform: ' + transRight + ';');
+                        $Comp.classList.add('slide', 'right', 'trans-right');
+                        $Comp.setAttribute('style', 'z-index: 12;');
                     }
                 }
 
             } else {
                 Comp.preventUpdates = true;
                 if ($Comp){
-                    $Comp.classList.remove('slide', 'left', 'center', 'right');
+                    $Comp.classList.remove(
+                        'slide', 'left', 'center', 'right', 'trans-left', 'trans-center', 'trans-right',
+                    );
                     $Comp.classList.add('dn');
                     $Comp.removeAttribute('style');
                 }
@@ -100,13 +100,13 @@ const Pages = Factory.create('Pages', {
 
             return (
                 isLeft   ? m(left.content,   {route: left.route,   params: left.params,
-                    className: 'slide left',   style: 'z-index: 12; transform: ' + transLeft}) :
+                    className: 'slide left trans-left',   style: 'z-index: 12;'}) :
 
                 isCenter ? m(center.content, {route: center.route, params: center.params,
-                    className: 'slide center', style: 'z-index: 11; transform: ' + transCenter}) :
+                    className: 'slide center trans-center', style: 'z-index: 11;'}) :
 
                 isRight  ? m(right.content,  {route: right.route,   params: right.params,
-                    className: 'slide right',  style: 'z-index: 12; transform: ' + transRight}) :
+                    className: 'slide right trans-right',  style: 'z-index: 12;'}) :
 
                 // all other, no updates, no display
                 m(Comp, {route: '', params: {}, className: 'dn' })
@@ -126,32 +126,42 @@ const Pages = Factory.create('Pages', {
 
         if (anim === '=1=' || anim === '=r=' || anim === '=s=' || anim === '=w=') {
 
-            $Left  && ( $Left.style.transform  = transLeft);
-            $Right && ( $Right.style.transform = transRight);
+            // $Left  && ( $Left.style.transform  = transLeft);
+            // $Right && ( $Right.style.transform = transRight);
+            if ($Left) {
+                $Left.classList.remove('trans-right', 'trans-center');
+                $Left.classList.add('trans-left');
+            }
+            if ($Right) {
+                $Right.classList.remove('trans-left', 'trans-center');
+                $Right.classList.add('trans-right');
+            }
 
             if (History.canBack || History.canFore){
                 touchSlider.init(transLeft, transRight, pageWidth);
             }
 
-        } else if (anim === '=b=' || anim === '=f=') {
-            Caissa.redraw();
-
         } else if (anim === '=b>') {
             if ($Left) {
                 $Left.addEventListener(endEvent, onafteranimate);
-                $Left.classList.add('slide-transition');
+                $Left.classList.remove('page-slide', 'trans-left');
+                $Left.classList.add('page-slide', 'trans-center');
             }
 
         } else if (anim === '<c=' || anim === '<f=') {
             if ($Right) {
                 $Right.addEventListener(endEvent, onafteranimate);
-                $Right.classList.add('slide-transition');
+                $Right.classList.remove('page-slide', 'trans-right');
+                $Right.classList.add('page-slide', 'trans-center');
             }
+
+        } else if (anim === '=b=' || anim === '=f=') {
+            Caissa.redraw();
 
         } else {
             console.warn('pages.onafterupdates.unknown anim', anim);
-
         }
+
 
     },
 
@@ -164,13 +174,15 @@ function onafteranimate( ) {
 
     if (anim === '<c=' || anim === '<f=') {
         $Right.removeEventListener(endEvent, onafteranimate);
-        $Right.classList.remove('slide-transition');
-        $Right.style.transform = transCenter; //'translateX(360px)';
+        $Right.classList.remove('page-slide', 'trans-right');
+        $Right.classList.add('trans-center');
+        // $Right.style.transform = transCenter; //'translateX(360px)';
 
     } else if (anim === '=b>') {
         $Left.removeEventListener(endEvent, onafteranimate);
-        $Left.classList.remove('slide-transition');
-        $Left.style.transform  = transCenter; //'translateX(360px)';
+        $Left.classList.remove('page-slide', 'trans-left');
+        $Left.classList.add('trans-center');
+        // $Left.style.transform  = transCenter; //'translateX(360px)';
 
     }
 

@@ -47,6 +47,12 @@ body, .root {
   overflow: hidden;
 }
 
+.root {
+    background-color: rgba(128,128,128, 0.9);
+    background-image: url('/static/loader.jpg');
+    background-size: cover;
+}
+
 // input {
 //   background-color: #ddd;
 //   padding: 6px 1rem;

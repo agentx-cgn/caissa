@@ -1,9 +1,9 @@
 
 import System     from '../data/system';
-import History    from '../services/history';
-import { $$ }     from '../services/helper';
+import History    from './history';
+import { $$ }     from './helper';
 
-const DEBUG = false;
+const DEBUG = true;
 
 const abs = Math.abs;
 let threshold = innerWidth / 3;
@@ -20,14 +20,14 @@ const touchSlider = {
             document.addEventListener('touchstart', touchSlider.down,  false);
             document.addEventListener('touchmove',  touchSlider.move,  false);
             document.addEventListener('touchend',   touchSlider.end,   false);
-            console.log('touchSlider.listening');
+            DEBUG && console.log('touchSlider.listening');
         }
     },
     remove () {
         document.removeEventListener('touchstart', touchSlider.down,  false);
         document.removeEventListener('touchmove',  touchSlider.move,  false);
         document.removeEventListener('touchend',   touchSlider.end,   false);
-        console.log('touchSlider.removed');
+        DEBUG && console.log('touchSlider.removed');
     },
     pause () {
         touch.selektor = '';
@@ -47,12 +47,12 @@ const touchSlider = {
     },
     down (e) {
         if (touch.selektor && e.target.closest(touch.selektor)){
-            // console.log('touch.found', touch.selektor);
             touch.time   = Date.now();
             touch.down.x = e.touches[0].clientX;
             touch.down.y = e.touches[0].clientY;
             touch.diff.x = 0;
             touch.diff.y = 0;
+            DEBUG && console.log('touch.down', touch.selektor);
         }
     },
     onafterback () {
@@ -80,7 +80,7 @@ const touchSlider = {
                 if (slideLeft && History.canBack && touch.diff.x < 0){
                     if (abs(touch.diff.x) > threshold){
                         slideLeft.addEventListener(endEvent, touchSlider.onafterback);
-                        slideLeft.classList.add('slide-transition');
+                        slideLeft.classList.add('page-slide', 'trans-center');
                     } else {
                         slideLeft.style.transform = 'translateX(' + abs(touch.diff.x) + 'px)';
                     }
@@ -89,7 +89,7 @@ const touchSlider = {
                 if (slideRight && History.canFore && touch.diff.x > 0){
                     if (abs(touch.diff.x) > threshold){
                         slideRight.addEventListener(endEvent, touchSlider.onafterfore);
-                        slideRight.classList.add('slide-transition');
+                        slideRight.classList.add('page-slide', 'trans-center');
                     } else {
                         slideRight.style.transform = 'translateX(' + ( 2 * width - abs(touch.diff.x) ) + 'px)';
                     }
@@ -107,9 +107,26 @@ const touchSlider = {
             touch.down = { x: NaN, y: NaN };
             touch.diff = { x: NaN, y: NaN };
 
-            slideLeft  && (slideLeft.style.transform  = transLeft);
-            slideRight && (slideRight.style.transform = transRight);
-            console.log('touchSlider.end', touch.selektor);
+            // slideLeft  && (slideLeft.style.transform  = transLeft);
+            // slideRight && (slideRight.style.transform = transRight);
+
+            if (slideLeft){
+                slideLeft.addEventListener(endEvent, function onEnd () {
+                    slideLeft.removeEventListener(endEvent, onEnd);
+                    slideLeft.classList.remove('page-slide');
+                });
+                slideLeft.classList.add('trans-left', 'page-slide');
+            }
+            if (slideRight){
+                slideRight.addEventListener(endEvent, function onEnd () {
+                    slideRight.removeEventListener(endEvent, onEnd);
+                    slideRight.classList.remove('page-slide');
+                });
+                slideRight.classList.add('trans-right', 'page-slide');
+            }
+
+            DEBUG && console.log('touchSlider.ended', touch.selektor);
+
         }
 
     },
