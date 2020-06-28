@@ -10,7 +10,7 @@ let threshold = innerWidth / 3;
 
 let touch = { selektor: '', time: NaN, down: { x: NaN, y: NaN }, diff: { x: NaN, y: NaN } };
 let slideLeft, slideRight; // may get moved
-let transLeft, transRight;
+// let transLeft, transRight;
 let endEvent = System.transitionEnd;
 let width;
 
@@ -32,17 +32,15 @@ const touchSlider = {
     pause () {
         touch.selektor = '';
     },
-    init (transformLeft, transformRight, pageWidth) {
+    init (pageWidth) {
         // next frame
         setTimeout ( () => {
             slideLeft       = $$('div.slide.left');
             slideRight      = $$('div.slide.right');
             touch.selektor  = 'div.slide.center';
-            transLeft       = transformLeft;
-            transRight      = transformRight;
             width           = pageWidth;
             threshold       = innerWidth / 4;
-            DEBUG && console.log('touchSlider.init', transformLeft, transformRight, pageWidth);
+            DEBUG && console.log('touchSlider.init', pageWidth);
         });
     },
     down (e) {

@@ -10,7 +10,6 @@ const DEBUG = true;
 
 let
     anim, pageWidth,
-    transLeft, transCenter, transRight, transLeftCancel, transRightCancel,
     endEvent = System.transitionEnd
 ;
 
@@ -31,15 +30,15 @@ const Pages = Factory.create('Pages', {
         touchSlider.remove();
     },
     onresize (width, height) {
-        transLeft   = 'translateX(    0)';
-        if (width < 360){
+        // transLeft   = 'translateX(    0)';
+        if (width <= 360){
             pageWidth   = width;
-            transCenter = 'translateX( 100vw )';
-            transRight  = 'translateX( calc(2*100vw) )';
+            // transCenter = 'translateX( 100vw )';
+            // transRight  = 'translateX( calc(2*100vw) )';
         } else {
             pageWidth   = 360;
-            transCenter = 'translateX( 360px )';
-            transRight  = 'translateX( 720px )';
+            // transCenter = 'translateX( 360px )';
+            // transRight  = 'translateX( 720px )';
         }
         false && console.log('pages.onresize', width, height);
     },
@@ -138,7 +137,7 @@ const Pages = Factory.create('Pages', {
             }
 
             if (History.canBack || History.canFore){
-                touchSlider.init(transLeft, transRight, pageWidth);
+                touchSlider.init(pageWidth);
             }
 
         } else if (anim === '=b>') {
@@ -176,13 +175,11 @@ function onafteranimate( ) {
         $Right.removeEventListener(endEvent, onafteranimate);
         $Right.classList.remove('page-slide', 'trans-right');
         $Right.classList.add('trans-center');
-        // $Right.style.transform = transCenter; //'translateX(360px)';
 
     } else if (anim === '=b>') {
         $Left.removeEventListener(endEvent, onafteranimate);
         $Left.classList.remove('page-slide', 'trans-left');
         $Left.classList.add('trans-center');
-        // $Left.style.transform  = transCenter; //'translateX(360px)';
 
     }
 

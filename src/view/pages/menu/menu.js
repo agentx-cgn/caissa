@@ -1,6 +1,5 @@
 
 import './menu.scss';
-import iconChess from './../../../assets/static/chess.128.trans.png';
 
 import Caissa       from '../../caissa';
 import Factory      from '../../components/factory';

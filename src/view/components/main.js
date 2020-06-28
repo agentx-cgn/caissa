@@ -6,7 +6,6 @@ const Main = Factory.create('Main', {
         // return m('main.flex.flex-row', {}, vnode.children);
         return m('main', {}, [
             m('section.pages',   {}, vnode.children[0]),
-            // m('section.content', {}, vnode.children[1]),
         ]);
     },
 });
