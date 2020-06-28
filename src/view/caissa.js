@@ -21,23 +21,40 @@ const Caissa = {
     // available for debugging
     H, DB, System,
 
+    //
+    dumpDB () {
+        const dump = DB.dump();
+        const body = document.body;
+        body.style.whiteSpace   = 'pre';
+        body.style.background   = 'white';
+        body.style.overflow     = 'auto';
+        body.style.color        = 'black';
+        body.style.fontFamily   = 'monospace';
+        document.body.innerText = dump;
+    },
+
     // happens once in index.js
-    onafterImport () {
-        Logger.log('caissa', 'onafterImport');
+    onafterImport (env) {
+
+        Caissa.Env = env[0].toUpperCase() + env.substring(1);
+
+        Logger.log('caissa', 'onafterImport', process);
+        DEBUG && console.log('Info   :', Caissa.Env, 'loaded imports after', Date.now() - window.t0, 'msecs');
+
         Events.listen();
     },
 
     onComponentCreated : function (comp) {
         offset += 16;
         setTimeout( function () {
-            const $msgs = $$('loading-screen .messages');
+            const $msgs = $$('loader-screen .messages');
             $msgs.innerHTML += '<br>' + comp.name;
         }, offset);
     },
 
-    //from loading screen
+    //from loader screen
     start () {
-        document.body.removeChild($$('loading-container'));
+        document.body.removeChild($$('loader-container'));
     },
     // == window.onload
     onload () {
@@ -48,18 +65,26 @@ const Caissa = {
             : console.log ('Info   :', '... done after', 0, t, 'msecs')
         ;
         if (DB.Options.first['ui'].waitscreen) {
-            $$('loading-screen .start').style.display        = 'inline-block';
-            $$('loading-screen .reload').style.display       = 'inline-block';
-            $$('loading-screen .a2home').style.display       = 'inline-block';
-            $$('loading-screen .dump').style.display         = 'inline-block';
-            $$('loading-screen .option-waitscreen').style.display  = 'inline-block';
-            $$('loading-screen .option-username').style.display    = 'inline-block';
-            $$('loading-screen input.chkwaitscreen').checked       = true;
-            $$('loading-screen input.txtusername').value           = DB.Options.first['user-data'].name;
+            $$('loader-screen .group2').style.display        = 'inline-block';
+            $$('loader-screen .group3').style.display        = 'inline-block';
+            $$('loader-screen .group4').style.display        = 'inline-block';
+            $$('loader-screen .group5').style.display        = 'inline-block';
+            $$('loader-screen .dump').style.display          = 'inline-block';
+            $$('loader-screen input[type="checkbox"]').checked  = true;
+            $$('loader-screen input[type="text"]').value      = DB.Options.first['user-data'].name;
 
         } else {
-            document.body.removeChild($$('loading-container'));
+            document.body.removeChild($$('loader-container'));
         }
+
+        // take over error handling
+        window.onrror = function () {
+            console.warn('Error :', arguments);
+        };
+        window.onunhandledrejection = function (e) {
+            e.preventDefault();
+            console.warn('Error :', e.type, e.reason, e);
+        };
         console.log(' ');
     },
 

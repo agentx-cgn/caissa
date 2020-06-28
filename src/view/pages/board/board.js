@@ -25,7 +25,7 @@ const Board = Factory.create('Board', {
 
         if (uuid !== lastuuid) {
             // new game, TODO: will fail if deeplink
-            DEBUG && console.log('Board.view.newgame', { uuid, turn }, lastuuid, lastturn);
+            DEBUG && console.log('Board.view.newgame', { uuid, turn }, 'last:', lastuuid, lastturn);
             game  = DB.Games.find(uuid);
             board = DB.Boards.createget(uuid);
             DB.Boards.update(uuid, {
@@ -37,7 +37,7 @@ const Board = Factory.create('Board', {
 
         } else if (turn !== lastturn) {
             // new turn
-            DEBUG && console.log('Board.view.newturn', { uuid, turn }, lastuuid, lastturn);
+            DEBUG && console.log('Board.view.newturn', { uuid, turn }, 'last:', lastuuid, lastturn);
             DB.Games.update(uuid, { turn: ~~turn }, true);
             DB.Boards.update(uuid, {
                 fen :          Tools.Games.fen(game),

@@ -5,7 +5,6 @@ import DB            from '../../services/database';
 import Forms         from '../../components/forms';
 import Factory       from '../../components/factory';
 import { PageTitle } from '../../components/misc';
-// import { FormGroups }  from '../data/form-groups';
 
 const Options = Factory.create('Options', {
 
@@ -13,6 +12,8 @@ const Options = Factory.create('Options', {
 
         const { className, style } = vnode.attrs;
         const formgroups = Object.keys(DB.Options.first);
+
+        // throw '';
 
         return m('div.page.options', { className, style }, [
             m(PageTitle, 'Options'),

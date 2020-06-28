@@ -26,7 +26,7 @@ const Game = Factory.create('Game', {
         }
 
         // bc board.buttons.actions
-        DB.Games.update(game.uuid, { turn: ~~turn });
+        // DB.Games.update(game.uuid, { turn: ~~turn });
 
         const titlePlayers = Tools.Format.titlePlayers(game);
         const lineResult   = Tools.Format.lineResult(game);

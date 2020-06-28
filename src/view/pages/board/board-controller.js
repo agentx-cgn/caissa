@@ -139,6 +139,8 @@ class BoardController {
             oppToWait.towait(this);
 
             console.log('BoardController', 'towait:', this.towait, 'tomove:', this.tomove);
+
+            // throw('Gotcha');
         }
     }
     step (turn) {

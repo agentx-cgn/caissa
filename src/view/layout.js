@@ -8,13 +8,8 @@ import Last         from './components/last';
 import Factory      from './components/factory';
 import Pages        from './pages/pages';
 
-let width;
-
 const Layout = Factory.create('Layout', {
 
-    onresize (innerWidth) {
-        width = innerWidth;
-    },
     view( vnode ) {
 
         const { route, params } = vnode.attrs;
@@ -25,9 +20,11 @@ const Layout = Factory.create('Layout', {
             m(Header,  { route, params }),
             m('main', {}, [
                 m('section.pages', {}, m(Pages, { route, params }, Page)),
-                width >= 720
+                innerWidth >= 720
+
                     // desktop with board or something
                     ? m('section.content', {}, m(Section, { route, params } ))
+
                     // empty for mobile
                     : m('section.content', {}, m(Nothing))
                 ,

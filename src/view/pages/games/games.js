@@ -19,18 +19,18 @@ const Games = Factory.create('Games', {
         const { params: { idx=0 } } = vnode.attrs;
         const provider = Providers.find( p => p.idx === ~~idx );
 
-        DEBUG && console.log('games.oninit', idx, provider.caption);
+        DEBUG && console.log('Games.oninit', idx, provider.caption);
 
         //TODO: handle deeplinks
         if ( !provider.games.length ) {
             provider.fetch()
                 .then( () => {
-                    DEBUG && console.log('games.oninit.loaded', ~~idx, provider.games.length);
+                    DEBUG && console.log('Games.oninit.loaded', ~~idx, provider.games.length);
                     provider.progress = 0;
                 })
             ;
         } else {
-            DEBUG && console.log('games.oninit.cachehit', ~~idx, provider.caption);
+            DEBUG && console.log('Games.oninit.cachehit', ~~idx, provider.caption);
         }
 
     },

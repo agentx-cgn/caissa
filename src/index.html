@@ -3,6 +3,7 @@
     <head>
         <script>
             window.t0 = Date.now();
+            window.loadSuccess = true;
             console.log('Info   :', 'Initializing...');
         </script>
 
@@ -33,51 +34,107 @@
                 --sab: env(safe-area-inset-bottom);
                 --sal: env(safe-area-inset-left);
             }
-            loading-container {
-                width: 100%;
-                height: 100%;
-            }
-            loading-backdrop {
-                position: fixed;
-                top: 0;
-                left: 0;
-                margin-top: 40px;
-                height: 100%;
-                width: 100%;
-                background-color: rgba(128,128,128, 0.9);
-                z-index: 1000;
-            }
-            loading-screen {
+            loader-container {
+                display: block;
                 position: absolute;
+                width: 100%;
+                height: 100%;
+                z-index: 1000;
                 top: 0;
-                left: calc(50vw - 180px);
+                background-color: rgba(128,128,128, 0.9);
+                background-image: url('/static/loader.jpg');
+                background-size: cover;
+            }
+            loader-screen {
+                display: block;
+                top: 0;
                 height: 100%;
                 width: 360px;
-                margin: 40px auto;
-                overflow: hidden;
-                background: rgba(0,0,0, 0.5);
-                padding-top: 40px;
+                margin: auto;
+                background: rgba(35, 35, 35, 0.5);
                 font-family: monospace;
                 color: white;
-                z-index: 1001;
+                z-index: 1200;
             }
-            loading-screen .option-waitscreen {
+            loader-screen .option-waitscreen {
                 margin-top: 12px;
                 display: none;
+                text-align: center;
+                padding: 80px 1rem;
             }
-            loading-screen button {
+            loader-screen button {
                 margin-top: 12px;
                 padding: 4px 8px;
             }
+            loader-screen h3 {
+                padding: 4rem 1rem 1rem 2rem;
+                font-size: 1.4rem;
+            }
+            loader-screen input[type="checkbox"] {
+                padding: 2px 8px;
+            }
+            loader-screen input[type="text"] {
+                padding: 2px 8px;
+                margin-top: 4px;
+            }
+            loader-screen .group1 { /* reload reset */
+                margin-top: 20px;
+                padding-left: 2rem;
+            }
+            loader-screen .dump {
+                display: none;
+            }
+            loader-screen .group2 { /* user name */
+                display: none;
+                padding-left: 2rem;
+                margin-top: 1rem;
+            }
+            loader-screen .group3 { /* start a2h */
+                display: none;
+                padding-left: 2rem;
+                margin-top: 1rem;
+            }
+            loader-screen .group4 { /* dont show */
+                display: none;
+                margin-top: 1rem;
+                width: 100%;
+                padding-left: 2rem;
+            }
+            loader-screen .group5 { /* error */
+                display: none;
+                margin-top: 1rem;
+                width: 100%;
+                padding-left: 2rem;
+                color: #1d185f;
+                font-weight: 800;
+            }
+            loader-screen .group6 { /* version */
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                color: white;
+                font-size:  0.6rem;
+                padding-right: 4px;
+            }
+
         </style>
 
         <script>
-
-            if (location.hash.includes('debug')){
-                window.onerror = function (...args) {
-                    document.body.innerHTML = JSON.stringify(args);
-                    console.log(JSON.stringify(arguments))
-                }
+            // https://developer.mozilla.org/en-US/docs/Web/API/Window/unhandledrejection_event
+            window.onerror = function () {
+                const $$ = document.querySelector.bind(document);
+                window.loadSuccess && ($$('.group5 pre').innerHTML = '');
+                window.loadSuccess = false;
+                $$('.group5 pre').innerHTML += JSON.stringify(arguments) + '<br/>';
+                console.warn('Error :', arguments);
+            }
+            window.onunhandledrejection = function (e) {
+                const $$ = document.querySelector.bind(document);
+                window.loadSuccess && ($$('.group5 pre').innerHTML = '');
+                window.loadSuccess = false;
+                $$('.group5 pre').innerHTML += JSON.stringify(e.reason) + '<br/>';
+                e.preventDefault();
+                console.warn('Error :', e.type, e.reason, e);
             }
             function saveOption (ctrl) {
                 Caissa.DB.Options.update('0', { ui: { waitscreen: !ctrl.checked } }, true);
@@ -86,10 +143,10 @@
                 Caissa.DB.Options.update('0', { 'user-data': { name: ctrl.value } }, true);
             }
 
-
             // if('serviceWorker' in navigator) {
             //     navigator.serviceWorker.register('./static/caissa.sw.js');
             // };
+
         </script>
 
     </head>
@@ -99,40 +156,36 @@
 
         <div class="root"></div>
 
-        <loading-container>
-            <loading-backdrop></loading-backdrop>
-            <loading-screen  style="text-align: center; padding: 80px 1rem">
-                <loading-text>
-                    <h3>Caissa loading...</h3>
-                    <div class="messages"></div>
-                    <div style="text-align: center;">
-                        <button class="start"   onclick="Caissa.start()">Start</button>
-                        <button class="reload"  onclick="location.reload()">Reload</button>
-                        <button class="reload"  onclick="Caissa.DB.reset()">Reset</button>
-                    </div>
-                    <div class="dump" style="display: none; text-align: center;">
-                        <button onclick="Caissa.DB.dump()">DB.dump</button>
-                    </div>
-                    <div class="a2home" style="display: none; text-align: center;">
-                        <button  onclick="">Add to Home Screen</button>
-                    </div>
-                    <div class="option-waitscreen" style="margin-top: 20px;width: 100%; text-align: center;">
-                        <label>
-                            Don't show again
-                            <input type="checkbox" class="chkwaitscreen" onchange="saveOption(this)" />
-                        </label>
-
-                    </div>
-                    <div class="option-username" style="margin-top: 20px;width: 100%; text-align: center;">
-                        <input class="txtusername" playholder="enter user name" oninput="saveName(this)" />
-                    </div>
-
-                </loading-text>
-                <loading-messages style="display: block; margin-top: 1rem">
-                    huhu huhu
-                </loading-messages>
-            </loading-screen>
-        </loading-container>
+        <loader-container>
+            <loader-screen>
+                <h3>Caissa loading...</h3>
+                <div class="group1">
+                    <button class="reload"  onclick="location.reload()">Reload</button>
+                    <button class="reset"   onclick="Caissa.DB.reset()">Reset</button>
+                    <button class="dump"    onclick="Caissa.dumpDB()">DB.dump</button>
+                </div>
+                <div class="group2">
+                    <div>Your User Name</div>
+                    <input type="text"     oninput="saveName(this)" placeholder="enter your user name"  />
+                </div>
+                <div class="group3">
+                    <button class="start"   onclick="Caissa.start()">Start</button>
+                    <button                 onclick="">Add to Home Screen</button>
+                </div>
+                <div class="group4">
+                    <label>
+                        Don't show this again
+                        <input type="checkbox" onchange="saveOption(this)" />
+                    </label>
+                </div>
+                <div class="group5">
+                    <pre>No problems found... Have fun :)</pre>
+                </div>
+                <div class="group6">
+                    <pre>V: 1.02 / Scheme: 12.0d</pre>
+                </div>
+            </loader-screen>
+        </loader-container>
 
     </body>
 </html>

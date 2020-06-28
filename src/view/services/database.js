@@ -25,7 +25,10 @@ const dumps  = {
 
 const DB =  {
     scheme:    SCHEME,
-    dump  () { console.log(JSON.stringify(localStorage, null, 2).replace(/\\"/g, '\''));},
+    dump  () {
+        const dump = JSON.stringify(DB.all(), null, 2);
+        return dump.replace(/\\"/g, '\'');
+    },
     all   () {
         return {
             scheme:  ls('scheme'),
