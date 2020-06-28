@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <script>
+            window.t0 = Date.now();
+            window.loadSuccess = true;
+            console.log('Info   :', 'Initializing...');
+        </script>
 
         <title>Caissa</title>
 
@@ -29,79 +34,158 @@
                 --sab: env(safe-area-inset-bottom);
                 --sal: env(safe-area-inset-left);
             }
-            loading-backdrop {
-                top: 40px; left: 0;
+            loader-container {
+                display: block;
                 position: absolute;
+                width: 100%;
                 height: 100%;
-                width: 100%;
-                background-color: rgba(0,0,0, 0.8);
                 z-index: 1000;
+                top: 0;
+                background-color: rgba(128,128,128, 0.9);
+                background-image: url('/static/loader.jpg');
+                background-size: cover;
             }
-            loading-screen {
-                position: absolute;
-                top: 80px;
-                height: 60%;
-                width: 100%;
-                padding: 2rem;
+            loader-screen {
+                display: block;
+                top: 0;
+                height: 100%;
+                width: 360px;
+                margin: auto;
+                background: #683d3d85;
                 font-family: monospace;
                 color: white;
-                z-index: 1001;
+                z-index: 1200;
             }
-            loading-screen .option-waitscreen {
+            loader-screen .option-waitscreen {
                 margin-top: 12px;
                 display: none;
+                text-align: center;
+                padding: 80px 1rem;
             }
-            loading-screen button {
+            loader-screen button {
                 margin-top: 12px;
                 padding: 4px 8px;
             }
+            loader-screen h3 {
+                padding: 4rem 1rem 1rem 2rem;
+                font-size: 1.4rem;
+            }
+            loader-screen input[type="checkbox"] {
+                padding: 2px 8px;
+            }
+            loader-screen input[type="text"] {
+                padding: 2px 8px;
+                margin-top: 4px;
+            }
+            loader-screen .group1 { /* reload reset */
+                margin-top: 20px;
+                padding-left: 2rem;
+            }
+            loader-screen .dump {
+                display: none;
+            }
+            loader-screen .group2 { /* user name */
+                display: none;
+                padding-left: 2rem;
+                margin-top: 1rem;
+            }
+            loader-screen .group3 { /* start a2h */
+                display: none;
+                padding-left: 2rem;
+                margin-top: 1rem;
+            }
+            loader-screen .group4 { /* dont show */
+                display: none;
+                margin-top: 1rem;
+                width: 100%;
+                padding-left: 2rem;
+            }
+            loader-screen .group5 { /* error */
+                display: none;
+                margin-top: 1rem;
+                width: 100%;
+                padding-left: 2rem;
+                color: #1d185f;
+                font-weight: 800;
+            }
+            loader-screen .group6 { /* version */
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                color: white;
+                font-size:  0.6rem;
+                padding-right: 4px;
+            }
+
         </style>
 
         <script>
-            var offset = 16;
-            window.t0 = Date.now();
-            console.log('Info   :', 'Initializing...');
-
-            if (location.hash.includes('debug')){
-                window.onerror = function (...args) {
-                    document.body.innerHTML = JSON.stringify(args);
-                    console.log(JSON.stringify(arguments))
-                }
+            // https://developer.mozilla.org/en-US/docs/Web/API/Window/unhandledrejection_event
+            window.onerror = function () {
+                const $$ = document.querySelector.bind(document);
+                window.loadSuccess && ($$('.group5 pre').innerHTML = '');
+                window.loadSuccess = false;
+                $$('.group5 pre').innerHTML += JSON.stringify(arguments) + '<br/>';
+                console.warn('Error :', arguments);
+            }
+            window.onunhandledrejection = function (e) {
+                const $$ = document.querySelector.bind(document);
+                window.loadSuccess && ($$('.group5 pre').innerHTML = '');
+                window.loadSuccess = false;
+                $$('.group5 pre').innerHTML += JSON.stringify(e.reason) + '<br/>';
+                e.preventDefault();
+                console.warn('Error :', e.type, e.reason, e);
             }
             function saveOption (ctrl) {
-                Caissa.DB.updateOption({ui:{waitscreen: !!ctrl.checked}});
+                Caissa.DB.Options.update('0', { ui: { waitscreen: !ctrl.checked } }, true);
             }
-
+            function saveName (ctrl) {
+                Caissa.DB.Options.update('0', { 'user-data': { name: ctrl.value } }, true);
+            }
 
             // if('serviceWorker' in navigator) {
             //     navigator.serviceWorker.register('./static/caissa.sw.js');
             // };
+
         </script>
 
-    <link href="css/3-f9303d88.css" rel="stylesheet"><link href="css/0-d64c6286.css" rel="stylesheet"><link href="css/1-07668849.css" rel="stylesheet"></head>
+    <link href="css/3-f9303d88.css" rel="stylesheet"><link href="css/0-d64c6286.css" rel="stylesheet"><link href="css/1-f9095c64.css" rel="stylesheet"></head>
     <body>
 
         <noscript>You need to enable JavaScript to run Caissa.</noscript>
 
         <div class="root"></div>
 
-        <loading-backdrop></loading-backdrop>
-        <loading-screen>
-            <loading-text>
+        <loader-container>
+            <loader-screen>
                 <h3>Caissa loading...</h3>
-                <div class="messages"></div>
-                <div>
-                    <button class="start"   onclick="window.Caissa.start()">Start</button>
+                <div class="group1">
                     <button class="reload"  onclick="location.reload()">Reload</button>
-                    </div>
-                <div>
-                    <button class="a2home"  onclick="">Add to Home Screen</button>
+                    <button class="reset"   onclick="Caissa.DB.reset()">Reset</button>
+                    <button class="dump"    onclick="Caissa.dumpDB()">DB.dump</button>
                 </div>
-                <div class="option-waitscreen">
-                    <input type="checkbox" onchange="saveOption(this)" /> Don't show again
+                <div class="group2">
+                    <div>Your User Name</div>
+                    <input type="text"     oninput="saveName(this)" placeholder="enter your user name"  />
                 </div>
-            </loading-text>
-        </loading-screen>
+                <div class="group3">
+                    <button class="start"   onclick="Caissa.start()">Start</button>
+                    <button                 onclick="">Add to Home Screen</button>
+                </div>
+                <div class="group4">
+                    <label>
+                        Don't show this again
+                        <input type="checkbox" onchange="saveOption(this)" />
+                    </label>
+                </div>
+                <div class="group5">
+                    <pre>No problems found... Have fun :)</pre>
+                </div>
+                <div class="group6">
+                    <pre>V: 1.02 / Scheme: 12.0d</pre>
+                </div>
+            </loader-screen>
+        </loader-container>
 
-    <script type="text/javascript" src="js/runtime-414170b5.js"></script><script type="text/javascript" src="js/vendor-9e86c0ea.js"></script><script type="text/javascript" src="js/assets-2cc8b08d.js"></script><script type="text/javascript" src="js/main-33903e20.js"></script></body>
+    <script type="text/javascript" src="js/runtime-414170b5.js"></script><script type="text/javascript" src="js/vendor-7fc4c396.js"></script><script type="text/javascript" src="js/assets-876186ef.js"></script><script type="text/javascript" src="js/main-84ec35d6.js"></script></body>
 </html>
