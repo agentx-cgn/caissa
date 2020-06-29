@@ -145,12 +145,12 @@ export default H.deepFreezeCreate({
     },
 
     navigation : [
-        ['/sources/',        {ico: 'fa-chess-queen'}, 'PGNS'],
-        ['/games/',          {src: iconChess}, 'GAMES'],  // loads imported games so far
-        ['/game/',           {src: iconChess}, 'GAME'],
-        ['/plays/',          {src: iconChess}, 'PLAY'],
-        ['/system/:module/', {ico: 'fa-microchip', module: 'system'}, 'SYSTEM'],
-        ['/options/',        {ico: 'fa-cogs'}, 'OPTIONS'],
+        ['/sources/',        'PGNS',    {},                     { ifa: 'fa-chess-pawn'} ],
+        ['/games/',          'GAMES',   {},                     { img: iconChess} ],  // loads imported games so far
+        ['/game/',           'GAME',    {},                     { img: iconChess} ],
+        ['/plays/',          'PLAY',    {},                     { img: iconChess} ],
+        ['/system/:module/', 'SYSTEM',  { module: 'system' },   { ifa: 'fa-microchip' } ],
+        ['/options/',        'OPTIONS', {},                     { ifa: 'fa-cogs'} ],
 
         // ['/analyzer/',       {}, 'ANALYSE'],
         // ['/help/',           {}, 'HELP'],

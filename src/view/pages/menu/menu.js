@@ -5,7 +5,7 @@ import Caissa       from '../../caissa';
 import Factory      from '../../components/factory';
 import Config       from '../../data/config';
 
-import { FlexList, PageTitle, TextLeft, FlexListEntry }    from '../../components/misc';
+import { FlexList, PageTitle, TextLeft, FlexListEntry, Spacer }    from '../../components/misc';
 
 const clicker  = (route, params) => {
     return (e) => {
@@ -19,19 +19,21 @@ const Menu = Factory.create('Menu', {
 
         const { className, style } = vnode.attrs;
 
+        //TODO: only show 'Game', if at least one exists in DB
+
         return m('div.page.menu', { className, style },
             m(FlexList, [
                 m(PageTitle, 'Menu'),
-                //TODO: only show 'Game', if at least one exists in DB
-                ...Array.from(Config.navigation).map( ([route, params, entry]) => {
-                    return m(FlexListEntry, { class: '', onclick: clicker(route, params) }, [
+                m(Spacer),
+                ...Array.from(Config.navigation).map( ([route, entry, params, extras]) => {
+                    return m(FlexListEntry, { onclick: clicker(route, params) }, [
                         m(TextLeft, {class: 'f3'}, [
-                            params.src
-                                ? m('img', {style: 'padding-right: 14px; vertical-align: top', src: params.src, width: 22, height: 22})
-                                : m('i.menu.fa.' + params.ico)
+                            extras.img
+                                ? m('img.menu', { src: extras.img, width: 22, height: 22 })
+                                : m('i.menu.fa.' + extras.ifa)
                             ,
                             entry,
-                            m('div.f5.pb1.cddd', 'some clever hints'),
+                            m('div.menu.subline', 'some clever hints'),
                         ]),
                     ]);
                 }),

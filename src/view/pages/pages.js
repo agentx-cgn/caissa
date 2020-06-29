@@ -6,7 +6,7 @@ import { CompPages }  from '../data/config-pages';
 import System         from '../data/system';
 import touchSlider    from '../services/toucher';
 
-const DEBUG = true;
+const DEBUG = false;
 
 let
     anim, pageWidth,
@@ -30,17 +30,8 @@ const Pages = Factory.create('Pages', {
         touchSlider.remove();
     },
     onresize (width, height) {
-        // transLeft   = 'translateX(    0)';
-        if (width <= 360){
-            pageWidth   = width;
-            // transCenter = 'translateX( 100vw )';
-            // transRight  = 'translateX( calc(2*100vw) )';
-        } else {
-            pageWidth   = 360;
-            // transCenter = 'translateX( 360px )';
-            // transRight  = 'translateX( 720px )';
-        }
-        false && console.log('pages.onresize', width, height);
+        pageWidth = width <= 360 ? width : 360;
+        DEBUG && console.log('pages.onresize', width, height);
     },
     view ( ) {
 
@@ -73,15 +64,12 @@ const Pages = Factory.create('Pages', {
                     $Comp.classList.remove('dn');
                     if (isLeft){
                         $Comp.classList.add('slide', 'left', 'trans-left');
-                        $Comp.setAttribute('style', 'z-index: 12');
                     }
                     if (isCenter) {
                         $Comp.classList.add('slide', 'center', 'trans-center');
-                        $Comp.setAttribute('style', 'z-index: 11;');
                     }
                     if (isRight) {
                         $Comp.classList.add('slide', 'right', 'trans-right');
-                        $Comp.setAttribute('style', 'z-index: 12;');
                     }
                 }
 
@@ -99,13 +87,13 @@ const Pages = Factory.create('Pages', {
 
             return (
                 isLeft   ? m(left.content,   {route: left.route,   params: left.params,
-                    className: 'slide left trans-left',   style: 'z-index: 12;'}) :
+                    className: 'slide left trans-left'}) :
 
                 isCenter ? m(center.content, {route: center.route, params: center.params,
-                    className: 'slide center trans-center', style: 'z-index: 11;'}) :
+                    className: 'slide center trans-center'}) :
 
                 isRight  ? m(right.content,  {route: right.route,   params: right.params,
-                    className: 'slide right trans-right',  style: 'z-index: 12;'}) :
+                    className: 'slide right trans-right'}) :
 
                 // all other, no updates, no display
                 m(Comp, {route: '', params: {}, className: 'dn' })
@@ -125,8 +113,6 @@ const Pages = Factory.create('Pages', {
 
         if (anim === '=1=' || anim === '=r=' || anim === '=s=' || anim === '=w=') {
 
-            // $Left  && ( $Left.style.transform  = transLeft);
-            // $Right && ( $Right.style.transform = transRight);
             if ($Left) {
                 $Left.classList.remove('trans-right', 'trans-center');
                 $Left.classList.add('trans-left');
@@ -161,15 +147,14 @@ const Pages = Factory.create('Pages', {
             console.warn('pages.onafterupdates.unknown anim', anim);
         }
 
-
     },
 
 });
 
 function onafteranimate( ) {
 
-    const $Left   = $$('div.slide.left');
-    const $Right  = $$('div.slide.right');
+    const $Left  = $$('div.slide.left');
+    const $Right = $$('div.slide.right');
 
     if (anim === '<c=' || anim === '<f=') {
         $Right.removeEventListener(endEvent, onafteranimate);

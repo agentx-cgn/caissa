@@ -10,7 +10,6 @@ let threshold = innerWidth / 3;
 
 let touch = { selektor: '', time: NaN, down: { x: NaN, y: NaN }, diff: { x: NaN, y: NaN } };
 let slideLeft, slideRight; // may get moved
-// let transLeft, transRight;
 let endEvent = System.transitionEnd;
 let width;
 
@@ -102,11 +101,9 @@ const touchSlider = {
     end () {
 
         if (touch.selektor) {
+
             touch.down = { x: NaN, y: NaN };
             touch.diff = { x: NaN, y: NaN };
-
-            // slideLeft  && (slideLeft.style.transform  = transLeft);
-            // slideRight && (slideRight.style.transform = transRight);
 
             if (slideLeft){
                 slideLeft.addEventListener(endEvent, function onEnd () {

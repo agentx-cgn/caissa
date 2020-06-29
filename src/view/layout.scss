@@ -50,8 +50,8 @@ main {
 div.pages {
     display: flex;
     position: relative;
-    width: calc(10 * 100vw); //TODO: ??
-    background-color: #683d3d85;
+    width: calc(4 * 100vw); //TODO: ??
+    // background-color: #b7a6a6db;
 }
 div.page {
     display: flex;
@@ -72,7 +72,6 @@ section.pages {
 }
 section.content {
     flex: 1 0;
-    // background-color: #aaa;
     z-index: 20;
 }
 
@@ -141,16 +140,16 @@ nav {
 
         }
         &.trans-left {
-            -webkit-transform: translateX(0) !important;
-            transform: translateX(0) !important;
+            -webkit-transform: translateX(0);
+            transform: translateX(0);
         }
         &.trans-center {
-            -webkit-transform: translateX(100vw) !important;
-            transform: translateX(100vw) !important;
+            -webkit-transform: translateX(100vw);
+            transform: translateX(100vw);
         }
         &.trans-right {
-            -webkit-transform: translateX(calc(2 * 100vw)) !important;
-            transform: translateX(calc(2 * 100vw)) !important;
+            -webkit-transform: translateX(calc(2 * 100vw));
+            transform: translateX(calc(2 * 100vw));
         }
 
     }
@@ -201,16 +200,16 @@ nav {
 
         }
         &.trans-left {
-            -webkit-transform: translateX(0) !important;
-            transform: translateX(0) !important;
+            -webkit-transform: translateX(0);
+            transform: translateX(0);
         }
         &.trans-center {
-            -webkit-transform: translateX(360px) !important;
-            transform: translateX(360px) !important;
+            -webkit-transform: translateX(360px);
+            transform: translateX(360px);
         }
         &.trans-right {
-            -webkit-transform: translateX(calc(2 * 360px)) !important;
-            transform: translateX(calc(2 * 360px)) !important;
+            -webkit-transform: translateX(calc(2 * 360px));
+            transform: translateX(calc(2 * 360px));
         }
     }
     div.chessboard {
@@ -254,16 +253,16 @@ nav {
 
         }
         &.trans-left {
-            -webkit-transform: translateX(0) !important;
-            transform: translateX(0) !important;
+            -webkit-transform: translateX(0);
+            transform: translateX(0);
         }
         &.trans-center {
-            -webkit-transform: translateX(360px) !important;
-            transform: translateX(360px) !important;
+            -webkit-transform: translateX(360px);
+            transform: translateX(360px);
         }
         &.trans-right {
-            -webkit-transform: translateX(calc(2 * 360px)) !important;
-            transform: translateX(calc(2 * 360px)) !important;
+            -webkit-transform: translateX(calc(2 * 360px));
+            transform: translateX(calc(2 * 360px));
         }
     }
 

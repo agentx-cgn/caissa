@@ -20,7 +20,8 @@ import {
 const DEBUG = true;
 
 const forms = {};
-const plays = game => game.mode !== 'h-h';
+const plays = game => game.mode !== 'h-h' && game.mode !== 'x-x';
+const solos = game => game.mode === 'x-x';
 
 Array.from(Config.templates.plays)
     .filter(plays)
@@ -61,28 +62,42 @@ const Plays = Factory.create('Plays', {
         const { className, style } = vnode.attrs;
         const { mode } = vnode.attrs.params;
 
+        const clicker = play => {
+            return (
+                play.mode === 'x-x'
+                    ? e => {e.redraw = false; startGame(play);}
+                    : play.mode === mode
+                        ? (e) => {e.redraw = false; Caissa.route('/plays/',       {},                {replace: true});}
+                        : (e) => {e.redraw = false; Caissa.route('/plays/:mode/', {mode: play.mode}, {replace: true});}
+            );
+        };
+
         return m('div.page.plays', { className, style }, [
 
             m(PageTitle,  'Start a new Game'),
+            m(FixedList, Array.from(Config.templates.plays)
+                .filter(solos)
+                .map( play => {
+                    return m('[', [
+                        m(FlexListEntry, { onclick: clicker(play),  style }, [
+                            m('div.fiom.f4', play.header.White + ' vs. ' + play.header.Black),
+                            m('div.fior.f5', play.subline),
+                        ]),
+                    ]);
+                })),
+
             m(HeaderLeft, 'Play with Machines'),
             m(FixedList, Array.from(Config.templates.plays)
                 .filter(plays)
                 .map( play => {
 
                     const formdata = forms[play.mode];
+
+                    // toggle options
                     const style = mode === play.mode
                         ? { marginBottom: '0px', backgroundColor: '#0e62993b', color: 'white' }
                         : {}
                     ;
-                    const clicker = play => {
-                        return (
-                            play.mode === 'x-x'
-                                ? e => {e.redraw = false; startGame(play);}
-                                : play.mode === mode
-                                    ? (e) => {e.redraw = false; Caissa.route('/plays/',       {},                {replace: true});}
-                                    : (e) => {e.redraw = false; Caissa.route('/plays/:mode/', {mode: play.mode}, {replace: true});}
-                        );
-                    };
 
                     return m('[', [
 

@@ -18,10 +18,10 @@
     loading-container 1000
     loading-backdrop: 1100
     loading-screen:   1200
-    Nav Menu : 100
-    Backdrop :  80
-    Slider   : 10, 11, 12
-    Content  : 20
+    Nav Menu :         100
+    Backdrop :          80
+    Content  :          20
+    Slider/Pages   :    10, 11, 12
 */
 
 * {
@@ -53,21 +53,32 @@ body, .root {
     background-size: cover;
 }
 
-// input {
-//   background-color: #ddd;
-//   padding: 6px 1rem;
-//   border: 0;
-//   color:  #333;
-//   font-family: 'Iosevka-Term-Medium';
-//   font-size: 1.2rem;
-// }
+
+// Backgrounds
+
+div.pages {
+    background-color: #baa6;
+}
+page-title {
+    background: rgb(136,102,102);
+    background: linear-gradient(0deg, #866 20%, #644 100%);
+}
+div.header-left,
+div.header-center {
+    background-color: #5336;
+}
+div.gm-bar {
+    background-color: #7553;
+}
+
+
+// helper
 
 input:focus {
   outline:none;
   border-color:#9ecaed;
   box-shadow:0 0 10px #9ecaed;
 }
-
 
 .ellipsis {
   overflow: hidden;
@@ -85,23 +96,8 @@ input:focus {
 
 
 
+
 /* overwrite or extend tachyons here */
-
-
-.flex-grow {
-    flex: 1 0 auto;
-}
-.flex-shrink {
-    flex: 0 1 auto;
-}
-.viewport-y {
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-.viewport-xy {
-    overflow-y: auto;
-    overflow-x: auto;
-}
 
 .dn        {display: none !important;}
 .outline   { outline: 1px solid white; }
@@ -171,6 +167,20 @@ input:focus {
 .bg-555    { background-color: #555; } // header bg
 .bg-333    { background-color: #333; } // header bg
 
+.flex-grow {
+    flex: 1 0 auto;
+}
+.flex-shrink {
+    flex: 0 1 auto;
+}
+.viewport-y {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.viewport-xy {
+    overflow-y: auto;
+    overflow-x: auto;
+}
 
 
 
