@@ -44,7 +44,7 @@ const Pages = Factory.create('Pages', {
         // keep this
         anim = animation;
 
-        return m('div.pages', {}, CompPages.map( Comp => {
+        return m('div.pages', CompPages.map( Comp => {
 
             const isLeft   = left.content   === Comp;
             const isCenter = center.content === Comp;
@@ -114,11 +114,11 @@ const Pages = Factory.create('Pages', {
         if (anim === '=1=' || anim === '=r=' || anim === '=s=' || anim === '=w=') {
 
             if ($Left) {
-                $Left.classList.remove('trans-right', 'trans-center');
+                $Left.classList.remove('trans-center');
                 $Left.classList.add('trans-left');
             }
             if ($Right) {
-                $Right.classList.remove('trans-left', 'trans-center');
+                $Right.classList.remove('trans-center');
                 $Right.classList.add('trans-right');
             }
 
@@ -129,15 +129,19 @@ const Pages = Factory.create('Pages', {
         } else if (anim === '=b>') {
             if ($Left) {
                 $Left.addEventListener(endEvent, onafteranimate);
-                $Left.classList.remove('page-slide', 'trans-left');
+                $Left.classList.remove('trans-left');
                 $Left.classList.add('page-slide', 'trans-center');
+                $Center.classList.remove('trans-center');
+                $Center.classList.add('page-slide', 'trans-right');
             }
 
         } else if (anim === '<c=' || anim === '<f=') {
             if ($Right) {
                 $Right.addEventListener(endEvent, onafteranimate);
-                $Right.classList.remove('page-slide', 'trans-right');
+                $Right.classList.remove('trans-right');
                 $Right.classList.add('page-slide', 'trans-center');
+                $Center.classList.remove('trans-center');
+                $Center.classList.add('page-slide', 'trans-left');
             }
 
         } else if (anim === '=b=' || anim === '=f=') {

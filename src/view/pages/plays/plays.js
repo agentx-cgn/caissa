@@ -9,19 +9,20 @@ import Tools      from '../../tools/tools';
 
 import {
     Nothing,
-    Spacer,
+    GrowSpacer,
     PageTitle,
     FlexListShrink,
     FixedList,
     FlexListEntry,
-    FlexListPlayEntry,
+    FixedButton,
     HeaderLeft } from '../../components/misc';
 
 const DEBUG = true;
 
-const forms = {};
-const plays = game => game.mode !== 'h-h' && game.mode !== 'x-x';
-const solos = game => game.mode === 'x-x';
+const forms  = {};
+const plays  = game => game.mode !== 'h-h' && game.mode !== 'x-x';
+const solos  = game => game.mode === 'x-x';
+const dbgame = game => game.mode !== 'h-h';
 
 Array.from(Config.templates.plays)
     .filter(plays)
@@ -55,6 +56,29 @@ function startGame(playTemplate) {
     Caissa.route('/game/:turn/:uuid/', { uuid: game.uuid, turn: game.turn });
 }
 
+const PlayEntry = {
+    view ( vnode ) {
+        const { play, className, onclick } = vnode.attrs;
+        return m(FlexListEntry, { className, onclick }, [
+            m('div.fiom.f4', play.header.White + ' vs. ' + play.header.Black),
+            m('div.fior.f5', play.subline),
+        ]);
+    },
+};
+
+const PlayListEntry = {
+    view ( vnode ) {
+        const { play, className, onclick } = vnode.attrs;
+        return m(FlexListEntry, { className, onclick }, [
+            m('.fiom.f4', play.header.White + ' vs ' + play.header.Black),
+            m('.fior.f5', H.date2isoLocal(new Date(play.timestamp))),
+            m('.fior.f5', `${play.difficulty} (${play.depth}) / ${play.time} secs`),
+        ]);
+    },
+};
+
+
+
 const Plays = Factory.create('Plays', {
 
     view ( vnode ) {
@@ -79,10 +103,7 @@ const Plays = Factory.create('Plays', {
                 .filter(solos)
                 .map( play => {
                     return m('[', [
-                        m(FlexListEntry, { onclick: clicker(play),  style }, [
-                            m('div.fiom.f4', play.header.White + ' vs. ' + play.header.Black),
-                            m('div.fior.f5', play.subline),
-                        ]),
+                        m(PlayEntry, { play, onclick: clicker(play) }),
                     ]);
                 })),
 
@@ -91,38 +112,29 @@ const Plays = Factory.create('Plays', {
                 .filter(plays)
                 .map( play => {
 
-                    const formdata = forms[play.mode];
-
-                    // toggle options
-                    const style = mode === play.mode
-                        ? { marginBottom: '0px', backgroundColor: '#0e62993b', color: 'white' }
-                        : {}
-                    ;
+                    const formdata  = forms[play.mode];
+                    const className = play.mode === mode ? 'active' : '';
 
                     return m('[', [
-
-                        m(FlexListEntry, { onclick: clicker(play),  style }, [
-                            m('div.fiom.f4', play.header.White + ' vs. ' + play.header.Black),
-                            m('div.fior.f5', play.subline),
-                        ]),
-
+                        m(PlayEntry, { play, className, onclick: clicker(play) }),
                         play.mode === mode
                             ? m(Forms, {formdata, noheader: true, className: 'play-options'})
-                            : m(Nothing),
-
+                            : m(Nothing)
+                        ,
                     ]);
 
                 })),
 
-            m(HeaderLeft, 'Resume a Game (' + DB.Games.filter(plays).length + ')'),
-            m(FlexListShrink, DB.Games.filter(plays).map (play => {
-                const onclick = (e) => {e.redraw = false; Caissa.route('/play/:uuid/', {uuid: play.uuid});};
-                return m(FlexListPlayEntry, { onclick, play });
+            m(HeaderLeft, 'Resume a Game [' + DB.Games.filter(dbgame).length + ']'),
+            m(FlexListShrink, DB.Games.filter(dbgame).map ( play => {
+                return m(PlayListEntry, { play, onclick: e => {
+                    e.redraw = false;
+                    Caissa.route('/play/:uuid/', {uuid: play.uuid});
+                } });
             })),
 
-            m(Spacer),
-            m('button.pv1.mh3.mv1', {onclick: () => DB.Games.delete(plays) }, 'DB.Plays.clear()'),
-            m('button.pv1.mh3.mv1', {onclick: () => DB.reset()       }, 'DB.reset()'),
+            m(GrowSpacer),
+            m(FixedButton, { onclick: () => DB.Games.delete(dbgame) }, 'DB.Plays.clear()' ),
 
         ]);
 

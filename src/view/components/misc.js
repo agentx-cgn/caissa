@@ -98,30 +98,23 @@ const FlexListFixed = {
 
 const FlexListShrink = {
     view ( vnode ) {
-        return m('div.flexlist.flex.flex-column.flex-shrink.viewport-y.noselect', vnode.attrs, vnode.children);
+        return m('div.flexlist.flex-shrink', vnode.attrs, vnode.children);
     },
 };
 
 const FlexListEntry = {
     view ( vnode ) {
-        const { style, onclick } = vnode.attrs;
-        return m('div.flexlistentry', { style, onclick }, vnode.children);
+        const { className, style, onclick } = vnode.attrs;
+        return m('div.flexlistentry', { className, style, onclick }, vnode.children);
     },
 };
 
-const FlexListPlayEntry = {
-
+const FixedButton = {
     view ( vnode ) {
-
-        const { play, onclick } = vnode.attrs;
-
-        return m(FlexListEntry, {onclick}, [
-            m('.fiom.f4', play.white + ' vs ' + play.black),
-            m('.fior.f5', H.date2isoLocal(new Date(play.timestamp))),
-            m('.fior.f5', `${play.difficulty} (${play.depth}) / ${play.time} secs`),
-        ]);
+        return m('div.header-center',
+            m('button.flexcontrol.w-100', { onclick: vnode.attrs.onclick }, vnode.children ),
+        );
     },
-
 };
 
 export {
@@ -146,8 +139,8 @@ export {
     FlexList,
     FlexListFixed,
     FlexListShrink,
-
+    FixedButton,
     FlexListEntry,
-    FlexListPlayEntry,
+    // FlexListPlayEntry,
 
 };

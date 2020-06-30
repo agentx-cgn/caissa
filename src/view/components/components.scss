@@ -30,11 +30,14 @@ page-title {
 div.header-left,
 div.header-center {
     width: 100%;
-    margin: 1rem 0 0.25rem 0;
-    padding: 2px 1rem;
+    // margin: 1rem 1.25rem;
+    padding: 0.4rem 1rem;
 }
 
-
+div.fixedlist {
+    flex: 0 0  auto;
+    // no padding here
+}
 div.flexlist {
     overflow-y: auto;
     overflow-x: hidden;
@@ -45,15 +48,31 @@ div.flexlist {
 }
 
 div.flexlistentry {
-    padding: 0.125rem 1rem ;
-    margin: 0.4rem 0;
-    background-color: transparent;
+    padding: 0.7rem 1rem ;
+    // background-color: transparent;
     cursor: pointer;
 }
 div.flexlistentry:hover {
     background-color: #0e62993b;
     color: white;
 }
+div.flexlistentry.active {
+    background-color: darkred;
+    color: white;
+}
+
+button.flexcontrol {
+    color: white;
+    border: 2px solid #ccc;
+    background: #fff1;
+    font-family: 'Iosevka-Term-Medium';
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    border-radius: 11px;
+    padding: 4px 2px;
+}
+
+
 
 div.subline,
 div.subtext {
