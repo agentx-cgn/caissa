@@ -66,6 +66,12 @@
             loader-screen button {
                 margin-top: 12px;
                 padding: 4px 8px;
+                color: white;
+                border: 2px solid #ccc;
+                background: #fff1;
+                font-size: 1.1rem;
+                letter-spacing: 1px;
+                border-radius: 11px;
             }
             loader-screen h3 {
                 padding: 4rem 1rem 1rem 2rem;
@@ -170,13 +176,13 @@
                     <input type="text"     oninput="saveName(this)" placeholder="enter your user name"  />
                 </div>
                 <div class="group3">
-                    <button class="start"   onclick="Caissa.start()">Start</button>
+                    <button class="start"   onclick="Caissa.start()">Start</button><br />
                     <button                 onclick="">Add to Home Screen</button>
                 </div>
                 <div class="group4">
                     <label>
-                        Don't show this again
                         <input type="checkbox" onchange="saveOption(this)" />
+                        Don't show this again
                     </label>
                 </div>
                 <div class="group5">

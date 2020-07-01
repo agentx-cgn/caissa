@@ -1,15 +1,15 @@
 
 import Caissa       from '../caissa';
 import DB           from '../services/database';
-import Factory      from './factory';
-import { FlexList } from './misc';
+import { H }        from '../services/helper';
 import Tools        from '../tools/tools';
 import Config       from '../data/config';
-import { H }        from '../services/helper';
+import Factory      from './factory';
+import { FlexList } from './misc';
 
 const GamesList = Factory.create('GamesList', {
     view ( vnode ) {
-        return m(FlexList, {class: 'games-list'},
+        return m(FlexList, { class: 'games-list' },
             vnode.attrs.games.map( game => m(GameEntry, { game, onclick: (e) => {
 
                 if (!DB.Games.exists(game.uuid)) {

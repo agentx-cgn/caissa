@@ -2,11 +2,13 @@
 // Order matters :(
 import { H, $$ }       from './services/helper';
 import System          from './data/system';
+import Config          from './data/config';
+import Options         from './data/options';
 import Logger          from './services/logger';
 import DB              from './services/database';
+import History         from './services/history';
 import Events          from './services/events';
 import Factory         from './components/factory';
-import History         from './services/history';
 
 // last :(
 import { ConfigPages, DefaultRoute } from './data/config-pages';
@@ -23,7 +25,13 @@ const Caissa = {
 
     //
     dumpDB () {
-        const dump = DB.dump();
+        const dump = JSON.stringify({
+            DB:      DB.all(),
+            SYSTEM:  System,
+            CONFIG:  Config,
+            OPTIONS: Options,
+        }, null, 2).replace(/\\"/g, '\'');
+
         const body = document.body;
         body.style.whiteSpace   = 'pre';
         body.style.background   = 'white';
@@ -65,6 +73,7 @@ const Caissa = {
             : console.log ('Info   :', '... done after', 0, t, 'msecs')
         ;
         if (DB.Options.first['ui'].waitscreen) {
+            $$('loader-screen h3').innerHTML = 'Caissa';
             $$('loader-screen .group2').style.display        = 'inline-block';
             $$('loader-screen .group3').style.display        = 'inline-block';
             $$('loader-screen .group4').style.display        = 'inline-block';

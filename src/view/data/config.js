@@ -146,7 +146,7 @@ export default H.deepFreezeCreate({
 
     navigation : [
         ['/sources/',        'PGNS',    {},                     { ifa: 'fa-chess-pawn'} ],
-        ['/games/',          'GAMES',   {},                     { img: iconChess} ],  // loads imported games so far
+        ['/games/',          'GAMES',   { idx: 0 },             { img: iconChess} ],  // loads imported games so far
         ['/game/',           'GAME',    {},                     { img: iconChess} ],
         ['/plays/',          'PLAY',    {},                     { img: iconChess} ],
         ['/system/:module/', 'SYSTEM',  { module: 'system' },   { ifa: 'fa-microchip' } ],

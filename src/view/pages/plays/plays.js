@@ -22,16 +22,16 @@ const DEBUG = true;
 const forms  = {};
 const plays  = game => game.mode !== 'h-h' && game.mode !== 'x-x';
 const solos  = game => game.mode === 'x-x';
-const dbgame = game => game.mode !== 'h-h';
+const dbgame = game => game.mode !== 'h-h' && game.uuid !== 'default';
 
 Array.from(Config.templates.plays)
     .filter(plays)
     .forEach( play =>  {
         const group = 'play-' + play.mode;
         const form  = {
+            ...DB.Options.first[group],
             group,
             autosubmit: false,
-            ...DB.Options.first[group],
             submit: (form) => {
                 const game = Tools.Games.fromPlayForm(play, form);
                 DB.Games.create(game, true);
@@ -45,17 +45,21 @@ Array.from(Config.templates.plays)
     })
 ;
 
+// Create a x-x play
 function startGame(playTemplate) {
-    const game = H.clone(Config.templates.game, playTemplate, {
-        turn: -1,
-        uuid:  H.hash(String(Date.now())),
-        timestamp: Date.now(),
-    });
-    DB.Games.create(game, true);
-    DB.Boards.create(H.clone(Config.templates.board, { uuid: game.uuid }));
-    Caissa.route('/game/:turn/:uuid/', { uuid: game.uuid, turn: game.turn });
+
+    const timestamp = Date.now();
+    const uuid = H.hash(String(timestamp));
+    const turn = -1;
+
+    DB.Games.create(H.clone(Config.templates.game, playTemplate, { uuid, turn, timestamp }), true);
+    DB.Boards.create(H.clone(Config.templates.board, { uuid }), true);
+
+    Caissa.route('/game/:turn/:uuid/', { uuid, turn });
+
 }
 
+// Template Play
 const PlayEntry = {
     view ( vnode ) {
         const { play, className, onclick } = vnode.attrs;
@@ -66,13 +70,33 @@ const PlayEntry = {
     },
 };
 
+const playerIcons = function (mode) {
+    const fish  = m('i.f6.fa.fa-fish.fa-rotate-270');
+    const human = m('i.f6.fa.fa-user');
+    return (
+        mode === 'x-x' ? m('span.pr2', {style: 'vertical-align: text-bottom' }, m('[', [ human, ' - ', human ]))  :
+        mode === 's-s' ? m('span.pr2', {style: 'vertical-align: text-bottom' }, m('[', [ fish,  ' - ', fish  ]))  :
+        mode === 'h-s' ? m('span.pr2', {style: 'vertical-align: text-bottom' }, m('[', [ human, ' - ', fish  ]))  :
+        mode === 's-h' ? m('span.pr2', {style: 'vertical-align: text-bottom' }, m('[', [ fish,  ' - ', human ]))  :
+        m('span', 'wtf')
+    );
+};
+
+// DB Plays
 const PlayListEntry = {
     view ( vnode ) {
-        const { play, className, onclick } = vnode.attrs;
+        const { play, className, onclick, ondelete } = vnode.attrs;
         return m(FlexListEntry, { className, onclick }, [
-            m('.fiom.f4', play.header.White + ' vs ' + play.header.Black),
-            m('.fior.f5', H.date2isoLocal(new Date(play.timestamp))),
-            m('.fior.f5', `${play.difficulty} (${play.depth}) / ${play.time} secs`),
+            playerIcons(play.mode),
+            m('span.fiom.f4', play.header.White + ' vs ' + play.header.Black),
+            m('div.f5.fior.pv1',  H.date2isoLocal(new Date(play.timestamp)), m('i.f6.fa.fa-trash-alt.pl4', { onclick: ondelete })),
+            play.opening
+                ? m('div.f5.fior.pv1', `OP: ${play.opening}` )
+                : '',
+            play.difficulty
+                ? m('div.f5.fior.pv1', `${play.difficulty} (${play.depth}) / ${play.time} secs`)
+                : '',
+
         ]);
     },
 };
@@ -98,14 +122,13 @@ const Plays = Factory.create('Plays', {
 
         return m('div.page.plays', { className, style }, [
 
-            m(PageTitle,  'Start a new Game'),
+            m(PageTitle, 'Start a new Game'),
             m(FixedList, Array.from(Config.templates.plays)
                 .filter(solos)
                 .map( play => {
-                    return m('[', [
-                        m(PlayEntry, { play, onclick: clicker(play) }),
-                    ]);
-                })),
+                    return m(PlayEntry, { play, onclick: clicker(play) });
+                }),
+            ),
 
             m(HeaderLeft, 'Play with Machines'),
             m(FixedList, Array.from(Config.templates.plays)
@@ -118,7 +141,7 @@ const Plays = Factory.create('Plays', {
                     return m('[', [
                         m(PlayEntry, { play, className, onclick: clicker(play) }),
                         play.mode === mode
-                            ? m(Forms, {formdata, noheader: true, className: 'play-options'})
+                            ? m(Forms, { formdata, noheader: true, className: 'play-options' })
                             : m(Nothing)
                         ,
                     ]);
@@ -127,10 +150,22 @@ const Plays = Factory.create('Plays', {
 
             m(HeaderLeft, 'Resume a Game [' + DB.Games.filter(dbgame).length + ']'),
             m(FlexListShrink, DB.Games.filter(dbgame).map ( play => {
-                return m(PlayListEntry, { play, onclick: e => {
+
+                const onclick = e => {
                     e.redraw = false;
-                    Caissa.route('/play/:uuid/', {uuid: play.uuid});
-                } });
+                    Caissa.route('/play/:uuid/', { uuid: play.uuid });
+                };
+
+                const ondelete = e => {
+                    DEBUG && console.log('plays.ondelete', play.uuid);
+                    e.redraw = false;
+                    // DB.Games.delete(play.uuid);
+                    // Caissa.redraw();
+                    return H.eat(e);
+                };
+
+                return m(PlayListEntry, { play, onclick, ondelete });
+
             })),
 
             m(GrowSpacer),

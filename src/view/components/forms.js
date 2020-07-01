@@ -32,13 +32,13 @@ function renderGroupControl (control) {
             return [
                 m('div.control-label-40', control.title),
                 m('div.control-60',
-                    m('button.w-100', control.attributes, read(control.caption)),
+                    m('button.flexcontrol.w-100', control.attributes, read(control.caption)),
                 ),
             ];
         } else {
             return [
                 m('div.control-100',
-                    m('button.tc.w-100.pv1.ph2', control.attributes, read(control.caption)),
+                    m('button.flexcontrol.w-100', control.attributes, read(control.caption)),
                 ),
             ];
 

@@ -16,7 +16,7 @@ const Games = Factory.create('Games', {
 
     oninit ( vnode ) {
 
-        const { params: { idx=0 } } = vnode.attrs;
+        const { params: { idx } } = vnode.attrs;
         const provider = Providers.find( p => p.idx === ~~idx );
 
         DEBUG && console.log('Games.oninit', idx, provider.caption);
@@ -37,7 +37,7 @@ const Games = Factory.create('Games', {
 
     view ( vnode ) {
 
-        const { params: { idx=0 }, className, style } = vnode.attrs;
+        const { params: { idx }, className, style } = vnode.attrs;
         const provider = Providers.find( p => p.idx === ~~idx );
 
         if (!provider.games.length) {
@@ -70,9 +70,9 @@ const Games = Factory.create('Games', {
         // From here there is a provider + games to filter
         } else {
 
-            const games = provider.games.filter( g => {
+            const games = provider.games.filter( game => {
                 return filter.length
-                    ?  g.searchtext.includes(filter)
+                    ?  game.searchtext.includes(filter)
                     :  true;
             });
 
