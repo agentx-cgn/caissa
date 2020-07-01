@@ -1,8 +1,9 @@
 
 import Factory from './factory';
 import Forms   from './forms';
-// import Caissa  from '../caissa';
 import DB      from '../services/database';
+
+const DEBUG = false;
 
 const FormIllus = Factory.create('FormIllus', {
 
@@ -15,7 +16,7 @@ const FormIllus = Factory.create('FormIllus', {
             group: formgroup,
             autosubmit: true,
             submit : () => {
-                console.log(formdata);
+                DEBUG && console.log(formdata);
                 delete formdata.group;
                 delete formdata.submit;
                 delete formdata.autosubmit;

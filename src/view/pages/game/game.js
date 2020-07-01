@@ -7,7 +7,7 @@ import FormIllus  from '../../components/form-illus';
 import Board      from '../board/board';
 import Moves      from './moves';
 
-import { Spacer, GrowSpacer, PageTitle, TextCenter } from '../../components/misc';
+import { Spacer, GrowSpacer, PageTitle, TextCenter, FlexList } from '../../components/misc';
 
 const Game = Factory.create('Game', {
 
@@ -39,21 +39,25 @@ const Game = Factory.create('Game', {
             // desktop, as page no board
             ? m('div.page.game', { className, style }, [
                 m(PageTitle,     { className: 'gm-players tc'}, titlePlayers ),
-                m(FormIllus,     { board }),
-                m(Moves,         { game }),
-                m(Spacer),
-                m(TextCenter,    { class: 'gm-result', title: 'result termination timecontrol'}, lineResult ),
-                m(GrowSpacer),
+                m(FlexList, [
+                    m(FormIllus,     { board }),
+                    m(Moves,         { game }),
+                    m(Spacer),
+                    m(TextCenter,    { class: 'gm-result', title: 'result termination timecontrol'}, lineResult ),
+                    m(GrowSpacer),
+                ]),
             ])
 
             // mobile, as page with inline board
             : m('div.page.game', { className, style }, [
                 m(PageTitle,     { className: 'gm-players tc' }, titlePlayers),
-                m(Board,         { params: { uuid, turn: ~~turn } }),
-                m(Moves,         { game }),
-                m(Spacer),
-                m(TextCenter,    { class: 'gm-result', title: 'result termination timecontrol'}, lineResult ),
-                m(GrowSpacer),
+                m(FlexList, [
+                    m(Board,         { params: { uuid, turn: ~~turn } }),
+                    m(Moves,         { game }),
+                    m(Spacer),
+                    m(TextCenter,    { class: 'gm-result', title: 'result termination timecontrol'}, lineResult ),
+                    m(GrowSpacer),
+                ]),
             ])
 
         ;

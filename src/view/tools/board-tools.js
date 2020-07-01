@@ -13,12 +13,12 @@ export default {
             const availWidth  = innerWidth  - 360;
             const availHeight = innerHeight - 5 * 42;
             const $board      = $$('div.chessboard');
-            const $content    = $$('section.content');
+            // const $content    = $$('section.content');
             const size  = Math.min(availWidth, availHeight) + 4;
 
             $board   && ($board.style.width      = size + 'px');
             $board   && ($board.style.height     = size + 'px');
-            $content && ($content.style.maxWidth = size + 'px');
+            // $content && ($content.style.maxWidth = size + 'px');
         }
     },
 

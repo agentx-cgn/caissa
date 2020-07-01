@@ -19,7 +19,7 @@ const Layout = Factory.create('Layout', {
             m(Backdrop),
             m(Header,  { route, params }),
             m('main', {}, [
-                m('section.pages', {}, m(Pages, { route, params }, Page)),
+                m('section.pages', m(Pages, { route, params }, Page)),
                 innerWidth >= 720
 
                     // desktop with board or something

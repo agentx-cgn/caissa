@@ -15,7 +15,8 @@ import {
     FixedList,
     FlexListEntry,
     FixedButton,
-    HeaderLeft } from '../../components/misc';
+    HeaderLeft,
+    FlexList} from '../../components/misc';
 
 const DEBUG = true;
 
@@ -123,53 +124,55 @@ const Plays = Factory.create('Plays', {
         return m('div.page.plays', { className, style }, [
 
             m(PageTitle, 'Start a new Game'),
-            m(FixedList, Array.from(Config.templates.plays)
-                .filter(solos)
-                .map( play => {
-                    return m(PlayEntry, { play, onclick: clicker(play) });
-                }),
-            ),
+            m(FlexList, [
+                m(FixedList, Array.from(Config.templates.plays)
+                    .filter(solos)
+                    .map( play => {
+                        return m(PlayEntry, { play, onclick: clicker(play) });
+                    }),
+                ),
 
-            m(HeaderLeft, 'Play with Machines'),
-            m(FixedList, Array.from(Config.templates.plays)
-                .filter(plays)
-                .map( play => {
+                m(HeaderLeft, 'Play with Machines'),
+                m(FixedList, Array.from(Config.templates.plays)
+                    .filter(plays)
+                    .map( play => {
 
-                    const formdata  = forms[play.mode];
-                    const className = play.mode === mode ? 'active' : '';
+                        const formdata  = forms[play.mode];
+                        const className = play.mode === mode ? 'active' : '';
 
-                    return m('[', [
-                        m(PlayEntry, { play, className, onclick: clicker(play) }),
-                        play.mode === mode
-                            ? m(Forms, { formdata, noheader: true, className: 'play-options' })
-                            : m(Nothing)
-                        ,
-                    ]);
+                        return m('[', [
+                            m(PlayEntry, { play, className, onclick: clicker(play) }),
+                            play.mode === mode
+                                ? m(Forms, { formdata, noheader: true, className: 'play-options' })
+                                : m(Nothing)
+                            ,
+                        ]);
+
+                    })),
+
+                m(HeaderLeft, 'Resume a Game [' + DB.Games.filter(dbgame).length + ']'),
+                m(FlexListShrink, DB.Games.filter(dbgame).map ( play => {
+
+                    const onclick = e => {
+                        e.redraw = false;
+                        Caissa.route('/play/:uuid/', { uuid: play.uuid });
+                    };
+
+                    const ondelete = e => {
+                        DEBUG && console.log('plays.ondelete', play.uuid);
+                        e.redraw = false;
+                        // DB.Games.delete(play.uuid);
+                        // Caissa.redraw();
+                        return H.eat(e);
+                    };
+
+                    return m(PlayListEntry, { play, onclick, ondelete });
 
                 })),
 
-            m(HeaderLeft, 'Resume a Game [' + DB.Games.filter(dbgame).length + ']'),
-            m(FlexListShrink, DB.Games.filter(dbgame).map ( play => {
-
-                const onclick = e => {
-                    e.redraw = false;
-                    Caissa.route('/play/:uuid/', { uuid: play.uuid });
-                };
-
-                const ondelete = e => {
-                    DEBUG && console.log('plays.ondelete', play.uuid);
-                    e.redraw = false;
-                    // DB.Games.delete(play.uuid);
-                    // Caissa.redraw();
-                    return H.eat(e);
-                };
-
-                return m(PlayListEntry, { play, onclick, ondelete });
-
-            })),
-
-            m(GrowSpacer),
-            m(FixedButton, { onclick: () => DB.Games.delete(dbgame) }, 'DB.Plays.clear()' ),
+                m(GrowSpacer),
+                m(FixedButton, { onclick: () => DB.Games.delete(dbgame) }, 'DB.Plays.clear()' ),
+            ]),
 
         ]);
 

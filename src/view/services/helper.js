@@ -102,7 +102,7 @@ const H = {
         return JSON.parse(JSON.stringify(obj));
     },
 
-    // checkout mergerino and patchinko
+    //TODO: checkout mergerino and patchinko
     deepassign (target, ...sources) {
         // overwrites arrays...
         for (const source of sources) {

@@ -47,12 +47,14 @@ body, .root {
   overflow: hidden;
 }
 
-.root {
+section.pages, section.content {
     background-color: rgba(128,128,128, 0.9);
     background-image: url('/static/background.jpg');
     background-size: cover;
 }
-
+section.content {
+    background-position: right;
+}
 
 // Backgrounds
 

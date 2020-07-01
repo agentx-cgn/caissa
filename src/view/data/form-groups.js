@@ -1,8 +1,9 @@
 
-import { H }  from '../services/helper';
-import Tools  from '../tools/tools';
-import Config from './config';
-import System from './system';
+import { H }   from '../services/helper';
+import Tools   from '../tools/tools';
+import Config  from './config';
+import System  from './system';
+import Options from './options';
 
 /**
  *  formdata = {
@@ -16,6 +17,38 @@ import System from './system';
  *  oninput  : all other, specially type text
  * */
 
+function genIlluControls (formdata) {
+
+    // whats there
+    const illus = Options['board-illustrations'];
+
+    // whats known here
+    const mapped = {
+        pinning   : {caption: 'Pinning',            sort: 10, active: true},
+        bestmove  : {caption: 'Best Move',          sort: 20, active: true},
+        lastmove  : {caption: 'Last Move',          sort: 30, active: true},
+        availmoves: {caption: 'Available Moves',    sort: 40, active: true},
+        attack    : {caption: 'Attack Squares',     sort: 50, active: true},
+        valid     : {caption: 'Valid Moves',        sort: 60, active: true},
+        test      : {caption: 'Test',               sort: 70, active: false},
+    };
+
+    return H.map(illus, key => {
+        const m = mapped[key];
+        return {
+            caption: m.caption, sort: m.sort, type: 'checkbox', active: m.active,
+            value: () => formdata[key],
+            attributes:  {
+                type:    'checkbox',
+                onchange: (e) => {
+                    formdata[key] = !!e.target.checked;
+                    formdata.autosubmit && formdata.submit();
+                },
+            },
+        };
+    });
+
+}
 
 const FormGroups = function ( formdata ) {
 
@@ -140,26 +173,26 @@ const FormGroups = function ( formdata ) {
                 } ],
 
         },{ group: 'board-illustrations',    sort: 40, title: 'Illustrations',                 active: true,
-            controls:
-                [  { caption: 'Best move',   sort: 10, type: 'checkbox',                       active: true,
-                    value: () => formdata.bestmove,
-                    attributes: {
-                        type: 'checkbox',
-                        onchange: (e) => {
-                            formdata.bestmove = !!e.target.checked;
-                            formdata.autosubmit && formdata.submit();
-                        },
-                    },
-                }, { caption: 'Last Move',   sort: 20, type: 'checkbox',                       active: true,
-                    value: () => formdata.lastmove,
-                    attributes:  {
-                        type:    'checkbox',
-                        onchange: (e) => {
-                            formdata.lastmove = !!e.target.checked;
-                            formdata.autosubmit && formdata.submit();
-                        },
-                    },
-                }  ],
+            controls: genIlluControls(formdata),
+                // [  { caption: 'Best move',   sort: 10, type: 'checkbox',                       active: true,
+                //     value: () => formdata.bestmove,
+                //     attributes: {
+                //         type: 'checkbox',
+                //         onchange: (e) => {
+                //             formdata.bestmove = !!e.target.checked;
+                //             formdata.autosubmit && formdata.submit();
+                //         },
+                //     },
+                // }, { caption: 'Last Move',   sort: 20, type: 'checkbox',                       active: true,
+                //     value: () => formdata.lastmove,
+                //     attributes:  {
+                //         type:    'checkbox',
+                //         onchange: (e) => {
+                //             formdata.lastmove = !!e.target.checked;
+                //             formdata.autosubmit && formdata.submit();
+                //         },
+                //     },
+                // }  ],
 
         },{ group: 'game-evaluator',         sort: 50, title: 'Evaluator',                     active: true,
             controls:
