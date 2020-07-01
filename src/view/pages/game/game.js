@@ -20,13 +20,10 @@ const Game = Factory.create('Game', {
         const board      = DB.Boards.find(uuid);
 
         if(!game || !board) {
-            // game of board are not properly prepared... :(
+            // game or board are not properly prepared... :(
             // eslint-disable-next-line no-debugger
             debugger;
         }
-
-        // bc board.buttons.actions
-        // DB.Games.update(game.uuid, { turn: ~~turn });
 
         const titlePlayers = Tools.Format.titlePlayers(game);
         const lineResult   = Tools.Format.lineResult(game);
