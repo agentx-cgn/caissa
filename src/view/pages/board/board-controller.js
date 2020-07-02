@@ -101,7 +101,6 @@ class BoardController {
         !this.chess.load(this.fen) && console.warn('BoardController.update.load.failed', this.fen);
 
         this.color      = this.chess.turn();
-        this.lastMove   = this.game.moves.slice(-1)[0];
         this.validMoves = this.chess.moves({verbose: true});
 
         DEBUG && console.log('BoardController.update', {uuid: this.uuid, turn: this.turn}, 'validmoves', this.validMoves.length);
@@ -157,6 +156,10 @@ class BoardController {
         DEBUG && console.log('Controller.onfield', idx, square, piece);
         this.updateIllustration();
     }
+    onmovestart ( square ) {
+        const piece  = this.chessBoard.getPiece(square);
+        DEBUG && console.log('onmovestart', piece, square);
+    }
     onmovecancel () {
         DEBUG && console.log('BoardController.onmovecancel');
     }
@@ -183,6 +186,9 @@ class BoardController {
         // update move with turn, game with move and reroute to next turn
         } else {
             move.turn = this.turn +1;
+            if (move.turn !== this.game.moves.length) {
+                this.game.moves.splice(this.turn +1);
+            }
             this.game.moves.push(move);
             this.game.turn = move.turn;
             DB.Games.update(this.game.uuid, this.game, true);
@@ -191,10 +197,6 @@ class BoardController {
         }
 
         DEBUG && console.log('BoardController.onmovedone', move);
-    }
-    onmovestart ( square ) {
-        const piece  = this.chessBoard.getPiece(square);
-        DEBUG && console.log('onmovestart', piece, square);
     }
 
     updateFlags () {
@@ -262,15 +264,24 @@ class BoardController {
         //     }
         // }
 
-        if (illus.valid){
+        if (illus.heatmap) {
+            //
+        }
+
+        if (illus.validmoves){
             this.squareMoves.forEach( move => {
                 this.chessBoard.addArrow(move.from, move.to, {class: 'arrow validmove'});
             });
         }
 
-        if (illus.last){
-            const m = this.lastMove;
-            this.chessBoard.addArrow(m.from, m.to, {class: m.color === 'w' ? 'arrow last-white' : 'arrow last-black'});
+        if (illus.lastmove){
+            const lm = this.game.moves[this.turn];
+            if (lm) {
+                this.chessBoard.addArrow(
+                    lm.from, lm.to,
+                    { class: lm.color === 'w' ? 'arrow lastmove white' : 'arrow lastmove black' },
+                );
+            }
         }
 
         if (illus.test){

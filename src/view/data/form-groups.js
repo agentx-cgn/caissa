@@ -24,13 +24,14 @@ function genIlluControls (formdata) {
 
     // whats known here
     const mapped = {
-        pinning   : {caption: 'Pinning',            sort: 10, active: true},
-        bestmove  : {caption: 'Best Move',          sort: 20, active: true},
-        lastmove  : {caption: 'Last Move',          sort: 30, active: true},
-        availmoves: {caption: 'Available Moves',    sort: 40, active: true},
-        attack    : {caption: 'Attack Squares',     sort: 50, active: true},
-        valid     : {caption: 'Valid Moves',        sort: 60, active: true},
-        test      : {caption: 'Test',               sort: 70, active: false},
+        attack     : {caption: 'Attack Squares',     sort:  50, active: true},
+        heatmap    : {caption: 'Heatmap',            sort:  70, active: true},
+        lastmove   : {caption: 'Last Move',          sort:  30, active: true},
+        bestmove   : {caption: 'Best Move',          sort:  20, active: true},
+        availmoves : {caption: 'Available Moves',    sort:  40, active: true},
+        validmoves : {caption: 'Valid Moves',        sort:  60, active: true},
+        pinning    : {caption: 'Pinning',            sort:  10, active: true},
+        test       : {caption: 'Test',               sort: 200, active: true},
     };
 
     return H.map(illus, key => {

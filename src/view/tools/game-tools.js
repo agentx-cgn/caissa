@@ -23,9 +23,10 @@ const gametools = {
     fen (game) {
         const turn = ~~game.turn;
         return (
-            turn === -2 ? Config.fens.empty :
-            turn === -1 ? Config.fens.start :
-            game.moves[turn].fen
+            turn === -2      ? Config.fens.empty    :
+            turn === -1      ? Config.fens.start    :
+            game.moves[turn] ? game.moves[turn].fen :
+            console.warn('Tools.games.fen', {turn, moves: game.moves})
         );
     },
     captured (game) {

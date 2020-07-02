@@ -34,13 +34,14 @@ export default {
     },
 
     'board-illustrations' : {
-        pinning   : true,
-        bestmove  : true,
-        lastmove  : true,
-        availmoves: true,
-        attack    : true,
-        valid     : true,
-        test      : false,
+        attack     : true,
+        heatmap    : true,
+        lastmove   : true,
+        bestmove   : true,
+        availmoves : true,
+        validmoves : true,
+        pinning    : true,
+        test       : false,
     },
 
     'board-decoration': {
