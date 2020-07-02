@@ -27,7 +27,8 @@ export const MARKER_TYPE = {
     emphasize:  {class: "emphasize", slice: "marker2"},
     pointer:    {class: "pointer",   slice: "marker3"},
     rectwhite:  {class: "rectwhite", slice: "marker4"},
-    rectblack:  {class: "rectblack", slice: "marker5"}
+    rectblack:  {class: "rectblack", slice: "marker5"},
+    selected:   {class: "selected",  slice: "selected"}
 }
 
 export const PIECE = {

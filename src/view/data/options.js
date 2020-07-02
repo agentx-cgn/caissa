@@ -34,7 +34,7 @@ export default {
     },
 
     'board-illustrations' : {
-        attack     : true,
+        attack     : false,
         heatmap    : true,
         lastmove   : true,
         bestmove   : true,

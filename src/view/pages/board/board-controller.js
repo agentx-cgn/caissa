@@ -151,9 +151,12 @@ class BoardController {
     onfield (e) {
         const idx    = e.target.dataset.index;
         const square = Tools.Board.squareIndexToField(idx);
-        const piece  = this.chessBoard.getPiece(square);
-        this.squareMoves = this.validMoves.filter( m => m.from === square || m.to === square );
-        DEBUG && console.log('Controller.onfield', idx, square, piece);
+        this.selectedSquare = square !== this.selectedSquare ? square : '';
+        const piece  = this.chessBoard.getPiece(this.selectedSquare);
+        this.squareMoves = this.validMoves.filter( m => {
+            return m.from === this.selectedSquare || m.to === this.selectedSquarere ;
+        });
+        DEBUG && console.log('Controller.onfield', idx, this.selectedSquare, piece);
         this.updateIllustration();
     }
     onmovestart ( square ) {
@@ -186,7 +189,8 @@ class BoardController {
         // update move with turn, game with move and reroute to next turn
         } else {
             move.turn = this.turn +1;
-            if (move.turn !== this.game.moves.length) {
+            if (move.turn < this.game.moves.length) {
+                // throw away all moves after this new one
                 this.game.moves.splice(this.turn +1);
             }
             this.game.moves.push(move);
@@ -305,8 +309,15 @@ class BoardController {
     }
     updateMarker () {
 
+        // marker need to be implemented/referenced in
+        // Config.board, MARKER_TYPE and cm-chessboard/chessboard-sprite.svg
+
         const illus      = this.illustrations;
         const markerType = this.color === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack;
+
+        if (this.selectedSquare){
+            this.chessBoard.addMarker(this.selectedSquare, MARKER_TYPE.selected);
+        }
 
         if (illus.attack){
             this.validMoves.forEach( square => {

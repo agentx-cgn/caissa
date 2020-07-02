@@ -203,7 +203,9 @@ export default H.deepFreezeCreate({
             sprite: {
                 url:                board_svg ,     // pieces and markers are stored es svg in the sprite
                 grid:               40,             // the sprite is tiled with one piece every 40px
-                markers:            ['marker4', 'marker5'],
+                markers:            [
+                    'marker4', 'marker5', 'selected',
+                ],
             },
             responsive:             true,           // resizes the board on window resize, if true
             animationDuration:      300,            // pieces animation duration in milliseconds

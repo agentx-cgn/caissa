@@ -34,7 +34,10 @@ Array.from(Config.templates.plays)
             group,
             autosubmit: false,
             submit: (form) => {
-                const game = Tools.Games.fromPlayForm(play, form);
+                const game = Tools.Games.fromPlayForm(play, form, {
+                    uuid: H.hash(String(Date.now())),
+                    turn: -1,
+                });
                 DB.Games.create(game, true);
                 DB.Boards.create(H.clone(Config.templates.board, { uuid: game.uuid }));
                 DEBUG && console.log('plays.form.submitted', game.uuid, game.mode, game.white, game.black);
@@ -86,7 +89,9 @@ const playerIcons = function (mode) {
 // DB Plays
 const PlayListEntry = {
     view ( vnode ) {
+
         const { play, className, onclick, ondelete } = vnode.attrs;
+
         return m(FlexListEntry, { className, onclick }, [
             playerIcons(play.mode),
             m('span.fiom.f4', play.header.White + ' vs ' + play.header.Black),
@@ -99,6 +104,7 @@ const PlayListEntry = {
                 : '',
 
         ]);
+
     },
 };
 
@@ -161,8 +167,8 @@ const Plays = Factory.create('Plays', {
                     const ondelete = e => {
                         DEBUG && console.log('plays.ondelete', play.uuid);
                         e.redraw = false;
-                        // DB.Games.delete(play.uuid);
-                        // Caissa.redraw();
+                        DB.Games.delete(play.uuid);
+                        Caissa.redraw();
                         return H.eat(e);
                     };
 

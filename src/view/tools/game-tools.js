@@ -108,17 +108,14 @@ const gametools = {
 
     },
 
-    fromPlayForm (playtemplate, formdata) {
+    fromPlayForm (playtemplate, formdata, other) {
 
         const { white, black } = gametools.resolvePlayers(playtemplate);
 
-        const play = H.clone(Config.templates.game, playtemplate, formdata, {
+        const play = H.clone(Config.templates.game, playtemplate, formdata, other, {
             difficulty: globaltools.resolveDifficulty(formdata.depth),
-            timestamp: Date.now(),
         });
 
-        play.turn = -1;
-        play.uuid = H.hash(JSON.stringify(play));
         play.header.White = white;
         play.header.Black = black;
 
