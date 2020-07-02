@@ -62,9 +62,9 @@ div.page {
     width: 100%;
     max-width: 100%;
 }
-div.slide {
-    // background-color: #aaa;
-}
+// div.slide {
+//     background-color: #aaa;
+// }
 section.pages {
     height: 100%;
     left: 0;
@@ -98,6 +98,12 @@ nav {
     transition-duration: 400ms;
     transition-timing-function: ease-out;
     transition-delay: 0ms;
+}
+
+// BOARD
+div.board-bar-top,
+div.board-bar-bot {
+    padding: 10px 8px 6px 8px;
 }
 
 // small screen (mobile)

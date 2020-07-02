@@ -3,7 +3,7 @@ import Caissa     from '../../caissa';
 import DB         from '../../services/database';
 import { H }      from '../../services/helper';
 import Factory    from '../../components/factory';
-import Forms      from '../../components/forms';
+import Forms      from '../../components/forms/forms';
 import Config     from '../../data/config';
 import Tools      from '../../tools/tools';
 

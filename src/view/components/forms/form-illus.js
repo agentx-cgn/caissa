@@ -1,7 +1,7 @@
 
-import Factory from './factory';
+import DB      from '../../services/database';
+import Factory from '../factory';
 import Forms   from './forms';
-import DB      from '../services/database';
 
 const DEBUG = false;
 

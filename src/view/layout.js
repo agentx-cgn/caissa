@@ -17,8 +17,8 @@ const Layout = Factory.create('Layout', {
 
         return m('div.layout', [
             m(Backdrop),
-            m(Header,  { route, params }),
-            m('main', {}, [
+            m(Header, { route, params }),
+            m('main', [
                 m('section.pages', m(Pages, { route, params }, Page)),
                 innerWidth >= 720
 
@@ -37,4 +37,3 @@ const Layout = Factory.create('Layout', {
 });
 
 export default Layout;
-

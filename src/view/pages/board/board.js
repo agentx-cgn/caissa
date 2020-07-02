@@ -48,6 +48,8 @@ const Board = Factory.create('Board', {
 
         } else {
             // means no change...?
+            game  = DB.Games.find(uuid);
+            board = DB.Boards.find(uuid);
             DEBUG && console.log('Board.view.nochange', { uuid, turn }, lastuuid, lastturn);
             // click on same move
             // eslint-disable-next-line no-debugger

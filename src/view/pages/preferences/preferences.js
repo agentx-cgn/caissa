@@ -1,8 +1,6 @@
 
-import './options.scss';
-
 import DB            from '../../services/database';
-import Forms         from '../../components/forms';
+import Forms         from '../../components/forms/forms';
 import Factory       from '../../components/factory';
 import { PageTitle } from '../../components/misc';
 

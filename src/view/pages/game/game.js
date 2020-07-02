@@ -3,7 +3,7 @@ import './game.scss';
 import Tools      from '../../tools/tools';
 import DB         from '../../services/database';
 import Factory    from '../../components/factory';
-import FormIllus  from '../../components/form-illus';
+import FormIllus  from '../../components/forms/form-illus';
 import Board      from '../board/board';
 import Moves      from './moves';
 

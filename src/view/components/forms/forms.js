@@ -1,9 +1,13 @@
 
-import FormGroups      from '../data/form-groups';
-import { H }           from '../services/helper';
-import Factory         from './factory';
+import './forms.scss';
+
+import FormGroups      from '../../data/form-groups';
+import { H }           from '../../services/helper';
+import Factory         from './../factory';
 
 const read = H.interprete;
+
+const DEBUG = false;
 
 const TimeStamp = function () {
     let _dom, ticker;
@@ -25,7 +29,7 @@ const TimeStamp = function () {
 
 function renderGroupControl (control) {
 
-    // console.log('renderGroupControl', control);
+    DEBUG && console.log('renderGroupControl', control);
 
     if (control.type === 'button') {
         if (control.title) {
