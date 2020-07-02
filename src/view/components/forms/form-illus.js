@@ -7,12 +7,12 @@ const DEBUG = false;
 
 const FormIllus = Factory.create('FormIllus', {
 
-    view ( vnode ) {
+    view () {
 
-        const { board } = vnode.attrs;
+        const illus     = DB.Options.first['board-illustrations'];
         const formgroup = 'board-illustrations';
         const formdata  = {
-            ...board.illustrations,
+            ...illus,
             group: formgroup,
             autosubmit: true,
             submit : () => {
@@ -20,11 +20,16 @@ const FormIllus = Factory.create('FormIllus', {
                 delete formdata.group;
                 delete formdata.submit;
                 delete formdata.autosubmit;
-                DB.Boards.update(board.uuid, { illustrations: formdata });
+                DB.Options.update('0', { 'board-illustrations': formdata });
             },
         };
 
-        return m(Forms, { formdata, noheader: false, style:'background: #658199', className: 'default-options group-' + formgroup });
+        return m(Forms, {
+            formdata,
+            noheader: false,
+            style:'background: #658199',
+            className: 'default-options group-' + formgroup,
+        });
 
     },
 

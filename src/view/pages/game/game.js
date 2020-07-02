@@ -37,7 +37,7 @@ const Game = Factory.create('Game', {
             ? m('div.page.game', { className, style }, [
                 m(PageTitle,     { className: 'gm-players tc'}, titlePlayers ),
                 m(FlexList, [
-                    m(FormIllus,     { board }),
+                    m(FormIllus),
                     m(Moves,         { game }),
                     m(Spacer),
                     m(TextCenter,    { class: 'gm-result', title: 'result termination timecontrol'}, lineResult ),

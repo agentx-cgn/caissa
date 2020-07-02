@@ -85,14 +85,13 @@ const FlexList = {
 
 const FixedList = {
     view ( vnode ) {
-        return m('div.fixedlist.viewport-y.noselect', vnode.attrs, vnode.children);
+        return m('div.fixedlist.viewport-y', vnode.attrs, vnode.children);
     },
 };
 
 const FlexListFixed = {
     view ( vnode ) {
-        // return m('div.flexlist.flex.flex-column.flex-grow.noselect', vnode.attrs, vnode.children);
-        return m('div.flexlist.flex.flex-column.noselect', vnode.attrs, vnode.children);
+        return m('div.flexlist.flex.flex-column', vnode.attrs, vnode.children);
     },
 };
 

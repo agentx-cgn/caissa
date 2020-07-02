@@ -73,8 +73,6 @@ const boardtemplate = {
         insu:     false,  // insufficient_material
         repe:     false,  // in_threefold_repetition
     },
-    illustrations : {}, // coming from Preferences
-
 };
 
 const opponents = {

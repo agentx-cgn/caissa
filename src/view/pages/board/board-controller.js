@@ -85,7 +85,8 @@ class BoardController {
         this.chess       = new Chess();
         this.squareMoves = [];
         this.validMoves  = [];
-        this.opponents   = {
+        this.illustrations = DB.Options.first['board-illustrations'];
+        this.opponents     = {
             'w': new Opponent('w', this.mode[0]),
             'b': new Opponent('b', this.mode[0]),
             'n': { tomove: () => {}, towait: () => {} },
@@ -226,28 +227,53 @@ class BoardController {
         // DEBUG && console.log('BoardController.updateButtons', 'btn.play', btn.play);
     }
     updateIllustration () {
+
+        this.illustrations = DB.Options.first['board-illustrations'];
+
+        console.log('BoardController.updateIllustration');
+
         // chessboard on page w/ dn has height 0
         if (this.chessBoard && this.chessBoard.view.height && this.game.turn !== -2){
+
+            this.chessBoard.removeArrows( null );
+            this.chessBoard.removeMarkers( null, null);
             this.updateArrows();
             this.updateMarker();
+
         }
     }
     updateArrows () {
 
-        this.chessBoard.removeArrows( null );
+        const illus = this.illustrations;
 
-        if (this.board.illustrations.valid){
+        // if (arrows.last){
+        //     lasts.forEach( m => {
+        //         chessBoard.addArrow(m.from, m.to, {class: m.color === 'w' ? 'arrow last-white' : 'arrow last-black'});
+        //     });
+        // }
+        // if (arrows.bestmoves){
+        //     const bm = state.bestmove.move;
+        //     const po = state.bestmove.ponder;
+        //     if (bm.from && po.from){
+        //         chessBoard.addArrow(po.from, po.to, {class: 'arrow ponder'});
+        //         chessBoard.addArrow(bm.from, bm.to, {class: 'arrow bestmove', onclick: function () {
+        //             fire('board', 'move', [[arrows.bestmove.move]]);
+        //         }});
+        //     }
+        // }
+
+        if (illus.valid){
             this.squareMoves.forEach( move => {
                 this.chessBoard.addArrow(move.from, move.to, {class: 'arrow validmove'});
             });
         }
 
-        if (this.board.illustrations.last){
+        if (illus.last){
             const m = this.lastMove;
             this.chessBoard.addArrow(m.from, m.to, {class: m.color === 'w' ? 'arrow last-white' : 'arrow last-black'});
         }
 
-        if (this.board.illustrations.test){
+        if (illus.test){
             this.chessBoard.addArrow('e2', 'e4', {class: 'arrow test'} );
             this.chessBoard.addArrow('f2', 'h4', {class: 'arrow test'} );
             this.chessBoard.addArrow('d2', 'c4', {class: 'arrow test'} );
@@ -268,12 +294,10 @@ class BoardController {
     }
     updateMarker () {
 
-        // const validSquares = this.chess.moves({verbose: true});
-        const markerType   = this.color === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack;
+        const illus      = this.illustrations;
+        const markerType = this.color === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack;
 
-        this.chessBoard.removeMarkers( null, null);
-
-        if (this.board.illustrations.attack){
+        if (illus.attack){
             this.validMoves.forEach( square => {
                 this.chessBoard.addMarker(square.to, markerType);
             });
