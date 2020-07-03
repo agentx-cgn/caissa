@@ -163,7 +163,7 @@ export class Chessboard {
             from + to,
             attributes
         )
-        this.view.drawArrowsDebounced()
+        this.view.illustrator.drawArrowsDebounced()
     }
 
     getMarkers(square = null, type = null) {
@@ -182,12 +182,12 @@ export class Chessboard {
     removeMarkers(square = null, type = null) {
         const index = square !== null ? this.state.squareToIndex(square) : null
         this.state.removeMarkers(index, type)
-        this.view.drawMarkersDebounced()
+        this.view.illustrator.drawMarkersDebounced()
     }
 
     removeArrows(type = null) {
         this.state.removeArrows(type)
-        this.view.drawArrowsDebounced()
+        this.view.illustrator.drawArrowsDebounced()
     }
 
     setOrientation(color) {

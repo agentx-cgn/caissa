@@ -9,6 +9,8 @@ import {ChessboardMoveInput} from "./ChessboardMoveInput.js"
 import {COLOR, MOVE_INPUT_MODE, INPUT_EVENT_TYPE} from "./Chessboard.js"
 import {ChessboardPiecesAnimation} from "./ChessboardPiecesAnimation.js"
 
+import Illustrator from './illustrator';
+
 const SPRITE_LOADING_STATUS = {
     notLoaded: 1,
     loading: 2,
@@ -18,6 +20,9 @@ const SPRITE_LOADING_STATUS = {
 export class ChessboardView {
 
     constructor(chessboard, callbackAfterCreation) {
+
+        this.illustrator = new Illustrator(chessboard, this);
+
         this.animationRunning = false
         this.currentAnimation = null
         this.chessboard = chessboard
@@ -58,8 +63,8 @@ export class ChessboardView {
         window.clearTimeout(this.resizeDebounce)
         window.clearTimeout(this.redrawDebounce)
         window.clearTimeout(this.drawPiecesDebounce)
-        window.clearTimeout(this.drawMarkersDebounce)
-        window.clearTimeout(this.drawArrowssDebounce)
+        // window.clearTimeout(this.drawMarkersDebounce)
+        // window.clearTimeout(this.drawArrowssDebounce)
         Svg.removeElement(this.svg)
         this.animationQueue = []
         if (this.currentAnimation) {
@@ -75,7 +80,8 @@ export class ChessboardView {
             Svg.loadSprite(props.sprite.url, [
                 "wk", "wq", "wr", "wb", "wn", "wp",
                 "bk", "bq", "br", "bb", "bn", "bp",
-                "marker1", "marker2", "marker3"
+                // "marker1", "marker2", "marker3"
+                ...this.illustrator.sprites
                 ].concat(props.sprite.markers), () => {
                 ChessboardView.spriteLoadingStatus = SPRITE_LOADING_STATUS.loaded
                 callback()
@@ -113,9 +119,12 @@ export class ChessboardView {
         this.updateMetrics()
         this.boardGroup = Svg.addElement(this.svg, "g", {class: "board"})
         this.coordinatesGroup = Svg.addElement(this.svg, "g", {class: "coordinates"})
-        this.markersGroup = Svg.addElement(this.svg, "g", {class: "markers"})
-        this.arrowsGroup  = Svg.addElement(this.svg, "g", {class: "caissa-arrows"})
         this.piecesGroup  = Svg.addElement(this.svg, "g", {class: "pieces"})
+
+        this.illustrator.createSvgAndGroups(this.svg);
+        // this.markersGroup = Svg.addElement(this.svg, "g", {class: "markers"})
+        // this.arrowsGroup  = Svg.addElement(this.svg, "g", {class: "caissa-arrows"})
+
     }
 
     updateMetrics() {
@@ -155,8 +164,10 @@ export class ChessboardView {
                 if (!this.boardGroup) return;
                 this.drawBoard()
                 this.drawCoordinates()
-                this.drawMarkers()
-                this.drawArrows()
+                // this.drawMarkers()
+                // this.drawArrows()
+                this.illustrator.drawMarkers()
+                this.illustrator.drawArrows()
                 this.setCursor()
             })
             this.drawPiecesDebounced(this.chessboard.state.squares, () => {
@@ -317,149 +328,149 @@ export class ChessboardView {
 
     // Markers //
 
-    drawMarkersDebounced() {
-        window.clearTimeout(this.drawMarkersDebounce)
-        this.drawMarkersDebounce = setTimeout(() => {
-            this.drawMarkers()
-        }, 10)
-    }
+    // drawMarkersDebounced() {
+    //     window.clearTimeout(this.drawMarkersDebounce)
+    //     this.drawMarkersDebounce = setTimeout(() => {
+    //         this.drawMarkers()
+    //     }, 10)
+    // }
 
-    drawMarkers() {
-        if (this.markersGroup) {
-            while (this.markersGroup.firstChild) {
-                this.markersGroup.removeChild(this.markersGroup.firstChild)
-            }
-            this.chessboard.state.markers.forEach((marker) => {
-                    this.drawMarker(marker)
-                }
-            )
-        }
-    }
+    // drawMarkers() {
+    //     if (this.markersGroup) {
+    //         while (this.markersGroup.firstChild) {
+    //             this.markersGroup.removeChild(this.markersGroup.firstChild)
+    //         }
+    //         this.chessboard.state.markers.forEach((marker) => {
+    //                 this.drawMarker(marker)
+    //             }
+    //         )
+    //     }
+    // }
 
-    drawMarker(marker) {
-        const markerGroup = Svg.addElement(this.markersGroup, "g")
-        markerGroup.setAttribute("data-index", marker.index)
-        const point = this.squareIndexToPoint(marker.index)
-        const transform = (this.svg.createSVGTransform())
-        transform.setTranslate(point.x, point.y)
-        markerGroup.transform.baseVal.appendItem(transform)
-        const markerUse = Svg.addElement(markerGroup, "use",
-            {href: `#${marker.type.slice}`, class: "marker " + marker.type.class})
-        const transformScale = (this.svg.createSVGTransform())
-        transformScale.setScale(this.scalingX, this.scalingY)
-        markerUse.transform.baseVal.appendItem(transformScale)
-        return markerGroup
-    }
+    // drawMarker(marker) {
+    //     const markerGroup = Svg.addElement(this.markersGroup, "g")
+    //     markerGroup.setAttribute("data-index", marker.index)
+    //     const point = this.squareIndexToPoint(marker.index)
+    //     const transform = (this.svg.createSVGTransform())
+    //     transform.setTranslate(point.x, point.y)
+    //     markerGroup.transform.baseVal.appendItem(transform)
+    //     const markerUse = Svg.addElement(markerGroup, "use",
+    //         {href: `#${marker.type.slice}`, class: "marker " + marker.type.class})
+    //     const transformScale = (this.svg.createSVGTransform())
+    //     transformScale.setScale(this.scalingX, this.scalingY)
+    //     markerUse.transform.baseVal.appendItem(transformScale)
+    //     return markerGroup
+    // }
 
     // Arrows //
 
-    drawArrowsDebounced() {
-        window.clearTimeout(this.drawArrowsDebounce)
-        this.drawArrowsDebounce = setTimeout(() => {
-            this.drawArrows()
-        }, 10)
-    }
+    // drawArrowsDebounced() {
+    //     window.clearTimeout(this.drawArrowsDebounce)
+    //     this.drawArrowsDebounce = setTimeout(() => {
+    //         this.drawArrows()
+    //     }, 10)
+    // }
 
-    drawArrows() {
-        if (this.arrowsGroup) {
-            while (this.arrowsGroup.firstChild) {
-                this.arrowsGroup.removeChild(this.arrowsGroup.firstChild)
-            }
-            this.chessboard.state.arrows.forEach((arrow) => {
-                    this.drawArrow(arrow)
-                }
-            )
-        }
-    }
+    // drawArrows() {
+    //     if (this.arrowsGroup) {
+    //         while (this.arrowsGroup.firstChild) {
+    //             this.arrowsGroup.removeChild(this.arrowsGroup.firstChild)
+    //         }
+    //         this.chessboard.state.arrows.forEach((arrow) => {
+    //                 this.drawArrow(arrow)
+    //             }
+    //         )
+    //     }
+    // }
 
-    calcAngle (x1, y1, x2, y2) {
+    // calcAngle (x1, y1, x2, y2) {
 
-        return (
-            x1 === x2 && y1  <  y2 ?   0 :   // north
-            x1  >  x2 && y1 === y2 ?  90 :   // east
-            x1 === x2 && y1  >  y2 ? 180 :   // south
-            x1  <  x2 && y1 === y2 ? 270 :   // west
+    //     return (
+    //         x1 === x2 && y1  <  y2 ?   0 :   // north
+    //         x1  >  x2 && y1 === y2 ?  90 :   // east
+    //         x1 === x2 && y1  >  y2 ? 180 :   // south
+    //         x1  <  x2 && y1 === y2 ? 270 :   // west
 
-            x1  >  x2 && y1  <  y2 ?  45 :   // north east
-            x1  >  x2 && y1  >  y2 ? 135 :   // south east
-            x1  <  x2 && y1  >  y2 ? 225 :   // south west
-            x1  <  x2 && y1  <  y2 ? 315 :   // north west
+    //         x1  >  x2 && y1  <  y2 ?  45 :   // north east
+    //         x1  >  x2 && y1  >  y2 ? 135 :   // south east
+    //         x1  <  x2 && y1  >  y2 ? 225 :   // south west
+    //         x1  <  x2 && y1  <  y2 ? 315 :   // north west
 
-            22
-        );
+    //         22
+    //     );
 
-    }
+    // }
 
-    addPolyline (parent, points) {
-        const polyline = Svg.addElement(parent, "polyline");
-        polyline.setAttribute("points", points);
-        return polyline;
-    }
+    // addPolyline (parent, points) {
+    //     const polyline = Svg.addElement(parent, "polyline");
+    //     polyline.setAttribute("points", points);
+    //     return polyline;
+    // }
 
-    drawArrow(arrow) {
+    // drawArrow(arrow) {
 
-        let angle, start, end, head;
+    //     let angle, start, end, head;
 
-        const
-            arrowGroup = Svg.addElement(
-                this.arrowsGroup, "g",
-                {class: arrow.attributes.class}
-            ),
-            translate  = this.svg.createSVGTransform(),
-            scale      = this.svg.createSVGTransform(),
-            rotate     = this.svg.createSVGTransform(),
-            from       = this.squareIndexToPoint(arrow.from),
-            to         = this.squareIndexToPoint(arrow.to),
-            grd2       = this.chessboard.props.sprite.grid/2,
-            hd    = grd2 / 2,
-            dX    = (from.x - to.x) / this.scalingX,
-            dY    = (from.y - to.y) / this.scalingY,
-            tx    = grd2 - dX,
-            ty    = grd2 - dY,
-            t1x   = (Math.abs(dX) > Math.abs(dY)) ? tx : grd2,
-            t1y   = (Math.abs(dX) > Math.abs(dY)) ? grd2 : ty
-        ;
+    //     const
+    //         arrowGroup = Svg.addElement(
+    //             this.arrowsGroup, "g",
+    //             {class: arrow.attributes.class}
+    //         ),
+    //         translate  = this.svg.createSVGTransform(),
+    //         scale      = this.svg.createSVGTransform(),
+    //         rotate     = this.svg.createSVGTransform(),
+    //         from       = this.squareIndexToPoint(arrow.from),
+    //         to         = this.squareIndexToPoint(arrow.to),
+    //         grd2       = this.chessboard.props.sprite.grid/2,
+    //         hd    = grd2 / 2,
+    //         dX    = (from.x - to.x) / this.scalingX,
+    //         dY    = (from.y - to.y) / this.scalingY,
+    //         tx    = grd2 - dX,
+    //         ty    = grd2 - dY,
+    //         t1x   = (Math.abs(dX) > Math.abs(dY)) ? tx : grd2,
+    //         t1y   = (Math.abs(dX) > Math.abs(dY)) ? grd2 : ty
+    //     ;
 
-        if (arrow.attributes.onclick) {
-            arrowGroup.addEventListener('click', arrow.attributes.onclick);
-            arrowGroup.addEventListener('touchstart', arrow.attributes.onclick);
-        }
+    //     if (arrow.attributes.onclick) {
+    //         arrowGroup.addEventListener('click', arrow.attributes.onclick);
+    //         arrowGroup.addEventListener('touchstart', arrow.attributes.onclick);
+    //     }
 
-        // move group to from
-        translate.setTranslate(from.x, from.y)
-        arrowGroup.transform.baseVal.appendItem(translate)
+    //     // move group to from
+    //     translate.setTranslate(from.x, from.y)
+    //     arrowGroup.transform.baseVal.appendItem(translate)
 
-        // scale arrow to board size
-        scale.setScale(this.scalingX, this.scalingY)
+    //     // scale arrow to board size
+    //     scale.setScale(this.scalingX, this.scalingY)
 
-        // construct arrow
-        if (Math.abs(dY) === Math.abs(dX) || dY === 0 || dX === 0) {
+    //     // construct arrow
+    //     if (Math.abs(dY) === Math.abs(dX) || dY === 0 || dX === 0) {
 
-            // non knight
-            start  = this.addPolyline (arrowGroup, `${grd2},${grd2} ${tx},${ty}`);
-            head   = this.addPolyline (arrowGroup, `${tx-10},${ty-10} ${tx},${ty} ${tx+10},${ty-10}`);
-            angle  = this.calcAngle(from.x, from.y, to.x, to.y);
+    //         // non knight
+    //         start  = this.addPolyline (arrowGroup, `${grd2},${grd2} ${tx},${ty}`);
+    //         head   = this.addPolyline (arrowGroup, `${tx-10},${ty-10} ${tx},${ty} ${tx+10},${ty-10}`);
+    //         angle  = this.calcAngle(from.x, from.y, to.x, to.y);
 
-        } else {
+    //     } else {
 
-            // knight
-            start  = this.addPolyline (arrowGroup, `${grd2},${grd2} ${t1x},${t1y}`);
-            end    = this.addPolyline (arrowGroup, `${t1x},${t1y} ${tx},${ty}`);
-            head   = this.addPolyline (arrowGroup, `${tx-hd},${ty-hd} ${tx},${ty} ${tx+hd},${ty-hd}`);
-            angle  = this.calcAngle(t1x, t1y, tx, ty);
-            end.transform.baseVal.appendItem(scale);
+    //         // knight
+    //         start  = this.addPolyline (arrowGroup, `${grd2},${grd2} ${t1x},${t1y}`);
+    //         end    = this.addPolyline (arrowGroup, `${t1x},${t1y} ${tx},${ty}`);
+    //         head   = this.addPolyline (arrowGroup, `${tx-hd},${ty-hd} ${tx},${ty} ${tx+hd},${ty-hd}`);
+    //         angle  = this.calcAngle(t1x, t1y, tx, ty);
+    //         end.transform.baseVal.appendItem(scale);
 
-        }
+    //     }
 
-        rotate.setRotate(angle, tx, ty);
+    //     rotate.setRotate(angle, tx, ty);
 
-        start.transform.baseVal.appendItem(scale);
-        head.transform.baseVal.appendItem(scale);
-        head.transform.baseVal.appendItem(rotate);
+    //     start.transform.baseVal.appendItem(scale);
+    //     head.transform.baseVal.appendItem(scale);
+    //     head.transform.baseVal.appendItem(rotate);
 
-        return arrowGroup
+    //     return arrowGroup
 
-    }
+    // }
 
     // animation queue //
 
