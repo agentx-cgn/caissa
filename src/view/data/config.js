@@ -25,6 +25,7 @@ const gametemplate = {
     mode:        'h-h',
     turn:         -1,
     moves:        [],
+    newmove:      '',
     score: {
         maxcp:    0,
         maxmate:  0,
@@ -42,6 +43,7 @@ const gametemplate = {
         TimeControl: '',
     },            // from PGN parsing
     pgn:         '',             // game moves in pgn notation
+    clock: { white: 0, black: 0, timecontrol: {} },
     // timestamp
 
 };
@@ -136,10 +138,6 @@ export default H.deepFreezeCreate({
 
     },
 
-    // pagecache: {
-    //     size: 5,
-    // },
-
     navigation : [
         ['/sources/',        'PGNS',        {},                     { ifa: 'fa-chess-pawn'} ],
         ['/games/',          'GAMES',       { idx: 0 },             { img: iconChess} ],  // loads imported games so far
@@ -169,11 +167,11 @@ export default H.deepFreezeCreate({
         {idx: 3, caption: 'OP03', value: 'OP03'},
     ],
 
-    timecontrols: [                          // initial | bonus
-        {idx: 0, caption: '10 secs + 0', value: `${ 1*10*1000}+0`},
-        {idx: 1, caption: ' 1 min  + 0', value: `${ 1*60*1000}+0`},
-        {idx: 2, caption: ' 5 min  + 0', value: `${ 5*60*1000}+0`},
-        {idx: 3, caption: '10 min  + 0', value: `${10*60*1000}+0`},
+    timecontrols: [
+        {idx: 0, caption: '10 secs + 0', budget:  1*10*1000, bonus: 0 },
+        {idx: 1, caption: ' 1 min  + 0', budget:  1*60*1000, bonus: 0 },
+        {idx: 2, caption: ' 5 min  + 0', budget:  5*60*1000, bonus: 0 },
+        {idx: 3, caption: '10 min  + 0', budget: 10*60*1000, bonus: 0 },
     ],
 
     plays: {
@@ -185,12 +183,8 @@ export default H.deepFreezeCreate({
             '20':  'hardcore',
             '30': 'no chance',
         },
-        // defaults: [
-        //     {uuid: '00000001', mode: 'h-s', time: 10, depth: 3, subline: 'play white against Stockfish'},
-        //     {uuid: '00000002', mode: 's-h', time: 10, depth: 3, subline: 'play black against Stockfish'},
-        //     {uuid: '00000003', mode: 's-s', time: 10, depth: 3, subline: 'this is fun'                 },
-        // ],
     },
+
     board: {
         config: {
             position:               'empty',        // set as fen, 'start' or 'empty'

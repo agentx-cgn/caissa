@@ -34,9 +34,15 @@ Array.from(Config.templates.plays)
             group,
             autosubmit: false,
             submit: (form) => {
+                // eslint-disable-next-line no-debugger
+                // debugger;
+                const timecontrol = form.timecontrol;
+                const timestamp   = Date.now();
                 const game = Tools.Games.fromPlayForm(play, form, {
-                    uuid: H.hash(String(Date.now())),
+                    uuid: H.hash(String(timestamp)),
+                    timestamp,
                     turn: -1,
+                    clock: { timecontrol, white: timecontrol.budget, black: timecontrol.budget},
                 });
                 DB.Games.create(game, true);
                 DB.Boards.create(H.clone(Config.templates.board, { uuid: game.uuid }));
@@ -97,7 +103,7 @@ const PlayListEntry = {
             m('span.fiom.f4', play.header.White + ' vs ' + play.header.Black),
             m('div.f5.fior.pv1',  H.date2isoLocal(new Date(play.timestamp)), m('i.f6.fa.fa-trash-alt.pl4', { onclick: ondelete })),
             play.opening
-                ? m('div.f5.fior.pv1', `OP: ${play.opening}` )
+                ? m('div.f5.fior.pv1', `OP: ${play.opening.label}` )
                 : '',
             play.difficulty
                 ? m('div.f5.fior.pv1', `${play.difficulty} (${play.depth}) / ${play.time} secs`)

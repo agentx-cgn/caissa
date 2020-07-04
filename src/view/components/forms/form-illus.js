@@ -20,7 +20,7 @@ const FormIllus = Factory.create('FormIllus', {
                 delete formdata.group;
                 delete formdata.submit;
                 delete formdata.autosubmit;
-                DB.Options.update('0', { 'board-illustrations': formdata });
+                DB.Options.update('0', { 'board-illustrations': formdata }, true);
             },
         };
 

@@ -104,7 +104,8 @@ const Events = {
         System.online = false;
     },
     onbeforeunload () {
-        DB.Usage.update('0', {lastend: Date.now()}, true);
+        DB.Usage.update('0', {lastend: Date.now()});
+        DB.persist();
         console.log('Bye...');
     },
     onselectionchange () {

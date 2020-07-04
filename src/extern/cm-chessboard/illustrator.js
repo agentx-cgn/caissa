@@ -2,12 +2,9 @@
 import { Svg }   from './ChessboardView';
 // import { COLOR } from './Chessboard.js';
 
-// let drawMarkersDebounce;
-
 export class Illustrator {
 
     constructor(chessboard, view) {
-
         this.chessboard = chessboard;
         this.view = view;
         this.sprites = ['marker1', 'marker2', 'marker3'];
@@ -15,7 +12,7 @@ export class Illustrator {
 
     destroy() {
         window.clearTimeout(this.drawMarkersDebounce);
-        window.clearTimeout(this.drawArrowssDebounce);
+        window.clearTimeout(this.drawArrowsDebounce);
     }
 
     createSvgAndGroups (svg) {
@@ -23,10 +20,6 @@ export class Illustrator {
         this.markersGroup = Svg.addElement(svg, 'g', {class: 'markers'});
         this.arrowsGroup  = Svg.addElement(svg, 'g', {class: 'caissa-arrows'});
     }
-
-    // addGroups () {
-
-    // }
 
     drawMarkersDebounced() {
         window.clearTimeout(this.drawMarkersDebounce);
@@ -108,6 +101,7 @@ export class Illustrator {
         let angle, start, end, head;
 
         const
+            round = Math.round, abs = Math.abs,
             arrowGroup = Svg.addElement(
                 this.arrowsGroup, 'g',
                 {class: arrow.attributes.class},
@@ -139,8 +133,8 @@ export class Illustrator {
         // scale arrow to board size
         scale.setScale(this.view.scalingX, this.view.scalingY);
 
-        // construct arrow
-        if (Math.abs(dY) === Math.abs(dX) || dY === 0 || dX === 0) {
+        // construct arrow ~ compensates rounding errors
+        if (abs(round(dY)) === abs(round(dX)) || round(dY) === 0 || round(dX) === 0) {
 
             // non knight
             start  = this.addPolyline (arrowGroup, `${grd2},${grd2} ${tx},${ty}`);
@@ -167,19 +161,6 @@ export class Illustrator {
         return arrowGroup;
 
     }
-
-    // squareIndexToPoint(index) {
-    //     let x, y;
-    //     if (this.chessboard.state.orientation === COLOR.white) {
-    //         x = this.borderSize + (index % 8) * this.squareWidth;
-    //         y = this.borderSize + (7 - Math.floor(index / 8)) * this.squareHeight;
-    //     } else {
-    //         x = this.borderSize + (7 - index % 8) * this.squareWidth;
-    //         y = this.borderSize + (Math.floor(index / 8)) * this.squareHeight;
-    //     }
-    //     return {x: x, y: y};
-    // }
-
 
 }
 

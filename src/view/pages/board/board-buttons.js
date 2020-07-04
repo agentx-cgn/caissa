@@ -72,6 +72,8 @@ const BoardButtons = Factory.create('BoardButtons', {
                         board.buttons[name] ? 'ctw80' : 'ctb10'
                     );
 
+                    // DEBUG && console.log(name, board.buttons[name]);
+
                     return m(props.tag, {title: props.title, onclick: props.onclick, className });
                 }),
             ),

@@ -328,7 +328,7 @@ export class ChessboardMoveInput {
         if (this.endIndex) {
             this.state.addMarker(this.endIndex, MARKER_TYPE.move)
         }
-        this.view.drawMarkersDebounced()
+        this.view.illustrator.drawMarkersDebounced()
     }
 
     destroy() {

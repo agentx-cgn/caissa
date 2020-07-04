@@ -86,7 +86,7 @@ const FormGroups = function ( formdata ) {
                     },
                     attributes: {
                         onchange: (e) => {
-                            formdata.timecontrol = Config.timecontrols.find( tc => tc.idx === ~~e.target.value);
+                            formdata.timecontrol = Array.from(Config.timecontrols).find( tc => tc.idx === ~~e.target.value);
                             formdata.autosubmit && formdata.submit();
                         },
                     },
@@ -97,7 +97,7 @@ const FormGroups = function ( formdata ) {
                     value: () => formdata.opening,
                     attributes: {
                         onchange: (e) => {
-                            formdata.opening = Config.openings.find( op => op.idx === ~~e.target.value);
+                            formdata.opening = Array.from(Config.openings).find( op => op.idx === ~~e.target.value);
                             formdata.autosubmit && formdata.submit();
                         },
                     },

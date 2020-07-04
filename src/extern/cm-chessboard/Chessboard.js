@@ -153,7 +153,7 @@ export class Chessboard {
 
     addMarker(square, type = MARKER_TYPE.emphasize) {
         this.state.addMarker(this.state.squareToIndex(square), type)
-        this.view.drawMarkersDebounced()
+        this.view.illustrator.drawMarkersDebounced()
     }
 
     addArrow(from, to, attributes) {

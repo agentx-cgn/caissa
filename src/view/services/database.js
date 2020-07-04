@@ -55,6 +55,12 @@ const DB =  {
         location.reload();
 
     },
+    persist () {
+        tables.forEach(tablename => {
+            DB[tablename].persist(true);
+        });
+        console.log('DB.persist', tables.join(''));
+    },
 
     init () {
         try {

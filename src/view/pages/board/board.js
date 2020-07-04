@@ -50,6 +50,7 @@ const Board = Factory.create('Board', {
             // means no change...?
             game  = DB.Games.find(uuid);
             board = DB.Boards.find(uuid);
+            controller.updateButtons();
             DEBUG && console.log('Board.view.nochange', { uuid, turn }, lastuuid, lastturn);
             // click on same move
             // eslint-disable-next-line no-debugger
@@ -59,8 +60,8 @@ const Board = Factory.create('Board', {
         lastuuid = uuid;
         lastturn = turn;
 
-        const playerTop = board.orientation === 'w' ? 'w' : 'b';
-        const playerBot = board.orientation === 'b' ? 'w' : 'b';
+        const playerTop = board.orientation === 'w' ? 'b' : 'w';
+        const playerBot = board.orientation === 'w' ? 'w' : 'b';
 
         return innerWidth >= 720
             // desktop
