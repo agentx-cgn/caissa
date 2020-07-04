@@ -34,6 +34,7 @@
                 --sab: env(safe-area-inset-bottom);
                 --sal: env(safe-area-inset-left);
             }
+            /* //TODO: box-sizing: border-box; */
             loader-container {
                 display: block;
                 position: absolute;
@@ -42,7 +43,7 @@
                 z-index: 1000;
                 top: 0;
                 background-color: rgba(128,128,128, 0.9);
-                background-image: url('/static/loader.jpg');
+                background-image: url('/static/background.jpg');
                 background-size: cover;
             }
             loader-screen {
@@ -65,6 +66,12 @@
             loader-screen button {
                 margin-top: 12px;
                 padding: 4px 8px;
+                color: white;
+                border: 2px solid #ccc;
+                background: #fff1;
+                font-size: 1.1rem;
+                letter-spacing: 1px;
+                border-radius: 11px;
             }
             loader-screen h3 {
                 padding: 4rem 1rem 1rem 2rem;
@@ -149,8 +156,8 @@
 
         </script>
 
-    <link href="css/3-f9303d88.css" rel="stylesheet"><link href="css/0-d64c6286.css" rel="stylesheet"><link href="css/1-f9095c64.css" rel="stylesheet"></head>
-    <body>
+    <link href="css/3-f9303d88.css" rel="stylesheet"><link href="css/0-d64c6286.css" rel="stylesheet"><link href="css/1-f120e92a.css" rel="stylesheet"></head>
+    <body class="noselect">
 
         <noscript>You need to enable JavaScript to run Caissa.</noscript>
 
@@ -169,13 +176,13 @@
                     <input type="text"     oninput="saveName(this)" placeholder="enter your user name"  />
                 </div>
                 <div class="group3">
-                    <button class="start"   onclick="Caissa.start()">Start</button>
+                    <button class="start"   onclick="Caissa.start()">Start</button><br />
                     <button                 onclick="">Add to Home Screen</button>
                 </div>
                 <div class="group4">
                     <label>
-                        Don't show this again
                         <input type="checkbox" onchange="saveOption(this)" />
+                        Don't show this again
                     </label>
                 </div>
                 <div class="group5">
@@ -187,5 +194,5 @@
             </loader-screen>
         </loader-container>
 
-    <script type="text/javascript" src="js/runtime-414170b5.js"></script><script type="text/javascript" src="js/vendor-7fc4c396.js"></script><script type="text/javascript" src="js/assets-876186ef.js"></script><script type="text/javascript" src="js/main-84ec35d6.js"></script></body>
+    <script type="text/javascript" src="js/runtime-414170b5.js"></script><script type="text/javascript" src="js/vendor-7fc4c396.js"></script><script type="text/javascript" src="js/assets-876186ef.js"></script><script type="text/javascript" src="js/main-8a0be847.js"></script></body>
 </html>
