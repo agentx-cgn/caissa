@@ -6,7 +6,7 @@ import DB           from '../../services/database';
 import evaluate     from '../game/game-evaluate';
 import GameProgress from '../game/game-progress';
 
-const DEBUG = true;
+const DEBUG = false;
 
 let curGame, curController;
 
@@ -65,16 +65,16 @@ const BoardButtons = Factory.create('BoardButtons', {
                 H.map(buttons, (name, props) => {
 
                     const className = (
-                        name === 'spinner'  &&  board.buttons['evaluate'] ? 'dn'  :
-                        name === 'spinner'  && !board.buttons['evaluate'] ? 'ctw80' :
-                        name === 'evaluate' &&  board.buttons['evaluate'] ? 'ctw80' :
-                        name === 'evaluate' && !board.buttons['evaluate'] ? 'dn'  :
-                        board.buttons[name] ? 'ctw80' : 'ctb10'
+                        name === 'spinner'  &&  board.buttons['evaluate'] ? 'disabled dn'  :
+                        name === 'spinner'  && !board.buttons['evaluate'] ? 'enabled ctw80' :
+                        name === 'evaluate' &&  board.buttons['evaluate'] ? 'enabled ctw80' :
+                        name === 'evaluate' && !board.buttons['evaluate'] ? 'disabled dn'  :
+                        board.buttons[name] ? 'enabled ctw80' : 'disabled ctb10'
                     );
 
                     // DEBUG && console.log(name, board.buttons[name]);
 
-                    return m(props.tag, {title: props.title, onclick: props.onclick, className });
+                    return m(props.tag, { title: props.title, onclick: props.onclick, className });
                 }),
             ),
             m(GameProgress, { game }),

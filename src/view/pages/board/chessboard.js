@@ -54,8 +54,8 @@ const ChessBoard = Factory.create('ChessBoard', {
             game  = vnode.attrs.game;
             board = vnode.attrs.board;
             controller = vnode.attrs.controller;
-            chessBoard.disableMoveInput();
-            controller.update(chessBoard);
+            // controller.update();
+            controller.disableInput();
 
             try {
                 // svg may be not yet loaded
@@ -73,11 +73,8 @@ const ChessBoard = Factory.create('ChessBoard', {
             chessBoard
                 .setPosition(board.fen, true)
                 .then( () => {
-                    controller.listen(chessBoard);
-                    // if (game.newmove){
                     controller.onmovefinished(chessBoard);
-                    true && console.log('ChessBoard.onafterupdates.then', chessBoard.getPosition());
-                    // }
+                    controller.enableInput();
                 })
             ;
 

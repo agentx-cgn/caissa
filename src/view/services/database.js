@@ -9,7 +9,7 @@ import Config  from '../data/config';
 import { H }   from './helper';
 import Table   from './table';
 
-const SCHEME = '2020-06-24a';
+const SCHEME = '2020-07-09a';
 
 const tables = 'Boards Games Options Usage'.split(' ');
 const dumps  = {
@@ -63,8 +63,9 @@ const DB =  {
     },
 
     size () {
-        //
+
         let total = 0, len, key;
+
         for(key in localStorage){
             // eslint-disable-next-line no-prototype-builtins
             if(!localStorage.hasOwnProperty(key)){continue;}
@@ -72,6 +73,7 @@ const DB =  {
             total += len;
             // console.log(key.substr(0,50) + ' = '+ (_xLen/1024).toFixed(2)+' KB');
         }
+
         return total;
 
     },

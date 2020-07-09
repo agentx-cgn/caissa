@@ -31,7 +31,6 @@ const Board = Factory.create('Board', {
             DB.Boards.update(uuid, {
                 fen :          Tools.Games.fen(game),
                 captured :     Tools.Games.captured(game),
-                // illustrations: DB.Options.first['board-illustrations'],
             }, true);
             controller = new BoardController(game, board);
 
@@ -42,16 +41,13 @@ const Board = Factory.create('Board', {
             DB.Boards.update(uuid, {
                 fen :          Tools.Games.fen(game),
                 captured :     Tools.Games.captured(game),
-                // illustrations: DB.Options.first['board-illustrations'],
             }, true);
-            // controller.update();
-            controller.updateButtons();
+            controller.update();
 
         } else {
             // means no change...?
             game  = DB.Games.find(uuid);
             board = DB.Boards.find(uuid);
-            controller.updateButtons();
             DEBUG && console.log('Board.view.nochange', { uuid, turn }, lastuuid, lastturn);
             // click on same move
             // eslint-disable-next-line no-debugger

@@ -9,7 +9,7 @@ import ChessClock      from '../../components/chessclock';
 
 import { MARKER_TYPE, INPUT_EVENT_TYPE } from '../../../extern/cm-chessboard/Chessboard';
 
-const DEBUG = false;
+const DEBUG = true;
 
 class Opponent {
     constructor(color, mode) {
@@ -81,10 +81,14 @@ class BoardController {
         this.mode        = game.mode;
         this.chess       = new Chess();
         this.clock       = ChessClock;
-        this.squareMoves = [];
-        this.validMoves  = [];
-        this.illustrations = DB.Options.first['board-illustrations'];
-        this.opponents     = {
+
+        this.squareMoves    = []; // all moves from or to selected square
+        this.validMoves     = []; // these are all possible moves, for current color
+        this.selectedSquare = '';
+        this.selectedPiece  = '';
+
+        this.illustrations  = DB.Options.first['board-illustrations'];
+        this.opponents      = {
             'w': new Opponent('w', this.mode[0]),
             'b': new Opponent('b', this.mode[0]),
             'n': { tomove: () => {}, towait: () => {} },
@@ -94,17 +98,13 @@ class BoardController {
 
     // also called from board.view after new turn, and chessboard.onafterupdates
 
-    update (chessboard) {
+    update () {
 
         this.turn  = ~~this.game.turn;
         this.fen   = Tools.Games.fen(this.game);
         !this.chess.load(this.fen) && console.warn('BoardController.update.load.failed', this.fen);
 
-        this.color      = this.chess.turn();
-        this.validMoves = this.chess.moves({verbose: true});
-
-        DEBUG && console.log('BoardController.update', {uuid: this.uuid, turn: this.turn}, 'validmoves', this.validMoves.length);
-
+        this.color  = this.chess.turn();
         this.tomove = (
             this.turn === -2 ? 'n' :
             this.turn  %   2 ? 'w' : 'b'
@@ -117,36 +117,51 @@ class BoardController {
         this.updateFlags();
         this.updateButtons();
 
-        if (chessboard){
-            this.chessboard = chessboard;
-            // this.updateIllustration();
-        }
+        DEBUG && console.log('BoardController.update.out', {uuid: this.uuid, turn: this.turn, color: this.color});
 
     }
+    updateFlags () {
+        const flags = this.board.flags;
+        const chess = this.chess;
+        flags.turn  = this.turn === -2 ? null : chess.turn();
+        flags.over  = chess.game_over();
+        flags.chck  = chess.in_check();
+        flags.mate  = chess.in_checkmate();
+        flags.draw  = chess.in_draw();
+        flags.stal  = chess.in_stalemate();
+        flags.insu  = chess.insufficient_material();
+        flags.repe  = chess.in_threefold_repetition();
+        // DEBUG && console.log('BoardController.updateFlags.turn', flags.turn);
 
-    listen (chessBoard) {
+    }
+    updateButtons () {
 
-        this.chessBoard = chessBoard;
+        const btns      = this.board.buttons;
+        const lastTurn  = this.game.moves.length -1;
+        const canplay   = (
+            this.mode !== 'h-h' && this.mode !== 'x-x' &&
+            (!this.clock.isTicking() || this.clock.isPaused())
+        );
+        const canpause  = (
+            this.mode !== 'h-h' && this.mode !== 'x-x' &&
+            this.clock.isTicking()
+        );
 
-        if (this.turn !== -2){
+        btns.backward    = this.turn > 0;
+        btns.left        = this.turn > -2;
+        btns.right       = this.turn < lastTurn;
+        btns.forward     = this.turn < lastTurn;
+        btns.play        = canplay;
+        btns.pause       = canpause;
+        btns.rotate      = true;
+        btns.evaluate    = lastTurn > 0 && !this.isRunning;
 
-            const oppToMove = this.opponents[this.tomove];
-            const oppToWait = this.opponents[this.towait];
-
-            if (this.mode === 'x-x'){
-                const dragHandler = oppToMove.dragHandler.bind(oppToMove);
-                this.chessBoard.enableMoveInput(dragHandler, this.color);
-            }
-
-            oppToMove.tomove(this);
-            oppToWait.towait(this);
-
-            true && console.log('BoardController', 'towait:', this.towait, 'tomove:', this.tomove);
-
-        }
+        DB.Boards.update(this.board.uuid, { buttons: btns }, true);
+        //TODO: When is a game terminated?
+        true && console.log('BoardController.updateButtons', 'btn.play', btns.play);
     }
 
-    // Buttons
+    // Button Actions
     play () {
         if (this.clock.isPaused()) {
             this.clock.continue();
@@ -164,18 +179,43 @@ class BoardController {
         Caissa.route('/game/:turn/:uuid/', { turn, uuid: this.game.uuid }, { replace: true });
     }
 
+
+    disableInput () {
+        this.chessBoard.disableMoveInput();
+    }
+    enableInput () {
+
+        if (this.turn !== -2){
+
+            const oppToMove = this.opponents[this.tomove];
+            const oppToWait = this.opponents[this.towait];
+
+            if (this.mode === 'x-x'){
+                const dragHandler = oppToMove.dragHandler.bind(oppToMove);
+                this.chessBoard.enableMoveInput(dragHandler, this.color);
+            }
+
+            oppToMove.tomove(this);
+            oppToWait.towait(this);
+
+            true && console.log('BoardController.enableInput.out', { towait: this.towait, tomove: this.tomove });
+
+        }
+    }
+
     // user clicks/touches board
     onfield (e) {
+
         const idx           = e.target.dataset.index;
         const square        = Tools.Board.squareIndexToField(idx);
-        const squareFilter  = m =>  m.from === this.selectedSquare || m.to === this.selectedSquarere ;
         this.selectedSquare = square !== this.selectedSquare ? square : '';
-        this.squareMoves    = this.validMoves.filter(squareFilter);
-
-        // const piece  = this.chessBoard.getPiece(this.selectedSquare);
-        DEBUG && console.log('Controller.onfield', idx, this.selectedSquare);
-
+        this.selectedPiece  = this.chessBoard.getPiece(this.selectedSquare) || '';
         this.updateIllustration();
+
+        DEBUG && console.log('BoardController.onfield.out', {
+            idx, square: this.selectedSquare, piece: this.selectedPiece,
+        });
+
     }
     onmovestart ( square ) {
         const piece  = this.chessBoard.getPiece(square);
@@ -221,6 +261,8 @@ class BoardController {
 
         DEBUG && console.log('BoardController.onmovedone', move);
     }
+
+    // comes with setPosition.then in chessboard.js, onafterupdates, with every redraw
     onmovefinished (chessBoard) {
 
         this.chessBoard = chessBoard;
@@ -234,52 +276,21 @@ class BoardController {
         }
         this.updateIllustration();
 
-    }
-
-
-    updateFlags () {
-        const flags = this.board.flags;
-        const chess = this.chess;
-        flags.turn  = this.turn === -2 ? null : chess.turn();
-        flags.over  = chess.game_over();
-        flags.chck  = chess.in_check();
-        flags.mate  = chess.in_checkmate();
-        flags.draw  = chess.in_draw();
-        flags.stal  = chess.in_stalemate();
-        flags.insu  = chess.insufficient_material();
-        flags.repe  = chess.in_threefold_repetition();
-        // DEBUG && console.log('BoardController.updateFlags.turn', flags.turn);
+        DEBUG && console.log('BoardController.onmovefinished.out', chessBoard.getPosition());
 
     }
-    updateButtons () {
 
-        const canplay   = (
-            this.mode !== 'h-h' && this.mode !== 'x-x' &&
-            (!this.clock.isTicking() || this.clock.isPaused())
-        );
-        const canpause  = (
-            this.mode !== 'h-h' && this.mode !== 'x-x' &&
-            this.clock.isTicking()
-        );
-
-        const btn       = this.board.buttons;
-        btn.rotate      = true;
-        btn.backward    = this.turn > 0;
-        btn.forward     = this.turn < this.game.moves.length -1;
-        btn.left        = this.turn > -2;
-        btn.right       = this.turn < this.game.moves.length -1;
-        btn.play        = canplay;
-        btn.pause       = canpause;
-        btn.evaluate    = this.game.moves.length > 0 && !this.isRunning;
-        DB.Boards.update(this.board.uuid, { buttons: btn }, true);
-        //TODO: When is a game terminated?
-        true && console.log('BoardController.updateButtons', 'btn.play', btn.play);
-    }
     updateIllustration () {
 
-        this.illustrations = DB.Options.first['board-illustrations'];
+        const squareFilter  = m =>  m.from === this.selectedSquare || m.to === this.selectedSquare ;
 
-        // DEBUG && console.log('BoardController.updateIllustration');
+        this.illustrations  = DB.Options.first['board-illustrations'];
+        this.validMoves     = this.chess.moves({verbose: true});
+        this.squareMoves    = this.validMoves.filter(squareFilter);
+
+        DEBUG && console.log('BoardController.updateIllustration', {
+            square: this.selectedSquare, piece: this.selectedPiece, color: this.color, turn: this.turn, moves: this.squareMoves.length,
+        });
 
         // chessboard on page w/ dn has height 0
         if (this.chessBoard && this.chessBoard.view.height && this.game.turn !== -2){
