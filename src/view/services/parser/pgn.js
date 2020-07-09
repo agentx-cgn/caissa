@@ -55,7 +55,7 @@ const Parser = {
             games.push(game);
         }
 
-        DEBUG && console.log('Info   :', 'Parsed', games.length, 'pgns in', Date.now() - t0, 'msecs');
+        true && console.log('Info   :', 'Parsed', games.length, 'pgns in', Date.now() - t0, 'msecs');
 
         return games;
 

@@ -160,7 +160,7 @@ export default H.deepFreezeCreate({
         {idx: 4, caption: 'localhost:3000/static/games.pgn',       value: 'http://localhost:3000/static/games.pgn'},
     ],
 
-    // still dummies
+    //TODO: still dummies
     openings : [
         {idx: 1, caption: 'OP01', value: 'OP01'},
         {idx: 2, caption: 'OP02', value: 'OP02'},

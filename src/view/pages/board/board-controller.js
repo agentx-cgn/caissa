@@ -119,7 +119,7 @@ class BoardController {
 
         if (chessboard){
             this.chessboard = chessboard;
-            this.updateIllustration();
+            // this.updateIllustration();
         }
 
     }
@@ -232,6 +232,7 @@ class BoardController {
                 this.clock.blackclick();
             }
         }
+        this.updateIllustration();
 
     }
 

@@ -74,10 +74,10 @@ const ChessBoard = Factory.create('ChessBoard', {
                 .setPosition(board.fen, true)
                 .then( () => {
                     controller.listen(chessBoard);
-                    if (game.newmove){
-                        controller.onmovefinished();
-                        DEBUG && console.log('ChessBoard.onafterupdates.then', chessBoard.getPosition());
-                    }
+                    // if (game.newmove){
+                    controller.onmovefinished(chessBoard);
+                    true && console.log('ChessBoard.onafterupdates.then', chessBoard.getPosition());
+                    // }
                 })
             ;
 

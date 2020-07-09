@@ -32,8 +32,10 @@ const Sources = Factory.create('Sources', {
 
                         m('img.source-icon',          {src: provider.icon}),
                         m('div.source-caption.f4',          provider.caption),
-                        m('div.source-subline.f5.ellipsis', provider.subline),
 
+                        provider.subtext
+                            ? m('div.source-subline.f5', provider.subtext)
+                            : m('div.source-subline.f5.ellipsis', provider.subline),
                         provider.games.length
                             ? m('div.games-loaded', provider.games.length + ' games loaded')
                             : '',
@@ -49,6 +51,8 @@ const Sources = Factory.create('Sources', {
                 }),
             ),
             m(HeaderLeft, 'Or download Online Games'),
+            m(Spacer),
+            m(HeaderLeft, 'Or drop a *.pgn file here'),
             m(GrowSpacer),
         ]);
     },

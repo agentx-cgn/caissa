@@ -1,5 +1,5 @@
 
-import pgnECO from '../../../assets/eco.pgn';
+import pgnECO from '../../../assets/openings/eco.pgn';
 
 // {
 //     A PGN file of ECO classifications distributed with the PGN extraction

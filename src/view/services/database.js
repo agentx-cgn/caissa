@@ -59,7 +59,21 @@ const DB =  {
         tables.forEach(tablename => {
             DB[tablename].persist(true);
         });
-        console.log('DB.persist', tables.join(''));
+        console.log('DB.persisted', (DB.size() / 1024).toFixed(2) + ' KB');
+    },
+
+    size () {
+        //
+        let total = 0, len, key;
+        for(key in localStorage){
+            // eslint-disable-next-line no-prototype-builtins
+            if(!localStorage.hasOwnProperty(key)){continue;}
+            len = ((localStorage[key].length + key.length) * 2);
+            total += len;
+            // console.log(key.substr(0,50) + ' = '+ (_xLen/1024).toFixed(2)+' KB');
+        }
+        return total;
+
     },
 
     init () {
