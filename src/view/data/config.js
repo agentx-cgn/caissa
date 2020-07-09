@@ -25,7 +25,7 @@ const gametemplate = {
     mode:        'h-h',
     turn:         -1,
     moves:        [],
-    newmove:      '',
+    // newmove:      '',
     score: {
         maxcp:    0,
         maxmate:  0,
@@ -198,7 +198,7 @@ export default H.deepFreezeCreate({
                 url:                board_svg ,     // pieces and markers are stored es svg in the sprite
                 grid:               40,             // the sprite is tiled with one piece every 40px
                 markers:            [
-                    'marker4', 'marker5', 'selected',
+                    'marker4', 'marker5', 'selectedmoves', 'selectednomoves',
                 ],
             },
             responsive:             true,           // resizes the board on window resize, if true

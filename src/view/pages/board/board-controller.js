@@ -3,7 +3,7 @@ import Chess           from 'chess.js';
 import Caissa          from '../../caissa';
 import Config          from '../../data/config';
 import DB              from '../../services/database';
-import { H }           from '../../services/helper';
+import { H, $$ }       from '../../services/helper';
 import Tools           from '../../tools/tools';
 import ChessClock      from '../../components/chessclock';
 
@@ -17,21 +17,19 @@ class Opponent {
         this.mode  = mode;  // x, h, s,
     }
     update (controller) {
-        this.fen          = Tools.Games.fen(controller.game);
-        this.chess        = new Chess();
+        this.controller = controller;
+        this.fen        = Tools.Games.fen(controller.game);
+        this.chess      = new Chess();
         !this.chess.load(this.fen) && console.warn('Opponent.update.load.failed', this.fen);
     }
-    tomove (controller) {
-        this.update(controller);
-        this.movedone     = controller.onmovedone.bind(controller);
-        this.movestart    = controller.onmovestart.bind(controller);
-        this.movecancel   = controller.onmovecancel.bind(controller);
-        DEBUG && console.log('Opponent.tomove', {color: this.color, mode: this.mode});
-    }
-    towait (controller) {
-        this.update(controller);
-        DEBUG && console.log('Opponent.towait', {color: this.color, mode: this.mode});
-    }
+    // tomove (controller) {
+    //     this.update(controller);
+    //     DEBUG && console.log('Opponent.tomove', {color: this.color, mode: this.mode});
+    // }
+    // towait (controller) {
+    //     this.update(controller);
+    //     DEBUG && console.log('Opponent.towait', {color: this.color, mode: this.mode});
+    // }
     dragHandler(event) {
 
         // DEBUG && console.log('dragHandler.event', this.color, event.type);
@@ -39,8 +37,7 @@ class Opponent {
         let move, result;
         switch (event.type) {
         case INPUT_EVENT_TYPE.moveStart:
-
-            this.movestart(event.square);
+            this.controller.listener.onmovestart(event.square);
             return true;
 
         case INPUT_EVENT_TYPE.moveDone:
@@ -53,17 +50,17 @@ class Opponent {
                 const fullmove = this.chess.history({verbose: true}).slice(-1)[0];
                 const pgn = this.chess.pgn().trim();
                 fullmove.fen = this.chess.fen();
-                this.movedone(fullmove, pgn);
+                this.controller.listener.onmovedone(fullmove, pgn);
 
             } else {
-                DEBUG && console.log(this.chess.ascii());
-                DEBUG && console.log('Opponent.illegal.move: ', this.color, move, result);
+                // DEBUG && console.log(this.chess.ascii());
+                DEBUG && console.warn('Opponent.illegal.move: ', this.color, move, result);
             }
 
             return !!result;
 
         case INPUT_EVENT_TYPE.moveCanceled:
-            this.movecancel();
+            this.controller.listener.onmovecancel();
         }
 
     }
@@ -82,6 +79,8 @@ class BoardController {
         this.chess       = new Chess();
         this.clock       = ChessClock;
 
+        this.listening = false;
+
         this.squareMoves    = []; // all moves from or to selected square
         this.validMoves     = []; // these are all possible moves, for current color
         this.selectedSquare = '';
@@ -90,8 +89,14 @@ class BoardController {
         this.illustrations  = DB.Options.first['board-illustrations'];
         this.opponents      = {
             'w': new Opponent('w', this.mode[0]),
-            'b': new Opponent('b', this.mode[0]),
-            'n': { tomove: () => {}, towait: () => {} },
+            'b': new Opponent('b', this.mode[2]),
+            'n': { update: () => {} },
+        };
+        this.listener = {
+            onmousedown:  this.onmousedown.bind(this),
+            onmovedone:   this.onmovedone.bind(this),
+            onmovestart:  this.onmovestart.bind(this),
+            onmovecancel: this.onmovecancel.bind(this),
         };
         this.update();
     }
@@ -113,6 +118,12 @@ class BoardController {
             this.turn === -2 ? 'n' :
             this.turn  %   2 ? 'b' : 'w'
         );
+
+        // forget recent onfield clicks
+        this.selectedSquare = '';
+        this.selectedPiece  = '';
+        this.squareMoves    = [];
+        this.validMoves     = [];
 
         this.updateFlags();
         this.updateButtons();
@@ -179,9 +190,10 @@ class BoardController {
         Caissa.route('/game/:turn/:uuid/', { turn, uuid: this.game.uuid }, { replace: true });
     }
 
-
     disableInput () {
+        this.listening = false;
         this.chessBoard.disableMoveInput();
+        $$('div.chessboard').removeEventListener('mousedown', this.listener.onmousedown);
     }
     enableInput () {
 
@@ -195,16 +207,22 @@ class BoardController {
                 this.chessBoard.enableMoveInput(dragHandler, this.color);
             }
 
-            oppToMove.tomove(this);
-            oppToWait.towait(this);
+            $$('div.chessboard').addEventListener('mousedown', this.listener.onmousedown);
+
+            oppToMove.update(this);
+            oppToWait.update(this);
 
             true && console.log('BoardController.enableInput.out', { towait: this.towait, tomove: this.tomove });
 
         }
+        this.listening = true;
     }
 
     // user clicks/touches board
-    onfield (e) {
+    // fired after mouseup, so ignore if just rerouted
+    onmousedown (e) {
+
+        DEBUG && console.log('BoardController.onmousedown.in');
 
         const idx           = e.target.dataset.index;
         const square        = Tools.Board.squareIndexToField(idx);
@@ -212,8 +230,8 @@ class BoardController {
         this.selectedPiece  = this.chessBoard.getPiece(this.selectedSquare) || '';
         this.updateIllustration();
 
-        DEBUG && console.log('BoardController.onfield.out', {
-            idx, square: this.selectedSquare, piece: this.selectedPiece,
+        DEBUG && console.log('BoardController.onmousedown.out', {
+            listening: this.listening, square: this.selectedSquare, piece: this.selectedPiece,
         });
 
     }
@@ -251,7 +269,7 @@ class BoardController {
                 // throw away all moves after this new one
                 this.game.moves.splice(this.turn +1);
             }
-            this.game.newmove = move;
+            // this.game.newmove = move;
             this.game.moves.push(move);
             this.game.turn = move.turn;
             DB.Games.update(this.game.uuid, this.game, true);
@@ -282,7 +300,7 @@ class BoardController {
 
     updateIllustration () {
 
-        const squareFilter  = m =>  m.from === this.selectedSquare || m.to === this.selectedSquare ;
+        const squareFilter  = m =>  m.from === this.selectedSquare || m.to === this.selectedSquare;
 
         this.illustrations  = DB.Options.first['board-illustrations'];
         this.validMoves     = this.chess.moves({verbose: true});
@@ -365,7 +383,11 @@ class BoardController {
         const markerType = this.color === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack;
 
         if (this.selectedSquare){
-            this.chessBoard.addMarker(this.selectedSquare, MARKER_TYPE.selected);
+            if (this.squareMoves.length){
+                this.chessBoard.addMarker(this.selectedSquare, MARKER_TYPE.selectedmoves);
+            } else {
+                this.chessBoard.addMarker(this.selectedSquare, MARKER_TYPE.selectednomoves);
+            }
         }
 
         if (illus.attack){

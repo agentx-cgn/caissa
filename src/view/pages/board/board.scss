@@ -53,8 +53,11 @@ svg.cm-chessboard rect.border {
     fill: white;
     opacity: 0.5; }
 
-  .cm-chessboard .markers .marker.selected {
+  .cm-chessboard .markers .marker.selectedmoves {
     fill: green;
+    opacity: 0.3; }
+  .cm-chessboard .markers .marker.selectednomoves {
+    fill: red;
     opacity: 0.3; }
 
   .cm-chessboard .caissa-arrows {
