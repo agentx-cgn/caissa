@@ -7,7 +7,7 @@ import GamesList     from '../../components/gameslist';
 
 import { ListFilter, FlexListEntry, PageTitle } from '../../components/misc';
 
-const DEBUG = true;
+const DEBUG = false;
 
 const read  = H.interprete;
 let filter  = '';
@@ -16,10 +16,10 @@ const Games = Factory.create('Games', {
 
     oninit ( vnode ) {
 
-        const { params: { idx } } = vnode.attrs;
+        const { params: { idx='0' } } = vnode.attrs;
         const provider = Providers.find( p => p.idx === ~~idx );
 
-        DEBUG && console.log('Games.oninit', idx, provider.caption);
+        DEBUG && console.log('Games.oninit', {idx, caption: provider.caption});
 
         //TODO: handle deeplinks
         if ( !provider.games.length ) {

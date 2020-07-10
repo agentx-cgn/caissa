@@ -1,5 +1,7 @@
 // TODO: realize other timecontrols w/ time budgets per player
 
+import './chessclock.scss';
+
 import { H }     from '../services/helper';
 import Factory   from './factory';
 
@@ -8,23 +10,23 @@ const DEBUG = true;
 const now      = Date.now;
 const template = { format: H.msec2HMS, pressure: false, consumed: 0, budget: 0 };
 
-let turn, start, isPausing, interval, counter, divisor, timebonus, pressure, lastTimestamp;
+let turn, start, onover, isPausing, interval, counter, divisor, timebonus, pressure, lastTimestamp;
 let domBlack, domWhite, domTotal;
 
 let white = H.clone(template);
 let black = H.clone(template);
 
 const ChessClock = Factory.create('ChessClock', {
-    start (clock) {
+    start (clock, onclockover) {
 
         turn          = 'w';
         timebonus     = ~~clock.timecontrol.bonus; // msecs
         counter       = 0;
         divisor       = 5;
-        lastTimestamp = now();
-        start         = now();
+        start         = lastTimestamp = now();
         pressure      = 10 * 1000;
         isPausing     = false;
+        onover        = onclockover;
 
         white = H.clone(template, { budget: clock.white });
         white.format = H.msec2HMS;
@@ -34,7 +36,7 @@ const ChessClock = Factory.create('ChessClock', {
         interval && clearInterval(interval);
         interval  = setInterval(ChessClock.tick, 100);
 
-        DEBUG && console.log('ChessClock.start', clock);
+        DEBUG && console.log('ChessClock.start', {turn, clock});
 
     },
     isTicking() {
@@ -53,12 +55,14 @@ const ChessClock = Factory.create('ChessClock', {
         isPausing = false;
         interval && clearInterval(interval);
         interval  = setInterval(ChessClock.tick, 100);
+        DEBUG && console.log('ChessClock.continue', {turn});
     },
     pause () {
         ChessClock.tick();
         isPausing = true;
         clearInterval(interval);
         interval = 0;
+        DEBUG && console.log('ChessClock.pause', {turn});
     },
 
     tick () {
@@ -84,10 +88,11 @@ const ChessClock = Factory.create('ChessClock', {
 
         // that's it, game over
         if (white.consumed >= white.budget || black.consumed >= black.budget){
-            ChessClock.render();
             clearInterval(interval);
-            interval = 0;
-            ChessClock.over && ChessClock.over(white.budget, black.budget);
+            interval  = 0;
+            isPausing = false;
+            ChessClock.render();
+            onover && onover(white.budget, black.budget);
         }
 
         // don't update too often
@@ -111,10 +116,12 @@ const ChessClock = Factory.create('ChessClock', {
 
     },
     white () {
-        return (isPausing || interval) ? white.format(white.budget - white.consumed) : '0:00:00';
+        // return (isPausing || interval) ? white.format(white.budget - white.consumed) + 'w': '0:00:00';
+        return white.format ? white.format(white.budget - white.consumed) : '0:00:00';
     },
     black () {
-        return (isPausing || interval) ? black.format(black.budget - black.consumed) : '0:00:00';
+        // return (isPausing || interval) ? black.format(black.budget - black.consumed) + 'b' : '0:00:00';
+        return black.format ? black.format(black.budget - black.consumed) : '0:00:00';
     },
     total () {
         return (isPausing || interval) ? H.msec2HMSm(now() - start) : '0:00:00';
@@ -124,6 +131,13 @@ const ChessClock = Factory.create('ChessClock', {
         if (player === 'w'){domWhite = vnode.dom;}
         if (player === 'b'){domBlack = vnode.dom;}
         if (player === '*'){domTotal = vnode.dom;}
+    },
+    onupdate ( vnode ) {
+        const { player } = vnode.attrs;
+        if (player === 'w'){domWhite = vnode.dom;}
+        if (player === 'b'){domBlack = vnode.dom;}
+        if (player === '*'){domTotal = vnode.dom;}
+        console.log('Clock.onupdate', player );
     },
     render () {
         domWhite && m.render(domWhite, ChessClock.white());
@@ -145,6 +159,8 @@ const ChessClock = Factory.create('ChessClock', {
             player === 'b' ? ChessClock.black() :
             ChessClock.total()
         ;
+
+        console.log('Clock.view', {player});
 
         return m('div.clock', { className }, time);
 

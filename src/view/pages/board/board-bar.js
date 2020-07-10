@@ -2,11 +2,15 @@
 import Factory      from '../../components/factory';
 import ChessClock   from '../../components/chessclock';
 
+const DEBUG = true;
+
 const BoardBar = Factory.create('BoardBar', {
     view (vnode) {
 
         const { game, board, pos, player } = vnode.attrs;
         const style = 'letter-spacing: -8px; font-size: 1.5rem;';
+
+        DEBUG && console.log('BoardBar', { player, orientation: board.orientation});
 
         if (player === 'w') {
 

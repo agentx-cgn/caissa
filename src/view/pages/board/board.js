@@ -49,6 +49,9 @@ const Board = Factory.create('Board', {
             game  = DB.Games.find(uuid);
             board = DB.Boards.find(uuid);
             DEBUG && console.log('Board.view.nochange', { uuid, turn }, lastuuid, lastturn);
+            controller.updateButtons();
+            controller.updateFlags();
+            // actvated clock
             // click on same move
             // eslint-disable-next-line no-debugger
             // debugger;

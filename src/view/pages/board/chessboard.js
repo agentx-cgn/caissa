@@ -16,8 +16,6 @@ const ChessBoard = Factory.create('ChessBoard', {
         game  = vnode.attrs.game;
         board = vnode.attrs.board;
         controller = vnode.attrs.controller;
-        // $$('div.chessboard').addEventListener('click', controller.onfield.bind(controller));
-        // $$('div.chessboard').addEventListener('touchdown', controller.onfield.bind(controller));
 
         chessBoard = new Chessboard(
             $$('div.chessboard'),
@@ -27,6 +25,7 @@ const ChessBoard = Factory.create('ChessBoard', {
             chessBoard.disableContextInput();
             Tools.Board.resize(innerWidth, innerHeight);
             chessBoard.view.handleResize();
+            chessBoard.setOrientation(board.orientation);
             DEBUG && console.log('ChessBoard.oncreate.then');
         });
     },
@@ -54,6 +53,7 @@ const ChessBoard = Factory.create('ChessBoard', {
             game  = vnode.attrs.game;
             board = vnode.attrs.board;
             controller = vnode.attrs.controller;
+            chessBoard.disableMoveInput();
             controller.disableInput();
 
             try {
