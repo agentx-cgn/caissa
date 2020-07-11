@@ -12,39 +12,39 @@ export const COLOR = {
     black: "b"
 }
 export const MOVE_INPUT_MODE = {
-    viewOnly: 0,
-    dragPiece: 1,
+    viewOnly:   0,
+    dragPiece:  1,
     dragMarker: 2
 }
 export const INPUT_EVENT_TYPE = {
-    moveStart: "moveStart",
-    moveDone: "moveDone",
+    moveStart:    "moveStart",
+    moveDone:     "moveDone",
     moveCanceled: "moveCanceled",
-    context: "context"
+    context:      "context"
 }
 export const MARKER_TYPE = {
-    move:       {class: "move",      slice: "marker1"},
-    emphasize:  {class: "emphasize", slice: "marker2"},
-    pointer:    {class: "pointer",   slice: "marker3"},
-    rectwhite:  {class: "rectwhite", slice: "marker4"},
-    rectblack:  {class: "rectblack", slice: "marker5"},
+    move:            {class: "move",             slice: "marker1"},
+    emphasize:       {class: "emphasize",        slice: "marker2"},
+    pointer:         {class: "pointer",          slice: "marker3"},
+    rectwhite:       {class: "rectwhite",        slice: "marker4"},
+    rectblack:       {class: "rectblack",        slice: "marker5"},
     selectedmoves:   {class: "selectedmoves",    slice: "selectedmoves"},
     selectednomoves: {class: "selectednomoves",  slice: "selectednomoves"}
 }
 
 export const PIECE = {
-    whitePawn: "wp",
+    whitePawn:   "wp",
     whiteBishop: "wb",
     whiteKnight: "wn",
-    whiteRook: "wr",
-    whiteQueen: "wq",
-    whiteKing: "wk",
-    blackPawn: "bp",
+    whiteRook:   "wr",
+    whiteQueen:  "wq",
+    whiteKing:   "wk",
+    blackPawn:   "bp",
     blackBishop: "bb",
     blackKnight: "bn",
-    blackRook: "br",
-    blackQueen: "bq",
-    blackKing: "bk",
+    blackRook:   "br",
+    blackQueen:  "bq",
+    blackKing:   "bk",
 }
 export const FEN_START_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 export const FEN_EMPTY_POSITION = "8/8/8/8/8/8/8/8"

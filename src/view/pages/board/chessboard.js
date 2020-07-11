@@ -7,14 +7,13 @@ import Tools          from '../../tools/tools';
 
 const DEBUG = false;
 
-let chessBoard, board, game, controller;
+let chessBoard, board, controller;
 
 const ChessBoard = Factory.create('ChessBoard', {
     onresize : Tools.Board.resize,
     oncreate ( vnode ) {
 
-        game  = vnode.attrs.game;
-        board = vnode.attrs.board;
+        board      = vnode.attrs.board;
         controller = vnode.attrs.controller;
 
         chessBoard = new Chessboard(
@@ -29,62 +28,46 @@ const ChessBoard = Factory.create('ChessBoard', {
             DEBUG && console.log('ChessBoard.oncreate.then');
         });
     },
+    view (  ) {
+        return m('div.chessboard');
+    },
+    onupdate ( vnode ) {
+
+        board      = vnode.attrs.board;
+        controller = vnode.attrs.controller;
+
+        controller.stopListening(chessBoard);
+
+        try {
+            // svg may be not yet loaded
+            chessBoard.view.handleResize();
+        } catch(e){DEBUG && console.log('ChessBoard.onupdate.handleResize', e);}
+
+        chessBoard.setOrientation(board.orientation);
+
+        DEBUG && console.log('ChessBoard.onupdate.cbgb', !!chessBoard,  !!board);
+
+    },
+    onafterupdates () {
+
+        chessBoard
+            .setPosition(board.fen, true)
+            .then( () => {
+                controller.onafterupdates(chessBoard);
+            })
+        ;
+
+    },
+
     onbeforeremove () {
 
-        $$('div.chessboard').removeEventListener('mousedown', controller.onfield);
-        $$('div.chessboard').removeEventListener('touchdown', controller.onfield);
+        $$('div.chessboard').removeEventListener('mousedown', controller.listener.onmousedown);
+        $$('div.chessboard').removeEventListener('touchdown', controller.listener.ontouchdown);
 
         return chessBoard.destroy().then( () => {
             chessBoard = undefined;
             DEBUG && console.log('chessboard.destroyed');
         });
-
-    },
-    view (  ) {
-        DEBUG && console.log('ChessBoard.view.cbgb', !!chessBoard, !!game, !!board);
-        return m('div.chessboard');
-    },
-    onupdate ( vnode ) {
-        if (!chessBoard) {
-            // eslint-disable-next-line no-debugger
-            debugger;
-
-        } else {
-            game  = vnode.attrs.game;
-            board = vnode.attrs.board;
-            controller = vnode.attrs.controller;
-            chessBoard.disableMoveInput();
-            controller.disableInput();
-
-            try {
-                // svg may be not yet loaded
-                chessBoard.view.handleResize();
-            } catch(e){DEBUG && console.log('ChessBoard.onupdate.handleResize', e);}
-
-            (chessBoard.getOrientation() !== board.orientation) && chessBoard.setOrientation(board.orientation);
-            DEBUG && console.log('ChessBoard.onupdate.cbgb', !!chessBoard, !!game, !!board);
-        }
-
-    },
-    onafterupdates () {
-
-        if (chessBoard && game && board) {
-            chessBoard
-                .setPosition(board.fen, true)
-                .then( () => {
-                    controller.onmovefinished(chessBoard);
-                    controller.enableInput();
-                // }).then( () => {
-                //     setTimeout( () => {
-                //         console.log('huhu');
-                //     });
-                })
-            ;
-
-        } else {
-            DEBUG && console.warn('ChessBoard.onafterupdates.cbgb', !!chessBoard, !!game, !!board);
-
-        }
 
     },
 

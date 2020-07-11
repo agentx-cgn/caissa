@@ -80,7 +80,6 @@ export class ChessboardView {
             Svg.loadSprite(props.sprite.url, [
                 "wk", "wq", "wr", "wb", "wn", "wp",
                 "bk", "bq", "br", "bb", "bn", "bp",
-                // "marker1", "marker2", "marker3"
                 ...this.illustrator.sprites
                 ].concat(props.sprite.markers), () => {
                 ChessboardView.spriteLoadingStatus = SPRITE_LOADING_STATUS.loaded

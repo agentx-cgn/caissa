@@ -15,6 +15,7 @@ class Opponent {
     constructor(color, mode) {
         this.color = color; // w, b, n
         this.mode  = mode;  // x, h, s,
+        DEBUG && console.log('Opponent.create', {color: this.color, mode: this.mode});
     }
     update (controller) {
         this.controller = controller;
@@ -63,22 +64,18 @@ class BoardController {
 
     constructor (game, board) {
 
-        this.mode        = game.mode;
-        this.uuid        = game.uuid;
-        this.game        = game;
-        this.board       = board;
-        this.mode        = game.mode;
-        this.chess       = new Chess();
-        this.clock       = ChessClock;
-
-        this.newmove     = '';
-
-        this.listening = false;
-
-        this.squareMoves    = []; // all moves from or to selected square
-        this.validMoves     = []; // these are all possible moves, for current color
+        this.mode           = game.mode;
+        this.uuid           = game.uuid;
+        this.game           = game;
+        this.board          = board;
+        this.mode           = game.mode;
+        this.chess          = new Chess();
+        this.clock          = ChessClock;
+        this.newmove        = '';
         this.selectedSquare = '';
         this.selectedPiece  = '';
+        this.squareMoves    = []; // all moves from or to selected square
+        this.validMoves     = []; // these are all possible moves, for current color
 
         this.illustrations  = DB.Options.first['board-illustrations'];
         this.opponents      = {
@@ -88,6 +85,7 @@ class BoardController {
         };
         this.listener = {
             onmousedown:  this.onmousedown.bind(this),
+            ontouchdown:  this.ontouchdown.bind(this),
             onmovedone:   this.onmovedone.bind(this),
             onmovestart:  this.onmovestart.bind(this),
             onmovecancel: this.onmovecancel.bind(this),
@@ -190,12 +188,13 @@ class BoardController {
         Caissa.route('/game/:turn/:uuid/', { turn, uuid: this.game.uuid }, { replace: true });
     }
 
-    disableInput () {
-        this.listening = false;
-        // this.chessBoard.disableMoveInput();
+    // called from board.onupdate
+    stopListening (chessBoard) {
+        chessBoard.disableMoveInput();
         $$('div.chessboard').removeEventListener('mousedown', this.listener.onmousedown);
+        $$('div.chessboard').removeEventListener('touchdown', this.listener.ontouchdown);
     }
-    enableInput () {
+    startListening () {
 
         if (this.turn !== -2){
 
@@ -208,17 +207,21 @@ class BoardController {
             }
 
             $$('div.chessboard').addEventListener('mousedown', this.listener.onmousedown);
+            $$('div.chessboard').addEventListener('touchdown', this.listener.ontouchdown);
 
             oppToMove.update(this);
             oppToWait.update(this);
 
-            // DEBUG && console.log('BoardController.enableInput.out', { towait: this.towait, tomove: this.tomove });
+            // DEBUG && console.log('BoardController.startListening.out', { towait: this.towait, tomove: this.tomove });
 
         }
-        this.listening = true;
+
     }
 
     // user clicks board //TODO: touches
+    ontouchdown () {
+
+    }
     onmousedown (e) {
 
         const idx           = e.target.dataset.index;
@@ -228,7 +231,7 @@ class BoardController {
         this.updateIllustration();
 
         DEBUG && console.log('BoardController.onmousedown.out', {
-            listening: this.listening, square: this.selectedSquare, piece: this.selectedPiece,
+            square: this.selectedSquare, piece: this.selectedPiece,
         });
 
     }
@@ -277,24 +280,26 @@ class BoardController {
         DEBUG && console.log('BoardController.onmovedone', move);
     }
 
-    // comes with setPosition.then in chessboard.js, onafterupdates, with every redraw
-    onmovefinished (chessBoard) {
+    // comes with with every redraw
+    onafterupdates (chessBoard) {
 
         this.chessBoard = chessBoard;
 
         // if clock and move => 'press' clock
         if (this.newmove && this.clock.isTicking()){
-            if (this.color === 'w'){
-                this.clock.whiteclick();
-            } else {
-                this.clock.blackclick();
-            }
-        }
-        // ack the move
-        this.newmove = '';
-        this.updateIllustration();
 
-        // DEBUG && console.log('BoardController.onmovefinished.out', chessBoard.getPosition());
+            this.color === 'w' && this.clock.whiteclick();
+            this.color === 'b' && this.clock.blackclick();
+
+            // mark move as done
+            this.newmove = '';
+
+        }
+
+        this.updateIllustration();
+        this.startListening();
+
+        // DEBUG && console.log('BoardController.onafterupdates.out');
 
     }
 
@@ -314,7 +319,13 @@ class BoardController {
         if (this.chessBoard && this.chessBoard.view.height && this.game.turn !== -2){
 
             this.chessBoard.removeArrows( null );
-            this.chessBoard.removeMarkers( null, null);
+
+            // keep internal markers (move, emphasize)
+            this.chessBoard.removeMarkers( null, MARKER_TYPE.rectwhite);
+            this.chessBoard.removeMarkers( null, MARKER_TYPE.rectblack);
+            this.chessBoard.removeMarkers( null, MARKER_TYPE.selectedmoves);
+            this.chessBoard.removeMarkers( null, MARKER_TYPE.selectednomoves);
+
             this.updateArrows();
             this.updateMarker();
 
@@ -379,8 +390,7 @@ class BoardController {
         // marker need to be implemented/referenced in
         // Config.board, MARKER_TYPE and cm-chessboard/chessboard-sprite.svg
 
-        const illus      = this.illustrations;
-        const markerType = this.color === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack;
+        const illus = this.illustrations;
 
         if (this.selectedSquare){
             if (this.squareMoves.length){
@@ -392,7 +402,7 @@ class BoardController {
 
         if (illus.attack){
             this.validMoves.forEach( square => {
-                this.chessBoard.addMarker(square.to, markerType);
+                this.chessBoard.addMarker(square.to, this.color === 'w' ? MARKER_TYPE.rectwhite : MARKER_TYPE.rectblack);
             });
         }
 
