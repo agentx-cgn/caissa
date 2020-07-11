@@ -160,14 +160,15 @@ const Plays = Factory.create('Plays', {
                             ,
                         ]);
 
-                    })),
+                    }))
+                ,
 
                 m(HeaderLeft, 'Resume a Game [' + DB.Games.filter(dbgame).length + ']'),
                 m(FlexListShrink, DB.Games.filter(dbgame).map ( play => {
 
                     const onclick = e => {
                         e.redraw = false;
-                        Caissa.route('/play/:uuid/', { uuid: play.uuid });
+                        Caissa.route('/game/:turn/:uuid/', { turn: play.moves.length -1, uuid: play.uuid });
                     };
 
                     const ondelete = e => {

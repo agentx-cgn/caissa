@@ -203,8 +203,8 @@ export default H.deepFreezeCreate({
             },
             responsive:             true,           // resizes the board on window resize, if true
             animationDuration:      300,            // pieces animation duration in milliseconds
-            // moveInputMode:          MOVE_INPUT_MODE.dragPiece, // set to MOVE_INPUT_MODE.dragPiece or MOVE_INPUT_MODE.dragMarker for interactive movement
-            moveInputMode:          MOVE_INPUT_MODE.dragMarker, // set to MOVE_INPUT_MODE.dragPiece or MOVE_INPUT_MODE.dragMarker for interactive movement
+            moveInputMode:          MOVE_INPUT_MODE.dragPiece, // set to MOVE_INPUT_MODE.dragPiece or MOVE_INPUT_MODE.dragMarker for interactive movement
+            // moveInputMode:          MOVE_INPUT_MODE.dragMarker, // set to MOVE_INPUT_MODE.dragPiece or MOVE_INPUT_MODE.dragMarker for interactive movement
         },
     },
 

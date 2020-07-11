@@ -33,6 +33,7 @@ const Board = Factory.create('Board', {
                 captured :     Tools.Games.captured(game),
             }, true);
             controller = new BoardController(game, board);
+            controller.allocateOpponents();
 
         } else if (turn !== lastturn) {
             // new turn

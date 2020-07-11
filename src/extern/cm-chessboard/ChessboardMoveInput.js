@@ -190,7 +190,7 @@ export class ChessboardMoveInput {
 
     moveDragablePiece(x, y) {
         this.dragablePiece.setAttribute("style",
-            `pointer-events: none; position: absolute; left: ${x - (this.view.squareHeight / 2)}px; top: ${y - (this.view.squareHeight / 2)}px`)
+            `z-index: 40; pointer-events: none; position: absolute; left: ${x - (this.view.squareHeight / 2)}px; top: ${y - (this.view.squareHeight / 2)}px`)
     }
 
     onPointerDown(e) {
