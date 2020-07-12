@@ -84,10 +84,10 @@ const playerIcons = function (mode) {
     const fish  = m('i.f6.fa.fa-fish.fa-rotate-270');
     const human = m('i.f6.fa.fa-user');
     return (
-        mode === 'x-x' ? m('span.pr2', {style: 'vertical-align: text-bottom' }, m('[', [ human, ' - ', human ]))  :
-        mode === 's-s' ? m('span.pr2', {style: 'vertical-align: text-bottom' }, m('[', [ fish,  ' - ', fish  ]))  :
-        mode === 'h-s' ? m('span.pr2', {style: 'vertical-align: text-bottom' }, m('[', [ human, ' - ', fish  ]))  :
-        mode === 's-h' ? m('span.pr2', {style: 'vertical-align: text-bottom' }, m('[', [ fish,  ' - ', human ]))  :
+        mode === 'x-x' ? m('span.pr2.v-txt-btm', m('[', [ human, ' - ', human ]))  :
+        mode === 's-s' ? m('span.pr2.v-txt-btm', m('[', [ fish,  ' - ', fish  ]))  :
+        mode === 'h-s' ? m('span.pr2.v-txt-btm', m('[', [ human, ' - ', fish  ]))  :
+        mode === 's-h' ? m('span.pr2.v-txt-btm', m('[', [ fish,  ' - ', human ]))  :
         m('span', 'wtf')
     );
 };
@@ -101,7 +101,7 @@ const PlayListEntry = {
         return m(FlexListEntry, { className, onclick }, [
             playerIcons(play.mode),
             m('span.fiom.f4', play.header.White + ' vs ' + play.header.Black),
-            m('div.f5.fior.pv1',  H.date2isoLocal(new Date(play.timestamp)), m('i.f6.fa.fa-trash-alt.pl4', { onclick: ondelete })),
+            m('div.f5.fior.pv1',  H.date2isoLocal(new Date(play.timestamp)), m('i.fa.fa-trash-alt.f6.pl4', { onclick: ondelete })),
             play.opening
                 ? m('div.f5.fior.pv1', `OP: ${play.opening.label}` )
                 : '',
@@ -168,12 +168,14 @@ const Plays = Factory.create('Plays', {
 
                     const onclick = e => {
                         e.redraw = false;
-                        Caissa.route('/game/:turn/:uuid/', { turn: play.moves.length -1, uuid: play.uuid });
+                        const uuid = play.uuid, turn = play.moves.length -1;
+                        Caissa.route('/game/:turn/:uuid/', { turn, uuid });
                     };
 
                     const ondelete = e => {
                         DEBUG && console.log('plays.ondelete', play.uuid);
                         e.redraw = false;
+                        // TODO: check delete boards, too
                         DB.Games.delete(play.uuid);
                         Caissa.redraw();
                         return H.eat(e);
@@ -184,7 +186,10 @@ const Plays = Factory.create('Plays', {
                 })),
 
                 m(GrowSpacer),
-                m(FixedButton, { onclick: () => DB.Games.delete(dbgame) }, 'DB.Plays.clear()' ),
+                m(FixedButton, { onclick: () => {
+                    // TODO: check delete boards, too
+                    DB.Games.delete(dbgame);
+                }}, 'DB.Plays.clear()' ),
             ]),
 
         ]);

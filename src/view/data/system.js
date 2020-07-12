@@ -31,6 +31,7 @@ const system = {
     vibration:     !!window.navigator.vibrate,
     localStorage : !!window.localStorage,
     serviceWorker: !!navigator.serviceWorker,
+    storageEstimate: navigator.storage && navigator.storage.estimate,
 
     fullscreen : function () {
         return !!(document.fullscreenEnabled ||

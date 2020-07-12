@@ -2,7 +2,7 @@
 import Factory      from '../../components/factory';
 import ChessClock   from '../../components/chessclock';
 
-const DEBUG = true;
+const DEBUG = false;
 
 const BoardBar = Factory.create('BoardBar', {
     view (vnode) {

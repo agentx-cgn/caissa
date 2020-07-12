@@ -94,25 +94,47 @@ class BoardController {
     }
     updateButtons () {
 
-        const btns      = this.board.buttons;
-        const lastTurn  = this.game.moves.length -1;
-        const canplay   = (
-            this.mode !== 'h-h' && this.mode !== 'x-x' &&
-            (!this.clock.isTicking() || this.clock.isPaused())
-        );
-        const canpause  = (
-            this.mode !== 'h-h' && this.mode !== 'x-x' &&
-            this.clock.isTicking()
-        );
+        // button pairs are tri-state (play/pause, evaluate/spinner)
+        // null  => .dn
+        // false => .disabled
+        // true  => .enabled
 
-        btns.backward    = this.turn > 0;
-        btns.left        = this.turn > -2;
-        btns.right       = this.turn < lastTurn;
-        btns.forward     = this.turn < lastTurn;
-        btns.play        = canplay;
-        btns.pause       = canpause;
-        btns.rotate      = true;
-        btns.evaluate    = lastTurn > 0 && !this.isRunning;
+        const btns     = this.board.buttons;
+        const lastTurn = this.game.moves.length -1;
+
+        // always possible
+        btns.rotate = true;
+
+        // default
+        btns.play  = false;
+        btns.pause = null;
+
+        // game with timecontrol and not empty board
+        if ( this.mode !== 'h-h' && this.mode !== 'x-x' && this.turn > -2 ){
+
+            btns.play       = true;
+            btns.pause      = null;
+
+            if ( this.clock.isTicking() ) {
+                btns.play       = null;
+                btns.pause      = true;
+            }
+            // if ( this.clock.isPaused() ) {
+            //     btns.play       = true;
+            //     btns.pause      = null;
+            // }
+
+        }
+
+        // eval / spinner
+        btns.spinner   = null;
+        btns.evaluate  = lastTurn > 0 && !this.isRunning;
+
+        // game moves navigation
+        btns.backward  = this.turn > 0;
+        btns.left      = this.turn > -2;
+        btns.right     = this.turn < lastTurn;
+        btns.forward   = this.turn < lastTurn;
 
         DB.Boards.update(this.board.uuid, { buttons: btns }, true);
         //TODO: When is a game terminated?

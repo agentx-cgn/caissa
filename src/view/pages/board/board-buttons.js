@@ -61,19 +61,14 @@ const BoardButtons = Factory.create('BoardButtons', {
         curController = controller;
 
         return m('div.gm-bar', [
-            m('div.gm-buttons.f3',
+            m('div.gm-buttons',
                 H.map(buttons, (name, props) => {
-
                     const className = (
-                        name === 'spinner'  &&  board.buttons['evaluate'] ? 'disabled dn'  :
-                        name === 'spinner'  && !board.buttons['evaluate'] ? 'enabled ctw80' :
-                        name === 'evaluate' &&  board.buttons['evaluate'] ? 'enabled ctw80' :
-                        name === 'evaluate' && !board.buttons['evaluate'] ? 'disabled dn'  :
-                        board.buttons[name] ? 'enabled ctw80' : 'disabled ctb10'
+                        board.buttons[name] === null  ? 'disabled dn'    :
+                        board.buttons[name] === true  ? 'enabled  ctw80' :
+                        board.buttons[name] === false ? 'disabled ctb10' :
+                        'darkred'
                     );
-
-                    // DEBUG && console.log(name, board.buttons[name]);
-
                     return m(props.tag, { title: props.title, onclick: props.onclick, className });
                 }),
             ),
