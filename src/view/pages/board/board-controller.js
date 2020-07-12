@@ -45,10 +45,6 @@ class BoardController {
         this.update();
     }
 
-    allocateOpponents () {
-
-    }
-
     // also called from board.view after new turn, and chessboard.onafterupdates
     update () {
 
@@ -66,7 +62,7 @@ class BoardController {
             this.turn  %   2 ? 'b' : 'w'
         );
 
-        // forget recent onfield clicks
+        // forget onfield clicks
         this.selectedSquare = '';
         this.selectedPiece  = '';
         this.squareMoves    = [];
@@ -119,10 +115,6 @@ class BoardController {
                 btns.play       = null;
                 btns.pause      = true;
             }
-            // if ( this.clock.isPaused() ) {
-            //     btns.play       = true;
-            //     btns.pause      = null;
-            // }
 
         }
 
@@ -148,6 +140,10 @@ class BoardController {
 
     // Button Actions
     play () {
+
+        this.opponents[this.tomove].domove();
+        this.opponents[this.towait].pause();
+
         if (this.clock.isPaused()) {
             this.clock.continue();
         } else {
@@ -156,6 +152,8 @@ class BoardController {
         Caissa.redraw();
     }
     pause () {
+        this.opponents[this.tomove].pause();
+        this.opponents[this.towait].pause();
         this.clock.pause();
         Caissa.redraw();
     }

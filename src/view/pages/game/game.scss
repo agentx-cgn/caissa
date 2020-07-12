@@ -64,10 +64,10 @@ td.gm-move-space {
 }
 td.gm-move-num,
 span.gm-move-num {
-    text-align: right;
     font-family: 'Iosevka-Term-Medium';
     font-size: 1rem; //f5
     font-weight: 800;
+    text-align: right;
     color: #555;
 }
 span.gm-move-num {
@@ -78,10 +78,10 @@ span.gm-move-num {
 }
 
 .gm-ply-pic-w {
-    text-align: center;
-    font-size: 1.25rem;
-    padding: 0;
     font-family: 'Chess';
+    font-size: 1.25rem;
+    text-align: center;
+    padding: 0;
     color: #eee;
 }
 span.gm-ply-pic-w {
@@ -90,11 +90,10 @@ span.gm-ply-pic-w {
 }
 
 .gm-ply-pic-b {
-    // td.tc.f4.pa0.chess
-    text-align: center;
-    font-size: 1.25rem;
-    padding: 0;
     font-family: 'Chess';
+    font-size: 1.25rem;
+    text-align: center;
+    padding: 0;
     color: #333;
 }
 span.gm-ply-pic-b {
@@ -103,10 +102,9 @@ span.gm-ply-pic-b {
 }
 
 .gm-ply-san-w {
-    // td.tl.fiom.f5
-    text-align: left;
     font-family: 'Iosevka-Term-Medium';
     font-size: 1rem;
+    text-align: left;
     color: #eee;
 }
 span.gm-ply-san-w {
@@ -114,10 +112,9 @@ span.gm-ply-san-w {
 }
 
 .gm-ply-san-b {
-    // td.tl.fiom.f5
-    text-align: left;
     font-family: 'Iosevka-Term-Medium';
     font-size: 1rem;
+    text-align: left;
     color: #333;
 }
 span.gm-ply-san-b {
@@ -129,12 +126,9 @@ span.gm-ply-san-b {
     min-width: 20px
 }
 .gm-ply-val-b {
-    // td.f6
     font-size: 0.5rem;
     min-width: 20px
 }
-
-// tr.fiom.f5.fw8.c555
 
 /* GAME FLAGS */
 div.gm-flag {
@@ -156,7 +150,6 @@ div.gm-buttons {
     width: 100%;
     height: 100%;
     text-align: center;
-    // font-size: 1.5rem;
 }
 
 i.gm-button.enabled:hover {
@@ -165,7 +158,6 @@ i.gm-button.enabled:hover {
 }
 i.gm-button,
 i.gm-spinner {
-    // color: #ddd;
     padding: 0.8rem 0.3rem 0.55rem 0.3rem;
     font-size: 1.3rem;
 }
@@ -173,10 +165,10 @@ i.gm-button {
     cursor: pointer;
     width: 1.5rem;
 }
-i.gm-button.dn,
-i.gm-spinner.dn {
-    display: none;
-}
+// i.gm-button.dn,
+// i.gm-spinner.dn {
+//     display: none;
+// }
 
 
 div.game-entry {
