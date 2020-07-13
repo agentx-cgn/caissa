@@ -32,17 +32,20 @@ class BoardController {
         this.opponents      = {
             'w': new Opponent('w', this.mode[0]),
             'b': new Opponent('b', this.mode[2]),
-            'n': { update: () => {} },
+            'n': { update: () => {}, destroy: () => {} },
         };
         this.listener = {
-            onmousedown:  this.onmousedown.bind(this),
-            ontouchdown:  this.ontouchdown.bind(this),
-            onmovedone:   this.onmovedone.bind(this),
-            onmovestart:  this.onmovestart.bind(this),
-            onmovecancel: this.onmovecancel.bind(this),
-            onclockover:  this.onclockover.bind(this),
+            onmove:        this.onmove.bind(this),
+            onclockover:   this.onclockover.bind(this),
+            onfieldselect: this.onfieldselect.bind(this),
         };
         this.update();
+    }
+
+    destroy () {
+        this.opponents.w && this.opponents.w.destroy();
+        this.opponents.b && this.opponents.b.destroy();
+        this.opponents.n && this.opponents.n.destroy();
     }
 
     // also called from board.view after new turn, and chessboard.onafterupdates
@@ -141,15 +144,20 @@ class BoardController {
     // Button Actions
     play () {
 
-        this.opponents[this.tomove].domove();
-        this.opponents[this.towait].pause();
-
         if (this.clock.isPaused()) {
             this.clock.continue();
         } else {
             this.clock.start(this.game.clock, this.listener.onclockover);
         }
+
+        ( async () => {
+            this.opponents[this.towait].pause(this.chessBoard);
+            const move = await this.opponents[this.tomove].domove(this.chessBoard);
+            this.listener.onmove(move);
+        })();
+
         Caissa.redraw();
+
     }
     pause () {
         this.opponents[this.tomove].pause();
@@ -165,8 +173,8 @@ class BoardController {
     // called from board.onupdate
     stopListening (chessBoard) {
         chessBoard.disableMoveInput();
-        $$('div.chessboard').removeEventListener('mousedown', this.listener.onmousedown);
-        $$('div.chessboard').removeEventListener('touchdown', this.listener.ontouchdown);
+        $$('div.chessboard').removeEventListener('mousedown', this.listener.onfieldselect);
+        $$('div.chessboard').removeEventListener('touchstart', this.listener.onfieldselect);
     }
     startListening () {
 
@@ -175,28 +183,28 @@ class BoardController {
             const oppToMove = this.opponents[this.tomove];
             const oppToWait = this.opponents[this.towait];
 
-            if (this.mode === 'x-x'){
-                const dragHandler = oppToMove.dragHandler.bind(oppToMove);
-                this.chessBoard.enableMoveInput(dragHandler, this.color);
-            }
-
-            $$('div.chessboard').addEventListener('mousedown', this.listener.onmousedown);
-            $$('div.chessboard').addEventListener('touchdown', this.listener.ontouchdown);
-
             oppToMove.update(this);
             oppToWait.update(this);
 
-            // DEBUG && console.log('BoardController.startListening.out', { towait: this.towait, tomove: this.tomove });
+
+            $$('div.chessboard').addEventListener('mousedown', this.listener.onfieldselect);
+            $$('div.chessboard').addEventListener('touchdown', this.listener.onfieldselect);
+
+            if (this.mode === 'x-x'){
+                ( async () => {
+                    this.opponents[this.towait].pause(this.chessBoard);
+                    const move = await this.opponents[this.tomove].domove(this.chessBoard);
+                    this.listener.onmove(move);
+                })();
+            }
+
+            DEBUG && console.log('BoardController.startListening.out', { mode: this.mode, tomove: this.tomove });
 
         }
 
     }
 
-    // user clicks board //TODO: touches
-    ontouchdown () {
-
-    }
-    onmousedown (e) {
+    onfieldselect (e) {
 
         const idx           = e.target.dataset.index;
         const square        = Tools.Board.squareIndexToField(idx);
@@ -204,54 +212,61 @@ class BoardController {
         this.selectedPiece  = this.chessBoard.getPiece(this.selectedSquare) || '';
         this.updateIllustration();
 
-        DEBUG && console.log('BoardController.onmousedown.out', {
-            square: this.selectedSquare, piece: this.selectedPiece,
-        });
+        // DEBUG && console.log('BoardController.onfieldselect.out', {
+        //     square: this.selectedSquare, piece: this.selectedPiece,
+        // });
 
     }
-    onmovestart ( square ) {
-        const piece  = this.chessBoard.getPiece(square);
-        DEBUG && console.log('onmovestart', piece, square);
-    }
-    onmovecancel () {
-        DEBUG && console.log('BoardController.onmovecancel');
-    }
-    onmovedone ( move, pgn ) {
 
-        this.chess.move(move);
+    // Opponent sends move
+    onmove ( candidate ) {
 
-        // if first move of default, create new game + board and reroute to
-        if (this.game.uuid === 'default'){
-            const timestamp = Date.now();
-            const uuid = H.hash(String(timestamp));
-            const game = H.create(this.game, {
-                uuid,
-                mode:   'x-x',
-                turn :  0,
-                pgn,
-                timestamp,
-            });
-            Tools.Games.updateMoves(game);
-            DB.Games.create(game, true);
-            DB.Boards.create(H.clone(Config.templates.board, { uuid }));
-            Caissa.route('/game/:turn/:uuid/', {turn: game.turn, uuid: game.uuid});
+        const move = this.chess.move(candidate, { sloppy: true });
 
-        // update move with turn, game with move and reroute to next turn
-        } else {
-            move.turn = this.turn +1;
-            if (move.turn < this.game.moves.length) {
-                // throw away all moves after this new one
-                this.game.moves.splice(this.turn +1);
+        if (move) {
+
+            const pgn = this.chess.pgn().trim();
+            move.fen  = this.chess.fen();
+
+            // if first move of default, create new game + board and reroute to
+            if (this.game.uuid === 'default'){
+                const timestamp = Date.now();
+                const uuid = H.hash(String(timestamp));
+                const game = H.create(this.game, {
+                    uuid,
+                    mode:   'x-x',
+                    turn :  0,
+                    pgn,
+                    timestamp,
+                });
+                Tools.Games.updateMoves(game);
+                DB.Games.create(game, true);
+                DB.Boards.create(H.clone(Config.templates.board, { uuid }));
+                Caissa.route('/game/:turn/:uuid/', {turn: game.turn, uuid: game.uuid});
+
+            // update move with turn, game with move and reroute to next turn
+            } else {
+                move.turn = this.turn +1;
+                if (move.turn < this.game.moves.length) {
+                    // throw away all moves after this new one
+                    this.game.moves.splice(this.turn +1);
+                }
+                this.newmove = move;
+                this.game.moves.push(move);
+                this.game.turn = move.turn;
+                DB.Games.update(this.game.uuid, this.game, true);
+                Caissa.route('/game/:turn/:uuid/', {turn: this.game.turn, uuid: this.game.uuid}, {replace: true});
+
             }
-            this.newmove = move;
-            this.game.moves.push(move);
-            this.game.turn = move.turn;
-            DB.Games.update(this.game.uuid, this.game, true);
-            Caissa.route('/game/:turn/:uuid/', {turn: this.game.turn, uuid: this.game.uuid}, {replace: true});
+
+        } else {
+            console.log(this.chess.ascii());
+            console.warn('BoardController.onmove.illegal', candidate);
 
         }
 
-        DEBUG && console.log('BoardController.onmovedone', move);
+        DEBUG && console.log('BoardController.onmove.out', candidate);
+
     }
 
     // comes with with every redraw

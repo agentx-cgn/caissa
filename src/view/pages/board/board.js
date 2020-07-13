@@ -32,6 +32,7 @@ const Board = Factory.create('Board', {
                 fen :          Tools.Games.fen(game),
                 captured :     Tools.Games.captured(game),
             }, true);
+            controller && controller.destroy();
             controller = new BoardController(game, board);
 
         } else if (turn !== lastturn) {

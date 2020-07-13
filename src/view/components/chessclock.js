@@ -137,7 +137,7 @@ const ChessClock = Factory.create('ChessClock', {
         if (player === 'w'){domWhite = vnode.dom;}
         if (player === 'b'){domBlack = vnode.dom;}
         if (player === '*'){domTotal = vnode.dom;}
-        console.log('Clock.onupdate', player );
+        // console.log('Clock.onupdate', player );
     },
     render () {
         domWhite && m.render(domWhite, ChessClock.white());
@@ -160,7 +160,7 @@ const ChessClock = Factory.create('ChessClock', {
             ChessClock.total()
         ;
 
-        console.log('Clock.view', {player});
+        // console.log('Clock.view', {player});
 
         return m('div.clock', { className }, time);
 

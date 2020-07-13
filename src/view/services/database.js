@@ -112,11 +112,11 @@ const DB =  {
                 usage.laststart = Date.now();
                 DB.Usage.update('0', {usage: usage.usage, laststart: Date.now()});
 
-                navigator.storage.estimate().then(estimate => {
-                    // estimate.quota is the estimated quota
-                    // estimate.usage is the estimated number of bytes used
-                    console.log('Info   :', 'DB', {quota: estimate.quota, usage: estimate.usage});
-                });
+                Promise.all([navigator.storage.estimate(), navigator.storage.persisted()])
+                    .then( ([estimate, persisted]) => {
+                        console.log('Info   :', 'DB', {quota: estimate.quota, usage: estimate.usage, persisted});
+                    })
+                ;
 
                 console.log('Info   :', 'DB', DB.scheme, DB.Games.length, 'games', 'user:', options['user-data'].name, 'usage:', usage.usage, 'last:', ago, 'ago');
             }

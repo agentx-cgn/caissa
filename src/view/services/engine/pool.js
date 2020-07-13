@@ -4,14 +4,14 @@ import Engine from './engine';
 
 const maxSlots = System.threads -1;
 const slots    = new Array(maxSlots).fill(null).map( (_, idx) => ({idx, idle: null, engine: null}) );
-const pool     = {
+const Pool     = {
 
     sorter (a, b) {
         return (
-            (a && a.idle) && (b.engine === null)   ? -1 : 
-            (a && a.idle) && (b && !b.idle)        ? -1 : 
-            (b && b.idle) && (a.engine === null)   ?  1 : 
-            (b && b.idle) && (a && !a.idle)        ?  1 : 
+            (a && a.idle) && (b.engine === null)   ? -1 :
+            (a && a.idle) && (b && !b.idle)        ? -1 :
+            (b && b.idle) && (a.engine === null)   ?  1 :
+            (b && b.idle) && (a && !a.idle)        ?  1 :
             a === null  || b === null              ?  0 :
             0 // not idle last
         );
@@ -33,14 +33,14 @@ const pool     = {
         }
 
     },
-    
+
     request (amount) {
 
         const temp = slots
             .filter( item => item.engine === null || item.idle)
-            .sort( pool.sorter )
+            .sort( Pool.sorter )
             .slice( 0, amount )
-            .map( pool.prepare )
+            .map( Pool.prepare )
         ;
 
         if (temp.length !== amount) {
@@ -53,4 +53,4 @@ const pool     = {
 
 };
 
-export { pool as default };
+export default Pool;
