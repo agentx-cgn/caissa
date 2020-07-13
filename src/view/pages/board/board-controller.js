@@ -38,6 +38,7 @@ class BoardController {
             onmove:        this.onmove.bind(this),
             onclockover:   this.onclockover.bind(this),
             onfieldselect: this.onfieldselect.bind(this),
+            ongameover:    this.ongameover.bind(this),
         };
         this.update();
     }
@@ -53,7 +54,7 @@ class BoardController {
 
         this.turn  = ~~this.game.turn;
         this.fen   = Tools.Games.fen(this.game);
-        !this.chess.load(this.fen) && console.warn('BoardController.update.load.failed', this.fen);
+        // !this.chess.load(this.fen) && console.warn('BoardController.update.load.failed', this.fen);
 
         this.color  = this.chess.turn();
         this.tomove = (
@@ -71,6 +72,7 @@ class BoardController {
         this.squareMoves    = [];
         this.validMoves     = [];
 
+        // actions have no moves, so update here too
         this.updateFlags();
         this.updateButtons();
 
@@ -136,13 +138,31 @@ class BoardController {
         true && console.log('BoardController.updateButtons', 'btn.play', btns.play);
     }
 
+    ongameover (msg) {
+
+        console.log('BoardController.ongameover', msg);
+
+        if (msg.reason === 'timeout'){
+            // Caissa.redraw();
+
+        } else if (msg.reason === 'rules') {
+            // Caissa.redraw();
+
+        }
+        this.opponents[this.tomove].destroy();
+        this.opponents[this.towait].destroy();
+        this.clock.stop();
+
+    }
+
     onclockover (whitebudget, blackbudget) {
-        console.log('BoardController.onclockover', whitebudget, blackbudget);
-        Caissa.redraw();
+        this.ongameover({ reason: 'timeout', whitebudget, blackbudget});
     }
 
     // Button Actions
     play () {
+
+        DEBUG && console.log('BoardController.play.clicked');
 
         if (this.clock.isPaused()) {
             this.clock.continue();
@@ -160,6 +180,7 @@ class BoardController {
 
     }
     pause () {
+        DEBUG && console.log('BoardController.pause.clicked');
         this.opponents[this.tomove].pause();
         this.opponents[this.towait].pause();
         this.clock.pause();
@@ -173,7 +194,7 @@ class BoardController {
     // called from board.onupdate
     stopListening (chessBoard) {
         chessBoard.disableMoveInput();
-        $$('div.chessboard').removeEventListener('mousedown', this.listener.onfieldselect);
+        $$('div.chessboard').removeEventListener('mousedown',  this.listener.onfieldselect);
         $$('div.chessboard').removeEventListener('touchstart', this.listener.onfieldselect);
     }
     startListening () {
@@ -186,11 +207,10 @@ class BoardController {
             oppToMove.update(this);
             oppToWait.update(this);
 
-
             $$('div.chessboard').addEventListener('mousedown', this.listener.onfieldselect);
             $$('div.chessboard').addEventListener('touchdown', this.listener.onfieldselect);
 
-            if (this.mode === 'x-x'){
+            if (this.clock.isTicking()){
                 ( async () => {
                     this.opponents[this.towait].pause(this.chessBoard);
                     const move = await this.opponents[this.tomove].domove(this.chessBoard);
@@ -223,13 +243,20 @@ class BoardController {
 
         const move = this.chess.move(candidate, { sloppy: true });
 
-        if (move) {
+        if (!move) {
+            console.warn('BoardController.onmove.illegal', { candidate, move });
+            console.log(this.chess.ascii());
+            // eslint-disable-next-line no-debugger
+            debugger;
 
-            const pgn = this.chess.pgn().trim();
+        } else {
+
             move.fen  = this.chess.fen();
+            move.turn = this.turn +1;
 
             // if first move of default, create new game + board and reroute to
             if (this.game.uuid === 'default'){
+                const pgn  = this.chess.pgn().trim();
                 const timestamp = Date.now();
                 const uuid = H.hash(String(timestamp));
                 const game = H.create(this.game, {
@@ -246,7 +273,7 @@ class BoardController {
 
             // update move with turn, game with move and reroute to next turn
             } else {
-                move.turn = this.turn +1;
+                // move.turn = this.turn +1;
                 if (move.turn < this.game.moves.length) {
                     // throw away all moves after this new one
                     this.game.moves.splice(this.turn +1);
@@ -259,17 +286,13 @@ class BoardController {
 
             }
 
-        } else {
-            console.log(this.chess.ascii());
-            console.warn('BoardController.onmove.illegal', candidate);
-
         }
 
         DEBUG && console.log('BoardController.onmove.out', candidate);
 
     }
 
-    // comes with with every redraw
+    // comes with with every redraw, after move was animated
     onafterupdates (chessBoard) {
 
         this.chessBoard = chessBoard;
@@ -280,15 +303,33 @@ class BoardController {
             this.color === 'w' && this.clock.whiteclick();
             this.color === 'b' && this.clock.blackclick();
 
-            // mark move as done
-            this.newmove = '';
+        }
+
+        // mark move as done
+        this.newmove = '';
+
+        this.updateFlags();
+        this.updateButtons();
+        this.updateIllustration();
+
+        if (this.chess.game_over()) {
+            this.ongameover({
+                reason        : 'rules',
+                over          : this.chess.game_over(),
+                checkmate     : this.chess.in_checkmate(),
+                draw          : this.chess.in_draw(),
+                stalemate     : this.chess.in_stalemate(),
+                insufficient  : this.chess.insufficient_material(),
+                repetition    : this.chess.in_threefold_repetition(),
+            });
+
+        } else {
+            this.startListening();
 
         }
 
-        this.updateIllustration();
-        this.startListening();
 
-        // DEBUG && console.log('BoardController.onafterupdates.out');
+        DEBUG && console.log('BoardController.onafterupdates.out', { color: this.color });
 
     }
 

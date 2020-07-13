@@ -3,7 +3,7 @@ import System     from '../data/system';
 import History    from './history';
 import { $$ }     from './helper';
 
-const DEBUG = true;
+const DEBUG = false;
 
 const abs = Math.abs;
 let threshold = innerWidth / 3;

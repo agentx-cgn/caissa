@@ -121,6 +121,9 @@ export class Illustrator {
             t1y   = (Math.abs(dX) > Math.abs(dY)) ? grd2 : ty
         ;
 
+        // if resizing can't determine square size...
+        if (!tx || !ty) { return;}
+
         if (arrow.attributes.onclick) {
             arrowGroup.addEventListener('click', arrow.attributes.onclick);
             arrowGroup.addEventListener('touchstart', arrow.attributes.onclick);

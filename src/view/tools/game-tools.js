@@ -6,6 +6,13 @@ import globaltools from './global-tools';
 
 const gametools = {
 
+    // isOver (game) {
+    //     const chess = new Chess();
+    //     !chess.load_pgn(game.pgn) && console.warn('gametools.isOver.failed', game.pgn);
+    //     return
+
+    // },
+
     // used for terminated games
     hash (game) {
         const unique = JSON.stringify({
