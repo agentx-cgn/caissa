@@ -53,11 +53,19 @@ export default {
     ui: {
         waitscreen: true,
     },
+    chessclock : {
+        divisor: {
+            small: 1,
+            big:   5,
+        },
+        pressure: 10 * 1000,
+    },
     'other' : {
         'ui-collapsed' : {
             'section-left':  false,
         },
     },
+
 
 
 };

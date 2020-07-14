@@ -15,14 +15,13 @@ class BoardController {
 
     constructor (game, board) {
 
-        this.mode           = game.mode;
-        this.uuid           = game.uuid;
         this.game           = game;
         this.board          = board;
-        this.mode           = game.mode;
         this.chess          = new Chess();
         this.clock          = ChessClock;
+
         this.newmove        = '';
+
         this.selectedSquare = '';
         this.selectedPiece  = '';
         this.squareMoves    = []; // all moves from or to selected square
@@ -30,8 +29,8 @@ class BoardController {
 
         this.illustrations  = DB.Options.first['board-illustrations'];
         this.opponents      = {
-            'w': new Opponent('w', this.mode[0]),
-            'b': new Opponent('b', this.mode[2]),
+            'w': new Opponent('w', this.game.mode[0]),
+            'b': new Opponent('b', this.game.mode[2]),
             'n': { update: () => {}, destroy: () => {} },
         };
         this.listener = {
@@ -53,8 +52,8 @@ class BoardController {
     update () {
 
         this.turn  = ~~this.game.turn;
-        this.fen   = Tools.Games.fen(this.game);
-        // !this.chess.load(this.fen) && console.warn('BoardController.update.load.failed', this.fen);
+        // this.fen   = Tools.Games.fen(this.game);
+        !this.chess.load_pgn(this.game.pgn) && console.warn('BoardController.update.load_pgn.failed', this.fen);
 
         this.color  = this.chess.turn();
         this.tomove = (
@@ -76,7 +75,7 @@ class BoardController {
         this.updateFlags();
         this.updateButtons();
 
-        DEBUG && console.log('BoardController.update.out', {uuid: this.uuid, turn: this.turn, color: this.color});
+        DEBUG && console.log('BoardController.update.out', {uuid: this.game.uuid, turn: this.turn, color: this.color});
 
     }
     updateFlags () {
@@ -102,6 +101,7 @@ class BoardController {
 
         const btns     = this.board.buttons;
         const lastTurn = this.game.moves.length -1;
+        const mode     = this.game.mode;
 
         // always possible
         btns.rotate = true;
@@ -111,7 +111,7 @@ class BoardController {
         btns.pause = null;
 
         // game with timecontrol and not empty board
-        if ( this.mode !== 'h-h' && this.mode !== 'x-x' && this.turn > -2 ){
+        if ( mode !== 'h-h' && mode !== 'x-x' && this.turn > -2 ){
 
             btns.play       = true;
             btns.pause      = null;
@@ -210,7 +210,7 @@ class BoardController {
             $$('div.chessboard').addEventListener('mousedown', this.listener.onfieldselect);
             $$('div.chessboard').addEventListener('touchdown', this.listener.onfieldselect);
 
-            if (this.clock.isTicking()){
+            if (this.clock.isTicking() || this.game.mode === 'x-x'){
                 ( async () => {
                     this.opponents[this.towait].pause(this.chessBoard);
                     const move = await this.opponents[this.tomove].domove(this.chessBoard);
@@ -218,7 +218,7 @@ class BoardController {
                 })();
             }
 
-            DEBUG && console.log('BoardController.startListening.out', { mode: this.mode, tomove: this.tomove });
+            DEBUG && console.log('BoardController.startListening.out', { mode: this.game.mode, tomove: this.tomove });
 
         }
 
@@ -253,10 +253,11 @@ class BoardController {
 
             move.fen  = this.chess.fen();
             move.turn = this.turn +1;
+            const pgn = this.chess.pgn().trim();
 
             // if first move of default, create new game + board and reroute to
             if (this.game.uuid === 'default'){
-                const pgn  = this.chess.pgn().trim();
+
                 const timestamp = Date.now();
                 const uuid = H.hash(String(timestamp));
                 const game = H.create(this.game, {
@@ -266,6 +267,7 @@ class BoardController {
                     pgn,
                     timestamp,
                 });
+
                 Tools.Games.updateMoves(game);
                 DB.Games.create(game, true);
                 DB.Boards.create(H.clone(Config.templates.board, { uuid }));
@@ -273,14 +275,17 @@ class BoardController {
 
             // update move with turn, game with move and reroute to next turn
             } else {
-                // move.turn = this.turn +1;
+
                 if (move.turn < this.game.moves.length) {
                     // throw away all moves after this new one
                     this.game.moves.splice(this.turn +1);
                 }
-                this.newmove = move;
-                this.game.moves.push(move);
+
                 this.game.turn = move.turn;
+                this.game.pgn  = pgn;
+                this.newmove   = move;
+                this.game.moves.push(move);
+
                 DB.Games.update(this.game.uuid, this.game, true);
                 Caissa.route('/game/:turn/:uuid/', {turn: this.game.turn, uuid: this.game.uuid}, {replace: true});
 
@@ -302,6 +307,7 @@ class BoardController {
 
             this.color === 'w' && this.clock.whiteclick();
             this.color === 'b' && this.clock.blackclick();
+            this.game.timecontrol = this.clock.state();
 
         }
 

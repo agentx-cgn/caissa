@@ -3,41 +3,48 @@
 import './chessclock.scss';
 
 import { H }     from '../services/helper';
+import DB        from '../services/database';
+import Config    from '../data/config';
 import Factory   from './factory';
 
 const DEBUG = true;
 
 const now      = Date.now;
-const template = { format: H.msec2HMS, pressure: false, consumed: 0, budget: 0 };
+// const template = { format: H.msec2HMS, pressure: false, consumed: 0, budget: 0 };
 
-let turn, start, onover, isPausing, interval, counter, divisor, timebonus, pressure, lastTimestamp;
+let turn, start, onover, isPausing, interval, counter, divisor, pressure, lastTimestamp;
 let domBlack, domWhite, domTotal;
-
-let white = H.clone(template);
-let black = H.clone(template);
+let options   = DB.Options.first['chessclock'];
+let timestate = H.clone(Config.templates.time);
 
 const ChessClock = Factory.create('ChessClock', {
-    start (clock, onclockover) {
+    start (timecontrol, onclockover) {
+
+        options = DB.Options.first['chessclock'];
+
+        timestate = H.clone(
+            Config.templates.time,
+            timecontrol,
+            { start: now() },
+            { white: { format: H.msec2HMS, pressure: false } },
+            { black: { format: H.msec2HMS, pressure: false } },
+        );
 
         turn          = 'w';
-        timebonus     = ~~clock.timecontrol.bonus; // msecs
         counter       = 0;
-        divisor       = 5;
-        start         = lastTimestamp = now();
+        divisor       = options.divisor.big;
         pressure      = 10 * 1000;
         isPausing     = false;
         onover        = onclockover;
 
-        white = H.clone(template, { budget: clock.white });
-        white.format = H.msec2HMS;
-        black = H.clone(template, { budget: clock.black });
-        black.format = H.msec2HMS;
-
         interval && clearInterval(interval);
         interval  = setInterval(ChessClock.tick, 100);
 
-        DEBUG && console.log('ChessClock.start', {turn, clock});
+        DEBUG && console.log('ChessClock.start', {turn, timestate});
 
+    },
+    state() {
+        return timestate;
     },
     isTicking() {
         // console.log('interval', interval);
@@ -70,6 +77,9 @@ const ChessClock = Factory.create('ChessClock', {
         const diff = now() - lastTimestamp;
         lastTimestamp = now();
 
+        const white  = timestate.white;
+        const black  = timestate.black;
+
         turn === 'w' && ( white.consumed += diff );
         turn === 'b' && ( black.consumed += diff );
         counter += 1;
@@ -78,12 +88,12 @@ const ChessClock = Factory.create('ChessClock', {
         if (white.budget - white.consumed < pressure) {
             white.format   = H.msec2HMSm;
             white.pressure = true;
-            divisor = 1;
+            divisor = options.divisor.small;
         }
         if (black.budget - black.consumed < pressure) {
             black.format   = H.msec2HMSm;
             black.pressure = true;
-            divisor = 1;
+            divisor = options.divisor.small;
         }
 
         // that's it, game over
@@ -103,24 +113,26 @@ const ChessClock = Factory.create('ChessClock', {
 
     },
     blackclick () {
+        const black     = timestate.black;
         black.consumed += now() - lastTimestamp;
         lastTimestamp   = now();
-        black.budget   += timebonus;
+        black.budget   += timestate.timecontrol.bonus;
         turn = 'w';
     },
     whiteclick () {
+        const white     = timestate.white;
         white.consumed += now() - lastTimestamp;
         lastTimestamp   = now();
-        white.budget   += timebonus;
+        white.budget   += timestate.timecontrol.bonus;
         turn = 'b';
 
     },
     white () {
-        // return (isPausing || interval) ? white.format(white.budget - white.consumed) + 'w': '0:00:00';
+        const white = timestate.white;
         return white.format ? white.format(white.budget - white.consumed) : '0:00:00';
     },
     black () {
-        // return (isPausing || interval) ? black.format(black.budget - black.consumed) + 'b' : '0:00:00';
+        const black = timestate.black;
         return black.format ? black.format(black.budget - black.consumed) : '0:00:00';
     },
     total () {
@@ -147,6 +159,8 @@ const ChessClock = Factory.create('ChessClock', {
     view ( vnode ) {
 
         const { player } = vnode.attrs;
+        const white      = timestate.white;
+        const black      = timestate.black;
         const className  = H.classes({
             white:    player === 'w',
             black:    player === 'b',

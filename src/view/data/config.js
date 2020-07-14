@@ -19,6 +19,12 @@ const moveTemplate = {
     san:   '',
 };
 
+const timetemplate = {
+    timecontrol : { budget:0, bonus:    0 },
+    white:        { budget:0, consumed: 0, pressure: false },
+    black:        { budget:0, consumed: 0, pressure: false },
+};
+
 const gametemplate = {
 
     uuid:        'G0000000',     // string, 6 or 8 alphanums
@@ -44,6 +50,7 @@ const gametemplate = {
     },            // from PGN parsing
     pgn:         '',             // game moves in pgn notation
     clock: { white: 0, black: 0, timecontrol: {} },
+
     // timestamp
 
 };
@@ -99,6 +106,7 @@ export default H.deepFreezeCreate({
     },
 
     templates : {
+        time:    timetemplate,
         move:    moveTemplate,
         game:    gametemplate,
         board:   boardtemplate,
