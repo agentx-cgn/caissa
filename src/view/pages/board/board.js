@@ -10,7 +10,7 @@ import BoardBar          from './board-bar';
 import ChessBoard        from './chessboard';
 import BoardController   from './board-controller';
 
-const DEBUG = true;
+const DEBUG = false;
 
 let lastturn, lastuuid, game, board, controller;
 
@@ -19,6 +19,7 @@ const Board = Factory.create('Board', {
 
         // at start, there is nothing, default is chosen
         let { params: { uuid='default', turn=-1 } } = vnode.attrs;
+        turn = ~~turn;
 
         // but don't replace current game with default
         uuid === 'default' && lastuuid ? (uuid = lastuuid, turn = lastturn) : (void(0));
@@ -38,7 +39,7 @@ const Board = Factory.create('Board', {
         } else if (turn !== lastturn) {
             // new turn
             DEBUG && console.log('Board.view.newturn', { uuid, turn }, 'last:', lastuuid, lastturn);
-            DB.Games.update(uuid, { turn: ~~turn }, true);
+            DB.Games.update(uuid, { turn }, true);
             DB.Boards.update(uuid, {
                 fen :          Tools.Games.fen(game),
                 captured :     Tools.Games.captured(game),
@@ -47,13 +48,12 @@ const Board = Factory.create('Board', {
 
         } else {
             // means no change...?
+            // activated clock
+            // click on same move
             game  = DB.Games.find(uuid);
             board = DB.Boards.find(uuid);
             DEBUG && console.log('Board.view.nochange', { uuid, turn }, lastuuid, lastturn);
             controller.updateButtons();
-            controller.updateFlags();
-            // actvated clock
-            // click on same move
             // eslint-disable-next-line no-debugger
             // debugger;
         }
@@ -61,8 +61,8 @@ const Board = Factory.create('Board', {
         lastuuid = uuid;
         lastturn = turn;
 
+        const playerBot = board.orientation;
         const playerTop = board.orientation === 'w' ? 'b' : 'w';
-        const playerBot = board.orientation === 'w' ? 'w' : 'b';
 
         return innerWidth >= 720
             // desktop
@@ -71,11 +71,11 @@ const Board = Factory.create('Board', {
                 m(BoardBar,     { game, board, pos: 'top', player: playerTop }),
                 m(ChessBoard,   { game, board, controller }),
                 m(BoardBar,     { game, board, pos: 'bot', player: playerBot }),
-                m(BoardFlags,   { game, board }),
+                m(BoardFlags,   { controller }),
             ])
             // mobile
             : m('[', [
-                m(BoardFlags,   { game, board }),
+                m(BoardFlags,   { controller }),
                 m(ChessBoard,   { game, board, controller }),
                 m(BoardButtons, { game, board, controller }),
             ])

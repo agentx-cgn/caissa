@@ -10,41 +10,43 @@ import Factory   from './factory';
 const DEBUG = true;
 
 const now      = Date.now;
-// const template = { format: H.msec2HMS, pressure: false, consumed: 0, budget: 0 };
 
 let turn, start, onover, isPausing, interval, counter, divisor, pressure, lastTimestamp;
 let domBlack, domWhite, domTotal;
-let options   = DB.Options.first['chessclock'];
-let timestate = H.clone(Config.templates.time);
+let options    = DB.Options.first['chessclock'];
+let clockstate = H.clone(Config.templates.clock);
 
 const ChessClock = Factory.create('ChessClock', {
     start (timecontrol, onclockover) {
 
         options = DB.Options.first['chessclock'];
 
-        timestate = H.clone(
-            Config.templates.time,
+        clockstate = H.clone(
+            Config.templates.clock,
             timecontrol,
             { start: now() },
-            { white: { format: H.msec2HMS, pressure: false } },
-            { black: { format: H.msec2HMS, pressure: false } },
+            // { white: { pressure: false } },
+            // { black: { pressure: false } },
         );
+
+        clockstate.white.format = H.msec2HMS;
+        clockstate.black.format = H.msec2HMS;
 
         turn          = 'w';
         counter       = 0;
         divisor       = options.divisor.big;
-        pressure      = 10 * 1000;
+        pressure      = options.pressure;
         isPausing     = false;
         onover        = onclockover;
 
         interval && clearInterval(interval);
         interval  = setInterval(ChessClock.tick, 100);
 
-        DEBUG && console.log('ChessClock.start', {turn, timestate});
+        DEBUG && console.log('ChessClock.start', {turn, clockstate});
 
     },
     state() {
-        return timestate;
+        return clockstate;
     },
     isTicking() {
         // console.log('interval', interval);
@@ -76,13 +78,13 @@ const ChessClock = Factory.create('ChessClock', {
 
         const diff = now() - lastTimestamp;
         lastTimestamp = now();
+        counter += 1;
 
-        const white  = timestate.white;
-        const black  = timestate.black;
+        const white = clockstate.white;
+        const black = clockstate.black;
 
         turn === 'w' && ( white.consumed += diff );
         turn === 'b' && ( black.consumed += diff );
-        counter += 1;
 
         // detect pressure
         if (white.budget - white.consumed < pressure) {
@@ -107,32 +109,30 @@ const ChessClock = Factory.create('ChessClock', {
 
         // don't update too often
         if (!(counter % divisor)) {
-            ChessClock.ontick && ChessClock.ontick();
             ChessClock.render();
         }
 
     },
     blackclick () {
-        const black     = timestate.black;
+        const black     = clockstate.black;
         black.consumed += now() - lastTimestamp;
         lastTimestamp   = now();
-        black.budget   += timestate.timecontrol.bonus;
+        black.budget   += clockstate.timecontrol.bonus;
         turn = 'w';
     },
     whiteclick () {
-        const white     = timestate.white;
+        const white     = clockstate.white;
         white.consumed += now() - lastTimestamp;
         lastTimestamp   = now();
-        white.budget   += timestate.timecontrol.bonus;
+        white.budget   += clockstate.timecontrol.bonus;
         turn = 'b';
-
     },
     white () {
-        const white = timestate.white;
+        const white = clockstate.white;
         return white.format ? white.format(white.budget - white.consumed) : '0:00:00';
     },
     black () {
-        const black = timestate.black;
+        const black = clockstate.black;
         return black.format ? black.format(black.budget - black.consumed) : '0:00:00';
     },
     total () {
@@ -159,8 +159,8 @@ const ChessClock = Factory.create('ChessClock', {
     view ( vnode ) {
 
         const { player } = vnode.attrs;
-        const white      = timestate.white;
-        const black      = timestate.black;
+        const white      = clockstate.white;
+        const black      = clockstate.black;
         const className  = H.classes({
             white:    player === 'w',
             black:    player === 'b',

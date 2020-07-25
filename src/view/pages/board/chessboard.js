@@ -5,16 +5,21 @@ import Factory        from '../../components/factory';
 import Config         from '../../data/config';
 import Tools          from '../../tools/tools';
 
-const DEBUG = false;
+const DEBUG = true;
 
-let chessBoard, board, controller;
+let chessBoard;
 
 const ChessBoard = Factory.create('ChessBoard', {
+
     onresize : Tools.Board.resize,
+
     oncreate ( vnode ) {
 
-        board      = vnode.attrs.board;
-        controller = vnode.attrs.controller;
+        // DEBUG && console.log('ChessBoard.oncreate.in', vnode);
+
+        const { board } = vnode.attrs;
+        // curBoard      = board;
+        // curController = controller;
 
         chessBoard = new Chessboard(
             $$('div.chessboard'),
@@ -25,7 +30,7 @@ const ChessBoard = Factory.create('ChessBoard', {
             Tools.Board.resize(innerWidth, innerHeight);
             chessBoard.view.handleResize();
             chessBoard.setOrientation(board.orientation);
-            DEBUG && console.log('ChessBoard.oncreate.then');
+            // DEBUG && console.log('ChessBoard.oncreate.then');
         });
     },
     view (  ) {
@@ -33,22 +38,21 @@ const ChessBoard = Factory.create('ChessBoard', {
     },
     onupdate ( vnode ) {
 
-        board      = vnode.attrs.board;
-        controller = vnode.attrs.controller;
+        const { board, controller } = vnode.attrs;
+        // curBoard      = board;
+        // curController = controller;
 
         controller.stopListening(chessBoard);
-
-        try {
-            // svg may be not yet loaded
-            chessBoard.view.handleResize();
-        } catch(e){DEBUG && console.log('ChessBoard.onupdate.handleResize', e);}
-
+        chessBoard.view.handleResize();
         chessBoard.setOrientation(board.orientation);
 
-        DEBUG && console.log('ChessBoard.onupdate.cbgb', !!chessBoard,  !!board);
+        // DEBUG && console.log('ChessBoard.onupdate.out', !!chessBoard,  !!board, vnode);
 
     },
-    onafterupdates () {
+    onafterupdates (vnode) {
+
+        // DEBUG && console.log('ChessBoard.onafterupdates.in', vnode);
+        const { board, controller } = vnode.attrs;
 
         chessBoard
             .setPosition(board.fen, true)
@@ -59,10 +63,13 @@ const ChessBoard = Factory.create('ChessBoard', {
 
     },
 
-    onbeforeremove () {
+    onbeforeremove ( vnode ) {
 
-        $$('div.chessboard').removeEventListener('mousedown', controller.listener.onmousedown);
-        $$('div.chessboard').removeEventListener('touchdown', controller.listener.ontouchdown);
+        const { controller } = vnode.attrs;
+        const $chessboard = $$('div.chessboard');
+
+        $chessboard.removeEventListener('mousedown', controller.listener.onmousedown);
+        $chessboard.removeEventListener('touchdown', controller.listener.ontouchdown);
 
         return chessBoard.destroy().then( () => {
             chessBoard = undefined;

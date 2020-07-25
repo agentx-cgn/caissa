@@ -3,6 +3,7 @@ import { H }   from '../services/helper';
 import Caissa  from '../caissa';
 
 const DEBUG = false;
+
 const freezer = [];
 
 const Dispatcher = function (source) {
@@ -31,19 +32,19 @@ const Factory = {
     },
     create (name, comp) {
 
-        //TODO: check for duplicates
+        //TODO: check for duplicates,
+        // make onafterupdates special in dispatcher
+        // ensure comps have oncreate, with onafterupdates
 
+        let vnode          = null;
         let preventUpdates = false;
 
         // before first view
         (typeof comp.onregister === 'function') && comp.onregister(Dispatcher(name));
         (typeof comp.onresize   === 'function') && comp.onresize(innerWidth, innerHeight);
 
-        const ice = H.deepFreezeCreate({
+        const ice = Object.assign({
             name,
-            oncreate() {},
-            onupdate() {},
-            // onremove() {console.log(name, 'onremove');},
             onbeforeupdate( /* vnode, old */) {
 
                 // https://mithril.js.org/lifecycle-methods.html#onbeforeupdate
@@ -64,10 +65,31 @@ const Factory = {
             },
         }, comp);
 
-        freezer.push(ice);
+        // monkeypatching
+        if (ice.oncreate){
+            ice.oncreate = function (orgvnode) {
+                vnode = orgvnode;
+                comp.oncreate(vnode);
+            };
+        }
+        if (ice.onupdate){
+            ice.onupdate = function (orgvnode) {
+                vnode = orgvnode;
+                comp.onupdate(vnode);
+            };
+        }
+        if (ice.onafterupdates){
+            ice.onafterupdates = function () {
+                if (!vnode) {
+                    console.warn('Factory.onafterupdates', 'no vnode');
+                    // eslint-disable-next-line no-debugger
+                    debugger;
+                }
+                comp.onafterupdates(vnode);
+            };
+        }
 
-        //TODO: How?
-        // Caissa.onComponentCreated(ice);
+        freezer.push(H.deepFreezeCreate(ice));
 
         return ice;
 

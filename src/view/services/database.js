@@ -13,14 +13,10 @@ const SCHEME = '2020-07-09a';
 
 const tables = 'Boards Games Options Usage'.split(' ');
 const dumps  = {
-    Usage:   [{uuid: '0', laststart: Date.now(), lastend: Date.now(), usage:0}],
-    Options: [Options],
+    Usage:   [{uuid: '0', laststart: Date.now(), lastend: Date.now(), usage: 0}],
+    Options: [H.clone(Options)],
     Boards : [H.clone(Config.templates.board, { uuid: 'default' })],
-    Games :  [H.clone(Config.templates.game, {
-        ...Array.from(Config.templates.plays).find(p => p.mode === 'x-x'),
-        turn: -1,
-        uuid: 'default',
-    })],
+    Games :  [H.clone(Config.templates.default)],
 };
 
 const DB =  {

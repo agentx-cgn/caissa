@@ -14,6 +14,8 @@ const GamesList = Factory.create('GamesList', {
 
                 if (!DB.Games.exists(game.uuid)) {
                     game = H.clone(Config.templates.game, game);
+                    // spend games a prototype
+                    game.moves = Array.from(game.moves);
                     Tools.Games.updateMoves(game);
                     DB.Games.create(game, true);
                     DB.Games.update(game.uuid, { turn: game.moves.length -1 }, true);
@@ -42,6 +44,7 @@ const GameEntry = Factory.create('GameEntry', {
         game.timestamp          && (line3 += H.date2isoUtc(new Date(game.timestamp)) + ' ');
         game.plycount           && (line3 += game.plycount + ' plies ');
 
+        //TODO: no magic numbers
         if (line3.length < 18) {
             line2 = line3 + ' ' + line2;
             line3 = '';

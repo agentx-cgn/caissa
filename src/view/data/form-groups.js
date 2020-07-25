@@ -160,6 +160,51 @@ const FormGroups = function ( formdata ) {
                     },
                 }  ],
 
+        },{ group: 'play-s-h',               sort: 35, title: 'Stockfish - Human',             active: true,
+            controls:
+                [  { caption: 'Depth',       sort: 10, type: 'range',                          active: true,
+                    value: () => formdata.depth,
+                    datalist: ( () => {
+                        return H.range(1, 31).map( n => {
+                            return !(n % 5) ? {value: n, label: n} : {value: n};
+                        });
+                    })(),
+                    attributes: {
+                        oninput: (e) => {
+                            const value         = ~~e.target.value;
+                            formdata.depth      = value;
+                            formdata.difficulty = Tools.resolveDifficulty(value);
+                            formdata.autosubmit && formdata.submit();
+                        },
+                        min: 1, max: 30, step: 1,
+                        list: 'dl-stockfish-depth',
+                    },
+                }, { caption: 'Difficulty',  sort: 20, type: 'passive',                        active: true,
+                    value: () => Tools.resolveDifficulty(formdata.depth) + ' (' + formdata.depth + ')',
+                }, { caption: 'Timecontrol', sort: 30, type: 'selectindexed-split',            active: true,
+                    options:  Config.timecontrols,
+                    value: () => {
+                        return formdata.timecontrol;
+                    },
+                    attributes: {
+                        onchange: (e) => {
+                            formdata.timecontrol = Config.timecontrols.find( tc => tc.idx === ~~e.target.value);
+                            formdata.autosubmit && formdata.submit();
+                        },
+                    },
+
+                }, { caption: 'Timestamp',   sort: 80, type: 'timestamp',                      active: !formdata.autosubmit,
+                    value:  () => formdata.timestamp,
+                    ontick: () => formdata.timestamp = new Date(),
+
+                }, { caption: 'Play',        sort: 90, type: 'button',                         active: !formdata.autosubmit,
+                    attributes: {
+                        onclick: () => {
+                            formdata.submit(formdata);
+                        },
+                    },
+                }  ],
+
         },{ group: 'user-data',              sort: 10, title: 'User',                          active: true,
             controls:
                 [  { caption: 'Name',        sort: 10, type: 'text-split',                     active: true,

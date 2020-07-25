@@ -2,14 +2,15 @@
 import board_svg         from '../../extern/cm-chessboard/chessboard-sprite.svg';
 import { COLOR, MOVE_INPUT_MODE } from '../../extern/cm-chessboard/Chessboard';
 import { H } from '../services/helper';
-import iconChess from './../../assets/static/chess.128.trans.png';
+// import iconChess from './../../assets/static/chess.128.trans.png';
+import menu from './menu.js';
 
 const fens = {
     empty: '8/8/8/8/8/8/8/8 w - - 0 1',
     start: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
 };
 
-const moveTemplate = {
+const movetemplate = {
     turn:  -1,
     fen:   '',
     from:  '',
@@ -19,20 +20,20 @@ const moveTemplate = {
     san:   '',
 };
 
-const timetemplate = {
-    timecontrol : { budget:0, bonus:    0 },
-    white:        { budget:0, consumed: 0, pressure: false },
-    black:        { budget:0, consumed: 0, pressure: false },
+const clocktemplate = {
+    timecontrol : { budget: 0, bonus:    0 },
+    white:        { budget: 0, consumed: 0, pressure: false },
+    black:        { budget: 0, consumed: 0, pressure: false },
 };
 
 const gametemplate = {
 
     uuid:        'G0000000',     // string, 6 or 8 alphanums
-    mode:        'h-h',
+    over:         true,
+    rivals:      'h-h',
     turn:         -1,
     moves:        [],
-    // newmove:      '',
-    score: {
+    score:       {
         maxcp:    0,
         maxmate:  0,
     },
@@ -47,13 +48,17 @@ const gametemplate = {
         Result:      '',
         Termination: '',
         TimeControl: '',
-    },            // from PGN parsing
+    },
     pgn:         '',             // game moves in pgn notation
-    clock: { white: 0, black: 0, timecontrol: {} },
-
-    // timestamp
 
 };
+
+const playtemplate = H.clone(
+    gametemplate, {
+        over:  false,
+        clock: clocktemplate,
+    },
+);
 
 const boardtemplate = {
     uuid:        'B0000000',
@@ -72,16 +77,6 @@ const boardtemplate = {
         pause:    false,
         evaluate: true,
     },
-    flags : {
-        turn:     '',     // turn w || b
-        over:     false,  // game_over
-        chck:     false,  // in_check
-        mate:     false,  // check_mate
-        draw:     false,  // in_draw
-        stal:     false,  // in_stalemate
-        insu:     false,  // insufficient_material
-        repe:     false,  // in_threefold_repetition
-    },
 };
 
 const opponents = {
@@ -99,6 +94,7 @@ const opponents = {
 export default H.deepFreezeCreate({
 
     fens,
+    menu,
     opponents,
 
     database: {
@@ -106,16 +102,17 @@ export default H.deepFreezeCreate({
     },
 
     templates : {
-        time:    timetemplate,
-        move:    moveTemplate,
+        clock:   clocktemplate,
+        move:    movetemplate,
         game:    gametemplate,
+        play:    playtemplate,
         board:   boardtemplate,
+        default: H.clone(gametemplate, {uuid: 'default', over: false, turn: -1, rivals: 'x-x', subline: 'no pressure', header: { White: 'White', Black: 'Black' }}),
         plays:   [
-            {mode: 'h-h', subline: 'a classic',        header: { White: '',          Black: ''          }},
-            {mode: 'x-x', subline: 'no pressure',      header: { White: 'White',     Black: 'Black'     }},
-            {mode: 's-s', subline: 'this is fun',      header: { White: 'Stockfish', Black: 'Stockfish' }},
-            {mode: 'h-s', subline: 'beat the machine', header: { White: 'Human',     Black: 'Stockfish' }},
-            {mode: 's-h', subline: 'beat the machine', header: { White: 'Stockfish', Black: 'Human'     }},
+            {rivals: 'x-x', over: false, subline: 'no pressure',      header: { White: 'White',     Black: 'Black'     }},
+            {rivals: 's-s', over: false, subline: 'this is fun',      header: { White: 'Stockfish', Black: 'Stockfish' }},
+            {rivals: 'h-s', over: false, subline: 'beat the machine', header: { White: 'Human',     Black: 'Stockfish' }},
+            {rivals: 's-h', over: false, subline: 'beat the machine', header: { White: 'Stockfish', Black: 'Human'     }},
         ],
     },
     tableTemplates: {
@@ -146,20 +143,20 @@ export default H.deepFreezeCreate({
 
     },
 
-    navigation : [
-        ['/sources/',        'PGNS',        {},                     { ifa: 'fa-chess-pawn'} ],
-        ['/games/',          'GAMES',       { idx: 0 },             { img: iconChess} ],  // loads imported games so far
-        ['/game/',           'GAME',        {},                     { img: iconChess} ],
-        ['/plays/',          'PLAY',        {},                     { img: iconChess} ],
-        ['/system/:module/', 'SYSTEM',      { module: 'system' },   { ifa: 'fa-microchip' } ],
-        ['/preferences/',    'PREFERENCES', {},                     { ifa: 'fa-cogs'} ],
+    // menu : [
+    //     ['/sources/',        'PGNS',        {},                     { ifa: 'fa-chess-pawn'} ],
+    //     ['/games/',          'GAMES',       { idx: 0 },             { img: iconChess} ],  // loads imported games so far
+    //     ['/game/',           'GAME',        {},                     { img: iconChess} ],
+    //     ['/plays/',          'PLAY',        {},                     { img: iconChess} ],
+    //     ['/system/:module/', 'SYSTEM',      { module: 'system' },   { ifa: 'fa-microchip' } ],
+    //     ['/preferences/',    'PREFERENCES', {},                     { ifa: 'fa-cogs'} ],
 
-        // ['/analyzer/',       {}, 'ANALYSE'],
-        // ['/help/',           {}, 'HELP'],
+    //     // ['/analyzer/',       {}, 'ANALYSE'],
+    //     // ['/help/',           {}, 'HELP'],
 
-        // [`/info/${urls[1]}/`,   'INFO'],
-        // ['/test',     'TEST'],
-    ],
+    //     // [`/info/${urls[1]}/`,   'INFO'],
+    //     // ['/test',     'TEST'],
+    // ],
 
     apis: [
         {idx: 1, caption: 'api.chess.com/pub/player/',   value: 'https://api.chess.com/pub/player/noiv/games/2020/04/pgn'},

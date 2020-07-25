@@ -8,7 +8,6 @@ import Config     from '../../data/config';
 import Tools      from '../../tools/tools';
 
 import {
-    Nothing,
     GrowSpacer,
     PageTitle,
     FlexListShrink,
@@ -20,116 +19,130 @@ import {
 
 const DEBUG = true;
 
+// holds forms for machine plays
 const forms  = {};
-const plays  = game => game.mode !== 'h-h' && game.mode !== 'x-x';
-const solos  = game => game.mode === 'x-x';
-const dbgame = game => game.mode !== 'h-h' && game.uuid !== 'default';
 
-Array.from(Config.templates.plays)
-    .filter(plays)
-    .forEach( play =>  {
-        const group = 'play-' + play.mode;
-        const form  = {
-            ...DB.Options.first[group],
-            group,
-            autosubmit: false,
-            submit: (form) => {
-                // eslint-disable-next-line no-debugger
-                // debugger;
-                const timecontrol = form.timecontrol;
-                const timestamp   = Date.now();
-                const game = Tools.Games.fromPlayForm(play, form, {
-                    uuid: H.hash(String(timestamp)),
-                    timestamp,
-                    turn: -1,
-                    clock: { timecontrol, white: timecontrol.budget, black: timecontrol.budget},
-                });
-                DB.Games.create(game, true);
-                DB.Boards.create(H.clone(Config.templates.board, { uuid: game.uuid }));
-                DEBUG && console.log('plays.form.submitted', game.uuid, game.mode, game.white, game.black);
-                Caissa.route('/game/:turn/:uuid/', { uuid: game.uuid, turn: game.turn });
-            },
-        };
-        forms[play.mode] = form;
+// play filter
+const playSolo  = play => play.rivals === 'x-x';
+const playMach  = play => play.rivals === 's-s' || play.rivals === 's-h' || play.rivals === 'h-s';
 
-    })
-;
+// game filter for resumables
+const gameCont  = game => !!game.timestamp && !game.over;
 
-// Create a x-x play
-function startGame(playTemplate) {
+function startGame(game) {
+
+    /**
+     * games with no timestamp and over === false, haven't stated yet
+     * games with timestamp and over === false, have started, but not yet finished
+     */
 
     const timestamp = Date.now();
-    const uuid = H.hash(String(timestamp));
-    const turn = -1;
+    let uuid = H.hash(String(timestamp));
+    let turn = -1;
 
-    DB.Games.create(H.clone(Config.templates.game, playTemplate, { uuid, turn, timestamp }), true);
-    DB.Boards.create(H.clone(Config.templates.board, { uuid }), true);
+    //resume game
+    if (game.timestamp) {
+        uuid = game.uuid;
+        turn = game.moves.length -1;
+
+    // new free game
+    } else if (game.rivals === 'x-x'){
+        const play = H.clone(Config.templates.game, game, { uuid, turn, timestamp });
+        play.moves = Array.from(play.moves);
+        DB.Games.create(play, true);
+        DB.Boards.create(H.clone(Config.templates.board, { uuid }), true);
+
+    // new machine game
+    } else {
+        const timecontrol = game.timecontrol;
+        const game = Tools.Games.fromPlayForm(game, {
+            uuid,
+            timestamp,
+            clock: { timecontrol, white: timecontrol.budget, black: timecontrol.budget},
+        });
+        DB.Games.create(game, true);
+        DB.Boards.create(H.clone(Config.templates.board, { uuid: game.uuid }));
+
+    }
+
+    DEBUG && console.log('Plays.startGame', { uuid, turn, rivals: game.rivals });
 
     Caissa.route('/game/:turn/:uuid/', { uuid, turn });
 
 }
+
+
+// Build forms for machine plays
+Array.from(Config.templates.plays)
+    .filter(playMach)
+    .forEach( play =>  {
+        const group = 'play-' + play.rivals;
+        forms[play.rivals] = {
+            ...DB.Options.first[group],
+            group,
+            rivals: play.rivals,
+            autosubmit: false,
+            submit: startGame,
+        };
+    })
+;
+
+const playerIcons = function (rivals) {
+    const fish  = m('i.f6.fa.fa-fish.fa-rotate-270');
+    const human = m('i.f6.fa.fa-user');
+    return (
+        rivals === 'a-a' ? m('span.pr2.v-txt-btm.ceee', m('[', [ human, ' - ', human ]))  :
+        rivals === 'x-x' ? m('span.pr2.v-txt-btm.ceee', m('[', [ human, ' - ', human ]))  :
+        rivals === 's-s' ? m('span.pr2.v-txt-btm.ceee', m('[', [ fish,  ' - ', fish  ]))  :
+        rivals === 'h-s' ? m('span.pr2.v-txt-btm.ceee', m('[', [ human, ' - ', fish  ]))  :
+        rivals === 's-h' ? m('span.pr2.v-txt-btm.ceee', m('[', [ fish,  ' - ', human ]))  :
+        m('span', 'wtf')
+    );
+};
 
 // Template Play
 const PlayEntry = {
     view ( vnode ) {
         const { play, className, onclick } = vnode.attrs;
         return m(FlexListEntry, { className, onclick }, [
-            m('div.fiom.f4', play.header.White + ' vs. ' + play.header.Black),
+            m('div.fiom.f4.ceee', play.header.White + ' vs. ' + play.header.Black),
             m('div.fior.f5', play.subline),
         ]);
     },
 };
 
-const playerIcons = function (mode) {
-    const fish  = m('i.f6.fa.fa-fish.fa-rotate-270');
-    const human = m('i.f6.fa.fa-user');
-    return (
-        mode === 'x-x' ? m('span.pr2.v-txt-btm', m('[', [ human, ' - ', human ]))  :
-        mode === 's-s' ? m('span.pr2.v-txt-btm', m('[', [ fish,  ' - ', fish  ]))  :
-        mode === 'h-s' ? m('span.pr2.v-txt-btm', m('[', [ human, ' - ', fish  ]))  :
-        mode === 's-h' ? m('span.pr2.v-txt-btm', m('[', [ fish,  ' - ', human ]))  :
-        m('span', 'wtf')
-    );
-};
-
-// DB Plays
+// DB Games
 const PlayListEntry = {
     view ( vnode ) {
 
         const { play, className, onclick, ondelete } = vnode.attrs;
 
         return m(FlexListEntry, { className, onclick }, [
-            playerIcons(play.mode),
-            m('span.fiom.f4', play.header.White + ' vs ' + play.header.Black),
-            m('div.f5.fior.pv1',  H.date2isoLocal(new Date(play.timestamp)), m('i.fa.fa-trash-alt.f6.pl4', { onclick: ondelete })),
-            play.opening
-                ? m('div.f5.fior.pv1', `OP: ${play.opening.label}` )
-                : '',
-            play.difficulty
-                ? m('div.f5.fior.pv1', `${play.difficulty} (${play.depth}) / ${play.time} secs`)
-                : '',
-
+            playerIcons(play.rivals),
+            m('span.fiom.f4.ceee', play.header.White + ' vs ' + play.header.Black),
+            m('div.f5.fior.pt2',  H.date2isoLocal(new Date(play.timestamp)), m('i.fa.fa-trash-alt.f6.pl4', { onclick: ondelete })),
+            play.opening    && m('div.f5.fior.pt1', `OP: ${play.opening.label}` ),
+            play.difficulty && m('div.f5.fior.pt1', `${play.difficulty} (${play.depth}) / ${play.time} secs`),
         ]);
 
     },
 };
-
-
 
 const Plays = Factory.create('Plays', {
 
     view ( vnode ) {
 
         const { className, style } = vnode.attrs;
-        const { mode } = vnode.attrs.params;
+        const { rivals } = vnode.attrs.params;
 
+        // toggles the form
         const clicker = play => {
             return (
-                play.mode === 'x-x'
-                    ? e => {e.redraw = false; startGame(play);}
-                    : play.mode === mode
-                        ? (e) => {e.redraw = false; Caissa.route('/plays/',       {},                {replace: true});}
-                        : (e) => {e.redraw = false; Caissa.route('/plays/:mode/', {mode: play.mode}, {replace: true});}
+                play.rivals === 'x-x'
+                    ? e => { e.redraw = false; startGame(play); }
+                    : play.rivals === rivals
+                        ? e => {e.redraw = false; Caissa.route('/plays/', {}, {replace: true});}
+                        : e => {e.redraw = false; Caissa.route('/plays/:rivals/', {rivals: play.rivals}, {replace: true});}
             );
         };
 
@@ -137,47 +150,43 @@ const Plays = Factory.create('Plays', {
 
             m(PageTitle, 'Start a new Game'),
             m(FlexList, [
+
+                // Free game
                 m(FixedList, Array.from(Config.templates.plays)
-                    .filter(solos)
-                    .map( play => {
-                        return m(PlayEntry, { play, onclick: clicker(play) });
-                    }),
+                    .filter(playSolo)
+                    .map( play => m(PlayEntry, { play, onclick: clicker(play) })),
                 ),
 
+                // Machines
                 m(HeaderLeft, 'Play with Machines'),
                 m(FixedList, Array.from(Config.templates.plays)
-                    .filter(plays)
+                    .filter(playMach)
                     .map( play => {
 
-                        const formdata  = forms[play.mode];
-                        const className = play.mode === mode ? 'active' : '';
+                        const formdata  = forms[play.rivals];
+                        const className = play.rivals === rivals ? 'active' : '';
 
                         return m('[', [
                             m(PlayEntry, { play, className, onclick: clicker(play) }),
-                            play.mode === mode
-                                ? m(Forms, { formdata, noheader: true, className: 'play-options' })
-                                : m(Nothing)
-                            ,
+                            !!rivals && m(Forms, { formdata, noheader: true, className: 'play-options' }),
                         ]);
 
                     }))
                 ,
-
-                m(HeaderLeft, 'Resume a Game [' + DB.Games.filter(dbgame).length + ']'),
-                m(FlexListShrink, DB.Games.filter(dbgame).map ( play => {
+                //TODO: Only show if games exist
+                // Unfinished games
+                m(HeaderLeft, 'Resume a Game [' + DB.Games.filter(gameCont).length + ']'),
+                m(FlexListShrink, DB.Games.filter(gameCont).map ( play => {
 
                     const onclick = e => {
                         e.redraw = false;
-                        const uuid = play.uuid, turn = play.moves.length -1;
-                        Caissa.route('/game/:turn/:uuid/', { turn, uuid });
+                        startGame(play);
                     };
 
                     const ondelete = e => {
-                        DEBUG && console.log('plays.ondelete', play.uuid);
-                        e.redraw = false;
-                        // TODO: check delete boards, too
                         DB.Games.delete(play.uuid);
-                        Caissa.redraw();
+                        DB.Boards.delete(play.uuid);
+                        DEBUG && console.log('plays.ondelete.out', play.uuid);
                         return H.eat(e);
                     };
 
@@ -187,8 +196,10 @@ const Plays = Factory.create('Plays', {
 
                 m(GrowSpacer),
                 m(FixedButton, { onclick: () => {
-                    // TODO: check delete boards, too
-                    DB.Games.delete(dbgame);
+                    DB.Games.filter(gameCont).forEach( play => {
+                        DB.Games.delete(play.uuid);
+                        DB.Boards.delete(play.uuid);
+                    });
                 }}, 'DB.Plays.clear()' ),
             ]),
 

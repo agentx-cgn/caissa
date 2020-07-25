@@ -20,8 +20,12 @@ const Pages = Factory.create('Pages', {
     // only slides get displayed and updated
     // slides are transformed and possibly animated
 
+
     oninit () {
         touchSlider.listen();
+    },
+    oncreate() {
+
     },
     onbeforeupdate () {
         touchSlider.pause();

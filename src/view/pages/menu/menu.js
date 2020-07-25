@@ -23,9 +23,9 @@ const Menu = Factory.create('Menu', {
 
         return m('div.page.menu', { className, style },
             m(PageTitle, 'Menu'),
-            m(FlexList, [
-                m(Spacer),
-                ...Array.from(Config.navigation).map( ([route, entry, params, extras]) => {
+            m(Spacer),
+            m(FlexList, Array.from(Config.menu)
+                .map( ( [route, entry, params, extras] ) => {
                     return m(FlexListEntry, { onclick: clicker(route, params) }, [
                         m(TextLeft, {class: 'f3'}, [
                             extras.img
@@ -33,11 +33,11 @@ const Menu = Factory.create('Menu', {
                                 : m('i.menu.fa.' + extras.ifa)
                             ,
                             entry,
-                            m('div.menu.subline', 'some clever hints'),
+                            m('div.menu.subline', extras.subline),
                         ]),
                     ]);
                 }),
-            ]),
+            ),
         );
 
     },

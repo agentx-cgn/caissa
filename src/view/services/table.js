@@ -70,7 +70,7 @@ const Table = function (tablename, dump=[], tableTemplate={}) {
         createget (uuid, template={}, force=false) {
             let row = self.find(uuid);
             if (row === undefined) {
-                row = H.create(tableTemplate, template);
+                row = H.clone(tableTemplate, template);
                 row.uuid = uuid;
                 cache.push(row);
                 self.persist(force);

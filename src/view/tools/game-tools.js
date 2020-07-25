@@ -6,12 +6,15 @@ import globaltools from './global-tools';
 
 const gametools = {
 
-    // isOver (game) {
-    //     const chess = new Chess();
-    //     !chess.load_pgn(game.pgn) && console.warn('gametools.isOver.failed', game.pgn);
-    //     return
-
-    // },
+    pgnFromMoves (game, turn) {
+        const chess = new Chess();
+        const moves = game.moves;
+        const last  = turn === undefined ? moves.length -1 : turn;
+        for (let i=0; i<=last; i++){
+            chess.move(moves[i]);
+        }
+        return chess.pgn().trim();
+    },
 
     // used for terminated games
     hash (game) {
@@ -105,8 +108,8 @@ const gametools = {
         const opponents = Config.opponents;
         const username = DB.Options.first['user-data'].name;
 
-        const w = game.mode[0];
-        const b = game.mode[2];
+        const w = game.rivals[0];
+        const b = game.rivals[2];
 
         return {
             white: opponents[w] === 'Human' ? username : opponents[w],
@@ -115,22 +118,24 @@ const gametools = {
 
     },
 
-    fromPlayForm (playtemplate, formdata, other) {
+    fromPlayForm (playtemplate, formdata) {
 
         const { white, black } = gametools.resolvePlayers(playtemplate);
 
-        const play = H.clone(Config.templates.game, playtemplate, formdata, other, {
+        const play = H.clone(Config.templates.game, playtemplate, formdata, {
             difficulty: globaltools.resolveDifficulty(formdata.depth),
         });
 
         play.header.White = white;
         play.header.Black = black;
+        play.over  = false;
+        play.moves = Array.from(play.moves);
 
         delete play.autosubmit;
         delete play.group;
         delete play.submit;
 
-        console.log('games.fromPlayForm', play);
+        console.log('Tools.fromPlayForm', play);
 
         return play;
 
@@ -160,32 +165,6 @@ const gametools = {
         game.plycount = game.moves.length;
 
     },
-
-    // lastMovePointer (list) {
-
-    //     return (
-    //         list.length % 2 === 0 ?
-    //             'b' + (~~(list.length/2) -1)    :
-    //             'w' + (~~(list.length/2))
-    //     );
-
-    // },
-
-    // gameLength (game) {
-    //     if (game.pgn === '') {
-    //         return 0;
-    //     } else {
-    //         const chess  = new Chess();
-    //         !chess.load_pgn(game.pgn) && console.warn('gameLength.error', game);
-    //         return chess.history().length;
-    //     }
-    // },
-
-    // turn2pointer (turn) {
-    //     const color = ~~turn % 2 === 0 ? 'w' : 'b';
-    //     const move  = Math.floor(~~turn / 2) +1;
-    //     return color + move;
-    // },
 
 };
 

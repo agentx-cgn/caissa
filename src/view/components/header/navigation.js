@@ -43,7 +43,7 @@ const Navigation = Factory.create('Navigation', {
                 });
             }}),
 
-            m('ul', Array.from(Config.navigation).map( ([route, entry, params]) => {
+            m('ul', Array.from(Config.menu).map( ([route, entry, params]) => {
                 return m('li', {
                     onclick: clicker(route, params),
                     class: route.startsWith(navi) ? 'selected' : 'unselected'}, entry)

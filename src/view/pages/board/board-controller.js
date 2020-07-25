@@ -9,7 +9,19 @@ import Tools           from '../../tools/tools';
 import ChessClock      from '../../components/chessclock';
 import Opponent        from './opponent';
 
-const DEBUG = true;
+const DEBUG = false;
+
+// const Dummy = {
+//     update:  () => {},
+//     destroy: () => {},
+// };
+
+/**
+ * game modes:
+ * a-a archived, game is finished, has no opponents, no timecontrol, can't be changed
+ * x-x experimental, no timecontrol, accepts all input, default is x-x
+ * [h|s]-[h|s] has opponents + timecontrol, is not finished, turn to a-a after finsish
+ */
 
 class BoardController {
 
@@ -27,11 +39,9 @@ class BoardController {
         this.squareMoves    = []; // all moves from or to selected square
         this.validMoves     = []; // these are all possible moves, for current color
 
-        this.illustrations  = DB.Options.first['board-illustrations'];
         this.opponents      = {
-            'w': new Opponent('w', this.game.mode[0]),
-            'b': new Opponent('b', this.game.mode[2]),
-            'n': { update: () => {}, destroy: () => {} },
+            'w': new Opponent('w', this.game.rivals[0]),
+            'b': new Opponent('b', this.game.rivals[2]),
         };
         this.listener = {
             onmove:        this.onmove.bind(this),
@@ -39,21 +49,41 @@ class BoardController {
             onfieldselect: this.onfieldselect.bind(this),
             ongameover:    this.ongameover.bind(this),
         };
+
         this.update();
+
     }
 
     destroy () {
         this.opponents.w && this.opponents.w.destroy();
         this.opponents.b && this.opponents.b.destroy();
-        this.opponents.n && this.opponents.n.destroy();
     }
 
-    // also called from board.view after new turn, and chessboard.onafterupdates
+    updateChess () {
+
+        if (this.turn === -2) {
+            this.chess.load(Config.fens.empty);
+
+        } else if (this.turn === -1) {
+            this.chess.load(Config.fens.start);
+
+        } else {
+            if (this.game.over) {
+                this.chess.load(this.game.moves[this.turn].fen);
+
+            } else {
+                this.chess.load_pgn(Tools.Games.pgnFromMoves(this.game, this.turn));
+
+            }
+
+        }
+
+    }
     update () {
 
         this.turn  = ~~this.game.turn;
-        // this.fen   = Tools.Games.fen(this.game);
-        !this.chess.load_pgn(this.game.pgn) && console.warn('BoardController.update.load_pgn.failed', this.fen);
+
+        this.updateChess();
 
         this.color  = this.chess.turn();
         this.tomove = (
@@ -72,26 +102,13 @@ class BoardController {
         this.validMoves     = [];
 
         // actions have no moves, so update here too
-        this.updateFlags();
+        // this.updateFlags();
         this.updateButtons();
 
         DEBUG && console.log('BoardController.update.out', {uuid: this.game.uuid, turn: this.turn, color: this.color});
 
     }
-    updateFlags () {
-        const flags = this.board.flags;
-        const chess = this.chess;
-        flags.turn  = this.turn === -2 ? null : chess.turn();
-        flags.over  = chess.game_over();
-        flags.chck  = chess.in_check();
-        flags.mate  = chess.in_checkmate();
-        flags.draw  = chess.in_draw();
-        flags.stal  = chess.in_stalemate();
-        flags.insu  = chess.insufficient_material();
-        flags.repe  = chess.in_threefold_repetition();
-        // DEBUG && console.log('BoardController.updateFlags.turn', flags.turn);
 
-    }
     updateButtons () {
 
         // button pairs are tri-state (play/pause, evaluate/spinner)
@@ -101,7 +118,7 @@ class BoardController {
 
         const btns     = this.board.buttons;
         const lastTurn = this.game.moves.length -1;
-        const mode     = this.game.mode;
+        const rivals   = this.game.rivals;
 
         // always possible
         btns.rotate = true;
@@ -111,7 +128,7 @@ class BoardController {
         btns.pause = null;
 
         // game with timecontrol and not empty board
-        if ( mode !== 'h-h' && mode !== 'x-x' && this.turn > -2 ){
+        if ( rivals !== 'h-h' && rivals !== 'x-x' && this.turn > -2 ){
 
             btns.play       = true;
             btns.pause      = null;
@@ -135,12 +152,14 @@ class BoardController {
 
         DB.Boards.update(this.board.uuid, { buttons: btns }, true);
         //TODO: When is a game terminated?
-        true && console.log('BoardController.updateButtons', 'btn.play', btns.play);
+        DEBUG && console.log('BoardController.updateButtons', 'btn.play', btns.play);
     }
 
     ongameover (msg) {
 
         console.log('BoardController.ongameover', msg);
+
+        this.game.over = true;
 
         if (msg.reason === 'timeout'){
             // Caissa.redraw();
@@ -201,16 +220,20 @@ class BoardController {
 
         if (this.turn !== -2){
 
-            const oppToMove = this.opponents[this.tomove];
-            const oppToWait = this.opponents[this.towait];
+            const oppToMove   = this.opponents[this.tomove];
+            const oppToWait   = this.opponents[this.towait];
+            const $chessboard = $$('div.chessboard');
 
             oppToMove.update(this);
             oppToWait.update(this);
 
-            $$('div.chessboard').addEventListener('mousedown', this.listener.onfieldselect);
-            $$('div.chessboard').addEventListener('touchdown', this.listener.onfieldselect);
+            // if mobile div might not exist yet
+            if ($chessboard){
+                $$('div.chessboard').addEventListener('mousedown', this.listener.onfieldselect);
+                $$('div.chessboard').addEventListener('touchdown', this.listener.onfieldselect);
+            }
 
-            if (this.clock.isTicking() || this.game.mode === 'x-x'){
+            if (this.clock.isTicking() || this.game.rivals === 'x-x'){
                 ( async () => {
                     this.opponents[this.towait].pause(this.chessBoard);
                     const move = await this.opponents[this.tomove].domove(this.chessBoard);
@@ -218,7 +241,7 @@ class BoardController {
                 })();
             }
 
-            DEBUG && console.log('BoardController.startListening.out', { mode: this.game.mode, tomove: this.tomove });
+            DEBUG && console.log('BoardController.startListening.out', { rivals: this.game.rivals, tomove: this.tomove });
 
         }
 
@@ -253,16 +276,16 @@ class BoardController {
 
             move.fen  = this.chess.fen();
             move.turn = this.turn +1;
-            const pgn = this.chess.pgn().trim();
+            let pgn   = this.chess.pgn().trim();
 
             // if first move of default, create new game + board and reroute to
             if (this.game.uuid === 'default'){
 
                 const timestamp = Date.now();
                 const uuid = H.hash(String(timestamp));
-                const game = H.create(this.game, {
+                const game = H.clone(this.game, {
                     uuid,
-                    mode:   'x-x',
+                    rivals: 'x-x',
                     turn :  0,
                     pgn,
                     timestamp,
@@ -279,10 +302,11 @@ class BoardController {
                 if (move.turn < this.game.moves.length) {
                     // throw away all moves after this new one
                     this.game.moves.splice(this.turn +1);
+                    // pgn = Tools.Games.pgnFromMoves(this.game);
                 }
 
                 this.game.turn = move.turn;
-                this.game.pgn  = pgn;
+                // this.game.pgn  = pgn;
                 this.newmove   = move;
                 this.game.moves.push(move);
 
@@ -314,11 +338,10 @@ class BoardController {
         // mark move as done
         this.newmove = '';
 
-        this.updateFlags();
         this.updateButtons();
         this.updateIllustration();
 
-        if (this.chess.game_over()) {
+        if (!this.game.over && this.chess.game_over()) {
             this.ongameover({
                 reason        : 'rules',
                 over          : this.chess.game_over(),

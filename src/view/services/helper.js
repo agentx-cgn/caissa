@@ -15,18 +15,42 @@ const H = {
         Object.setPrototypeOf(obj, null);
         return obj;
     },
-    clone (...args) {
+    clone1 (...args) {
         const obj = Object.assign.apply(null, [ {}, ...args ]);
         const clone = H.deepcopy(obj);
         Object.setPrototypeOf(clone, null);
+        return clone;
+    },
+
+    // deep combines params to reference free clone without prototypes
+    // Caissa.H.clone({}, {a:99}, {a:1, b:{c:99, d:4}}, {b:{c:3}})
+
+    clone (...args) {
+        const obj   = H.deepassign.apply(null, [ {}, ...args ]);
+        const clone = H.deepcopy(obj);
+        H.deepclean(clone);
         return clone;
     },
     clear (obj) {
         Object.keys(obj).forEach( prop => delete obj[prop] );
         return obj;
     },
-    createFreeze (obj) {
-        return H.freeze(H.create(obj));
+    // createFreeze (obj) {
+    //     return H.freeze(H.create(obj));
+    // },
+
+    // deep removes all prototypes from objects and arrays
+    deepclean(obj) {
+        const names = Object.getOwnPropertyNames(obj);
+        for (let name of names) {
+            const value = obj[name];
+            if(typeof value === 'object') {
+                H.deepclean(value);
+                Object.setPrototypeOf(value, null);
+            }
+        }
+        Object.setPrototypeOf(obj, null);
+        return obj;
     },
 
     deepFreezeCreate () {
@@ -110,7 +134,7 @@ const H = {
                 if (Array.isArray(value)){
                     target[key] = [...value];
                 } else if (value instanceof Object && key in target) {
-                    value = H.deepassign(target[key], value);
+                    value = H.deepassign({}, target[key], value);
                 }
                 target[key] = value;
             }
@@ -206,6 +230,17 @@ const H = {
             return true;
 
         }
+    },
+
+    //https://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
+    downloadJson(json, exportName='data'){
+        var data = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(json, null, 2));
+        var node = document.createElement('a');
+        node.setAttribute('href', data);
+        node.setAttribute('download', exportName + '.json');
+        document.body.appendChild(node); // required for firefox
+        node.click();
+        node.remove();
     },
 
 

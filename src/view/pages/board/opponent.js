@@ -6,7 +6,7 @@ import Pool   from '../../services/engine/pool';
 
 import { INPUT_EVENT_TYPE } from '../../../extern/cm-chessboard/Chessboard';
 
-const DEBUG = true;
+const DEBUG = false;
 
 class Opponent {
     constructor(color, mode) {

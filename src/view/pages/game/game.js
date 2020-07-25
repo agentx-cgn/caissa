@@ -16,8 +16,8 @@ const Game = Factory.create('Game', {
         const { params: { uuid='default', turn=-1 }, className, style } = vnode.attrs;
 
         // there must be a complete game + turn, //TODO: except deeplink
-        const game       = DB.Games.find(uuid);
-        const board      = DB.Boards.find(uuid);
+        const game  = DB.Games.find(uuid);
+        const board = DB.Boards.find(uuid);
 
         if(!game || !board) {
             // game or board are not properly prepared... :(

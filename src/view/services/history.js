@@ -235,7 +235,7 @@ const History = {
      */
     slides () {
 
-        const noContent = H.create({content: Nothing, route: '', params: H.create()});
+        const noContent = H.create({content: Nothing, route: '', params: {}});
         let log, res, offset;
 
         function collectNamesFrom(start, dir) {

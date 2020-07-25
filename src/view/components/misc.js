@@ -49,7 +49,7 @@ const ListFilter = {
 // };
 const PageTitle = Factory.create('PageTitle', {
     view ( { attrs, children } ) {
-        return m('page-title', { className: attrs.className },
+        return m('page-title', { className: attrs.className, onclick: attrs.onclick },
             m('span', { style: attrs.style }, children),
         );
     },

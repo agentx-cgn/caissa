@@ -1,6 +1,5 @@
 
-import Parser            from './parser/pgn';
-// import providerTemplates from '../data/provider';
+import Parser from './parser/pgn';
 
 const ImportProvider = function (template) {
 

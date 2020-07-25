@@ -44,16 +44,17 @@ export default {
         test       : false,
     },
 
-    'board-decoration': {
-        decoration: false,          // a1 - h8
-        'light-color': '#789',      // fields light
-        'dark-color':  '#987',      //
-    },
+    // 'board-decoration': {
+    //     decoration: false,          // a1 - h8
+    //     'light-color': '#789',      // fields light
+    //     'dark-color':  '#987',      //
+    // },
 
-    ui: {
+    'ui': {
         waitscreen: true,
     },
-    chessclock : {
+
+    'chessclock' : {
         divisor: {
             small: 1,
             big:   5,
@@ -65,7 +66,5 @@ export default {
             'section-left':  false,
         },
     },
-
-
 
 };

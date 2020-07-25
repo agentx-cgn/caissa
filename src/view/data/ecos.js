@@ -1,5 +1,5 @@
 
-import pgnECO from '../../../assets/openings/eco.pgn';
+import pgnECO from '../../assets/openings/eco.pgn';
 
 // {
 //     A PGN file of ECO classifications distributed with the PGN extraction
@@ -18,10 +18,11 @@ import pgnECO from '../../../assets/openings/eco.pgn';
 // 1. b4 c6 *
 //
 
-const codes = [];
+const tree = {};
+const ecos = [];
 const t0 = Date.now();
 
-function parseEco(eco) {
+function parseEcos(eco) {
 
     const lines = eco.split('\n');
     let counter = 0;
@@ -36,7 +37,7 @@ function parseEco(eco) {
             // if first dont push without eco
             if (code.eco) {
                 code.search = code.eco + ' ' + code.opening + ' '+ code.variation;
-                codes.push(code);
+                ecos.push(code);
                 counter += 1;
             }
             code = {idx: counter, eco: rxp[2], variation: '', opening:'', pgn: ''};
@@ -55,13 +56,45 @@ function parseEco(eco) {
 
     // last
     if (code.eco){
-        code.search = code.eco + ' ' + code.opening + ' '+ code.variation;
-        codes.push(code);
+        code.search = code.eco + ' ' + code.opening + ' ' + code.variation;
+        ecos.push(code);
     }
 
 }
 
-parseEco(pgnECO);
-console.log('Info   : Openings:', codes.length, 'in', Date.now() - t0, 'msecs');
+function buildTree () {
 
-export default codes;
+    // letter -> codes -> openings -> variations -> moves
+
+    letters.forEach( letter => {
+        tree[letter] = { label: letter, childs: {} };
+        const codes = ecos.filter( eco => eco.eco[0] === letter);
+        codes.forEach( code => {
+            tree[letter].childs[code.eco] = { label: code.eco, childs: {}};
+            const openings = codes.filter( eco => eco.eco === code.eco);
+            openings.forEach( opening => {
+                tree[letter].childs[code.eco].childs[opening.opening] = { label: opening.opening, childs: {}};
+                const variations = openings.filter(eco => eco.opening = opening.opening);
+                variations.forEach( variation => {
+                    tree[letter].childs[code.eco].childs[opening.opening].childs[variation.variation] = { label: variation.variation, childs: {}};
+                });
+            });
+        });
+    });
+
+}
+
+parseEcos(pgnECO);
+const letters  = 'A B C D E'.split(' ');
+const openings = Array.from(new Set(ecos.map(eco => eco.opening))).sort();
+const codes    = Array.from(new Set(ecos.map(eco => eco.eco))).sort();
+console.log('Info   : Build tree of', ecos.length, 'openings in', Date.now() - t0, 'msecs');
+buildTree();
+
+export default {
+    letters,
+    codes,
+    openings,
+    tree,
+    list: ecos,
+};

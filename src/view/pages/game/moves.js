@@ -39,9 +39,13 @@ const Moves = Factory.create('Moves', {
         //TODO: something for small screens
         return innerWidth >= 720
             ? m('div.gm-moves.flex-shrink',
-                m('table.w-100.collapse', renderMoves(vnode.attrs.game)),
+                m('div.mv2',
+                    m('table.w-100.collapse', renderMoves(vnode.attrs.game)),
+                ),
             )
-            : m('div.gm-moves', {style: 'margin: 1rem'}, renderMoves(vnode.attrs.game))
+            : m('div.gm-moves',
+                m('div.ma2', renderMoves(vnode.attrs.game)),
+            )
         ;
     },
 

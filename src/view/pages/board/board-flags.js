@@ -22,18 +22,27 @@
 import { H }    from '../../services/helper';
 import Factory  from '../../components/factory';
 
-const flagger = function (game, f) {
+const flagger = function (controller) {
 
-    let cTransp, cActive, cPlayer;
+    let cTransp, cActive, cPlayer, f = {}, chess = controller.chess;
 
-    if (game.turn === -2){
+    // f.turn  = controller.turn === -2 ? null : chess.turn();
+    f.over  = chess.game_over();
+    f.chck  = chess.in_check();
+    f.mate  = chess.in_checkmate();
+    f.draw  = chess.in_draw();
+    f.stal  = chess.in_stalemate();
+    f.insu  = chess.insufficient_material();
+    f.repe  = chess.in_threefold_repetition();
+
+    if (controller.turn === -2){
         // empty board
         cTransp  = cActive = cPlayer = 'ctb10';
 
     } else {
         cTransp  = 'ctb10 bg-trans';
         cActive  = 'ctr20';
-        cPlayer  = f.turn === 'w' ? 'ceee' : 'c333';
+        cPlayer  = controller.turn % 2 ? 'ceee' : 'c333';
     }
 
     return {
@@ -50,11 +59,13 @@ const flagger = function (game, f) {
 };
 
 const BoardFlags = Factory.create('BoardFlags', {
-    view( { attrs: { game, board: { flags } } } ) {
+
+    view( { attrs: { controller } }) {
+
         return (
             m('div.gm-bar',
                 m('div.gm-flags',
-                    H.map(flagger(game, flags), (_, props) => {
+                    H.map(flagger(controller), (_, props) => {
                         return m(props.tag, {
                             title: props.title,
                             class: props.class,
@@ -63,7 +74,9 @@ const BoardFlags = Factory.create('BoardFlags', {
                 ),
             )
         );
+
     },
+
 });
 
 export default BoardFlags;
