@@ -1,5 +1,6 @@
 
-import pgnECO from '../../assets/openings/eco.pgn';
+import pgnECO  from '../../assets/openings/eco.pgn';
+import volumes from './volumes';
 
 // {
 //     A PGN file of ECO classifications distributed with the PGN extraction
@@ -64,20 +65,53 @@ function parseEcos(eco) {
 
 function buildTree () {
 
-    // letter -> codes -> openings -> variations -> moves
+    // letter -> codes     -> openings -> variations -> moves
+    // A - E  -> A01 - E99 -> 'English'
+    // {idx: 0, eco: '', variation: '', opening:'', pgn: '', search: ''};
 
-    letters.forEach( letter => {
-        tree[letter] = { label: letter, childs: {} };
-        const codes = ecos.filter( eco => eco.eco[0] === letter);
+    let branch;
+
+    letters.forEach( volume => {
+
+        branch = volume;
+
+        const codes = ecos.filter( eco => eco.eco[0] === branch);
+        tree[branch] = {  childs: {}, length: codes.length };
+
         codes.forEach( code => {
-            tree[letter].childs[code.eco] = { label: code.eco, childs: {}};
-            const openings = codes.filter( eco => eco.eco === code.eco);
+
+            branch = code.eco;
+            let root  = tree[volume].childs;
+
+            const openings = codes.filter( eco => eco.eco === branch);
+            if (openings.length){
+                root[branch] = { childs: {}, length: openings.length };
+            } else {
+                root[branch] = { moves: code.pgn };
+                console.log('Tree', 'no opening for', branch);
+            }
+
             openings.forEach( opening => {
-                tree[letter].childs[code.eco].childs[opening.opening] = { label: opening.opening, childs: {}};
-                const variations = openings.filter(eco => eco.opening = opening.opening);
+
+                branch = opening.opening;
+                let root  = tree[volume].childs[code.eco].childs;
+
+                const variations = openings.filter(eco => eco.opening = branch);
+                if (variations.length){
+                    root[branch] = { childs: {}, length: variations.length };
+                } else {
+                    root[branch] = { idx: opening.idx, moves: opening.pgn };
+                    console.log('Tree', 'no variation for', branch);
+                }
+
                 variations.forEach( variation => {
-                    tree[letter].childs[code.eco].childs[opening.opening].childs[variation.variation] = { label: variation.variation, childs: {}};
+
+                    branch = variation.variation || variation.pgn;
+                    let root = tree[volume].childs[code.eco].childs[opening.opening].childs;
+                    root[branch] = { idx: variation.idx, moves: variation.pgn, length: variation.pgn.split('.').length -1};
+
                 });
+
             });
         });
     });
@@ -88,10 +122,20 @@ parseEcos(pgnECO);
 const letters  = 'A B C D E'.split(' ');
 const openings = Array.from(new Set(ecos.map(eco => eco.opening))).sort();
 const codes    = Array.from(new Set(ecos.map(eco => eco.eco))).sort();
+false && buildTree();
+
+// view-source:https://web.archive.org/web/20091028033349/http://www.geocities.com/siliconvalley/lab/7378/eco.htm
+
+// tree['A'].label = 'Flank openings';
+// tree['B'].label = 'Semi-Open Games other than the French Defense';
+// tree['C'].label = 'Open Games and the French Defense';
+// tree['D'].label = 'Closed Games and Semi-Closed Games';
+// tree['E'].label = 'Indian Defenses';
+
 console.log('Info   : Build tree of', ecos.length, 'openings in', Date.now() - t0, 'msecs');
-buildTree();
 
 export default {
+    volumes,
     letters,
     codes,
     openings,

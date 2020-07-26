@@ -11,12 +11,12 @@ import Game            from '../pages/game/game';
 import Source          from '../pages/source/source';
 import Sources         from '../pages/sources/sources';
 import System          from '../pages/system/system';
-import Openings        from '../pages/openings/openings';
-import {Nothing}       from '../components/misc';
+import { Openings, Volumes, Groups, Chapters, Variations } from '../pages/openings/subpages';
+import { Nothing }     from '../components/misc';
 import { H }           from '../services/helper';
 
 const DefaultRoute = '/menu/';
-const CompPages    = [Menu, Sources, Games, Game, Plays, Options, System, Openings];
+const CompPages    = [Menu, Sources, Games, Game, Plays, Options, System, Openings, Volumes, Groups, Chapters, Variations ];
 // const CompPages    = [Menu, Sources];
 const ConfigPages  = H.create({
 
@@ -29,7 +29,12 @@ const ConfigPages  = H.create({
     '/plays/':            [ Layout, Plays,    Board,     { title: 'Plays'}       ],
     '/plays/:rivals/':    [ Layout, Plays,    Board,     { title: 'Plays'}       ],
     '/preferences/':      [ Layout, Options,  Board,     { title: 'Preferences'} ],
-    '/openings/':         [ Layout, Openings, Board,     { title: 'Openings'} ],
+
+    '/openings/':                               [ Layout, Openings,   Board,     { title: 'Openings'}    ],
+    '/openings/:volume/':                       [ Layout, Volumes,    Board,     { title: 'Openings'}    ],
+    '/openings/:volume/:group/':                [ Layout, Groups,     Board,     { title: 'Openings'}    ],
+    '/openings/:volume/:chapter/':              [ Layout, Chapters,   Board,     { title: 'Openings'}    ],
+    '/openings/:volume/:chapter/:variation':    [ Layout, Variations, Board,     { title: 'Openings'}    ],
 
     '/system/':           [ Layout, System,   Nothing,   { title: 'System'}      ],
     '/system/:module/':   [ Layout, System,   Nothing,   { title: 'System %s'}   ],

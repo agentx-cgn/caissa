@@ -4,14 +4,15 @@ import './system.scss';
 import Caissa        from '../../caissa';
 import jsonSystem    from '../../data/system';
 import jsonConfig    from '../../data/config';
+import ecos          from '../../data/ecos';
 import DB            from '../../services/database';
 import Logger        from '../../services/logger';
 import Factory       from '../../components/factory';
 import { FlexList }  from '../../components/misc';
-// import LogsViewer    from './renderer/renderLogs';
 import JsonViewer    from './renderer/renderJson';
 
 let search   = '';
+const jsonEcos = ecos.tree;
 
 const Json =  {
     name: 'Json',
@@ -51,6 +52,7 @@ const System = Factory.create('System', {
         const Module = (
             module === 'config' ? m(Json, {tree: jsonConfig}) :
             module === 'system' ? m(Json, {tree: jsonSystem}) :
+            module === 'ecos'   ? m(Json, {tree: jsonEcos})   :
             module === 'db'     ? m(Json, {tree: DB.all()})   :
             m(Logs)
         );
@@ -64,7 +66,7 @@ const System = Factory.create('System', {
         return m('div.page.system', { className, style }, [
             m('div.systemmenu.w-100.btb20', [
                 m('ul.flex.flex-row.ml2.white',
-                    'System Config DB Logs'.split(' ').map( mod => {
+                    'System Config Ecos DB Logs'.split(' ').map( mod => {
                         return m('li.ph2.pv1.f4.list.pointer', {onclick: clicker(mod.toLowerCase()) }, mod);
                     }),
                 ),
