@@ -10,19 +10,23 @@ const DEBUG = false;
 
 module.hot && module.hot.accept();
 
-// Wire up mithril app to DOM
 try {
+
     const $root = document.body.querySelector('.root');
 
-    // window.H = H;
-    window.Caissa = Caissa;
-    Caissa.onafterImport(process.env.NODE_ENV);
-
+    // setup routes + strategy and wire up mithril app to DOM
     m.route.prefix = '#!';
     m.route($root, DefaultRoute, Routes);
+
+    // make Caissa available in console
+    window.Caissa = Caissa;
+
+    // tell Caissa we're ready
+    Caissa.start(process.env.NODE_ENV);
 
 } catch (e) {
     console.error('index.js', e);
 
 }
+
 DEBUG && console.log('Info   :', 'index.js loaded after', Date.now() - window.t0, 'msecs');

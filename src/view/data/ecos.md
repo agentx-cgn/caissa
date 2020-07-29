@@ -6,6 +6,26 @@
     https://en.wikipedia.org/wiki/Encyclopaedia_of_Chess_Openings#External_links
     https://en.wikipedia.org/wiki/List_of_chess_openings
 
+    Group   	Included openings
+A
+    any openings not starting with 1 d4 or 1 e4;
+    1 d4 but not 1 ..., d5; or 1 ..., Cf6;
+    1 d4, Cf6 but not 2 c4;
+    1 d4, Cf6; 2 c4 but not 2 ..., e6; or 2 ..., g6;
+B
+    1 e4 but not 1 ..., c5; or 1 ..., e5; or 1 ..., e6;
+    1 e4, c5;
+C
+    1 e4, e5;
+    1 e4, e6;
+D
+    1 d4, d5;
+    1 d4, Cf6; 2 c4, g6; with 3 ..., d5;
+E
+    1 d4, Cf6; 2 c4, e6;
+    1 d4, Cf6; 2 c4, g6; but not 3 ..., d5;
+
+
 ## Openings classified under ECO A
 Irregular Openings, Nimzovich, Bird, Réti, English, Irregular Queen's Pawn, Modern, Old Benoni, Indian, Budapest, Old Indian, Benoni, Benko Gambit, Modern Benoni, and Dutch
 

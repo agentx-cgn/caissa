@@ -43,7 +43,7 @@ const Pages = Factory.create('Pages', {
         const [ left, center, right, animation ] = slides;
 
         DEBUG && History.log();
-        DEBUG && console.log('PAGES.view', slides.slice(0, 3).map( s => s.content.name), animation);
+        true && console.log('Pages.view.slides', slides.slice(0, 3).map( s => s.content.name), animation);
 
         // keep this
         anim = animation;
@@ -57,7 +57,7 @@ const Pages = Factory.create('Pages', {
 
             // ensure (still) not updating vnodes have proper classes and styles
             if (isLeft && isRight){
-                console.log('gotcha');
+                console.warn('Pages.view', Comp.name, 'is left & right');
                 // eslint-disable-next-line no-debugger
                 // debugger;
             }
@@ -76,6 +76,10 @@ const Pages = Factory.create('Pages', {
                         $Comp.classList.add('slide', 'right', 'trans-right');
                     }
                 }
+                else {
+                    // eslint-disable-next-line no-debugger
+                    console.warn('Pages.view', Comp.name, 'not found');
+                }
 
             } else {
                 Comp.preventUpdates = true;
@@ -84,7 +88,7 @@ const Pages = Factory.create('Pages', {
                         'slide', 'left', 'center', 'right', 'trans-left', 'trans-center', 'trans-right',
                     );
                     $Comp.classList.add('dn');
-                    $Comp.removeAttribute('style');
+                    $Comp.removeAttribute('style'); // WHY?
                 }
 
             }

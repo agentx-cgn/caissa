@@ -40,6 +40,10 @@ body, .root {
   overflow: hidden;
 }
 
+a {
+    text-decoration: none;
+}
+
 section.pages {
     background-color: rgba(128,128,128, 0.9);
     background-image: url('/static/background.jpg');
@@ -63,7 +67,7 @@ div.header-center {
     background-color: #5336;
 }
 div.gm-bar {
-    background-color: #7553;
+    // background-color: #7553;
 }
 
 
@@ -149,6 +153,7 @@ button.flexcontrol {
 .c777      { color: #777; }
 .c666      { color: #666; }
 .c555      { color: #555; }
+.c444      { color: #444; }
 .c333      { color: #333; }
 
 .ctrans    { color: transparent !important; }

@@ -57,7 +57,7 @@ const Events = {
     },
     onbeforeinstallprompt (e) {
 
-        DEBUG && console.log('onbeforeinstallprompt');
+        console.log('onbeforeinstallprompt');
         Logger.log('events', 'onbeforeinstallprompt');
 
         const addBtn = document.querySelector('.a2hs-button');
@@ -111,13 +111,13 @@ const Events = {
     onselectionchange () {
         DEBUG && console.log('Selection', document.getSelection().toString());
     },
-    onpopstate () {
-        DEBUG && console.log('onpopstate');
-    },
-    hashchange (e) {
-        DEBUG && console.log('hashchange', e.oldURL);
-        DEBUG && console.log('hashchange', e.newURL);
-    },
+    // onpopstate () {
+    //     DEBUG && console.log('onpopstate');
+    // },
+    // hashchange (e) {
+    //     DEBUG && console.log('hashchange', e.oldURL);
+    //     DEBUG && console.log('hashchange', e.newURL);
+    // },
 };
 
-export { Events as default };
+export default Events;

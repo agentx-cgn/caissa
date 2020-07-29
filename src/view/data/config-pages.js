@@ -11,16 +11,18 @@ import Game            from '../pages/game/game';
 import Source          from '../pages/source/source';
 import Sources         from '../pages/sources/sources';
 import System          from '../pages/system/system';
+import Error           from '../pages/error/error';
 import { Openings, Volumes, Groups, Chapters, Variations } from '../pages/openings/subpages';
 import { Nothing }     from '../components/misc';
 import { H }           from '../services/helper';
 
 const DefaultRoute = '/menu/';
-const CompPages    = [Menu, Sources, Games, Game, Plays, Options, System, Openings, Volumes, Groups, Chapters, Variations ];
+const CompPages    = [Error, Menu, Sources, Games, Game, Plays, Options, System, Openings, Volumes, Groups, Chapters, Variations ];
 // const CompPages    = [Menu, Sources];
+
 const ConfigPages  = H.create({
 
-    // Route                Layout  Page     Content      Title
+    // Route                Layout  Page     Content      Options (Title)
     '/menu/':             [ Layout, Menu,     Board,     { title: 'Menu'}        ],
     '/sources/':          [ Layout, Sources,  Board,     { title: 'Sources'}     ],
     '/games/':            [ Layout, Games,    Board,     { title: 'Games'}       ],
@@ -30,6 +32,7 @@ const ConfigPages  = H.create({
     '/plays/:rivals/':    [ Layout, Plays,    Board,     { title: 'Plays'}       ],
     '/preferences/':      [ Layout, Options,  Board,     { title: 'Preferences'} ],
 
+    // https://mithril.js.org/route.html#variadic-routes
     '/openings/':                               [ Layout, Openings,   Board,     { title: 'Openings'}    ],
     '/openings/:volume/':                       [ Layout, Volumes,    Board,     { title: 'Openings'}    ],
     '/openings/:volume/:group/':                [ Layout, Groups,     Board,     { title: 'Openings'}    ],
@@ -38,6 +41,7 @@ const ConfigPages  = H.create({
 
     '/system/':           [ Layout, System,   Nothing,   { title: 'System'}      ],
     '/system/:module/':   [ Layout, System,   Nothing,   { title: 'System %s'}   ],
+    '/:404...':           [ Layout, Error,    Nothing,   { title: 'Error %s'}    ],
 
     '/analyzer/:source/': [ Layout, Source,   Analyzer,  { title: 'System %s'}   ],
 

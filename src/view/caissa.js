@@ -15,7 +15,7 @@ import { ConfigPages, DefaultRoute } from './data/config-pages';
 
 const DEBUG = true;
 
-let redraws = 0, offset = 50;
+let redraws = 0; // that's a counter
 
 // available in console as window.Caissa
 const Caissa = {
@@ -41,8 +41,8 @@ const Caissa = {
         document.body.innerText = dump;
     },
 
-    // happens once in index.js
-    onafterImport (env) {
+    // signal from index.js
+    start (env) {
 
         Caissa.Env = env[0].toUpperCase() + env.substring(1);
 
@@ -52,26 +52,31 @@ const Caissa = {
         Events.listen();
     },
 
-    onComponentCreated : function (comp) {
-        offset += 16;
-        setTimeout( function () {
-            const $msgs = $$('loader-screen .messages');
-            $msgs.innerHTML += '<br>' + comp.name;
-        }, offset);
-    },
-
-    //from loader screen
-    start () {
+    //from loader screen, //TODO: needed here?
+    closeLoader () {
         document.body.removeChild($$('loader-container'));
     },
+
+    // onComponentCreated : function (comp) {
+    //     offset += 16;
+    //     setTimeout( function () {
+    //         const $msgs = $$('loader-screen .messages');
+    //         $msgs.innerHTML += '<br>' + comp.name;
+    //     }, offset);
+    // },
+
     // == window.onload
     onload () {
+
         Logger.log('caissa', 'onload');
+
         const t = Date.now() - window.t0;
+
         t > 2000
-            ? console.warn('Warn   :', '... done after', 0, t, 'msecs')
-            : console.log ('Info   :', '... done after', 0, t, 'msecs')
+            ? console.warn('Warn   :', '... done after', t, 'msecs', '\n')
+            : console.log ('Info   :', '... done after', t, 'msecs', '\n')
         ;
+
         if (DB.Options.first['ui'].waitscreen) {
             $$('loader-screen h3').innerHTML = 'Caissa';
             $$('loader-screen .group2').style.display        = 'inline-block';
@@ -83,7 +88,8 @@ const Caissa = {
             $$('loader-screen input[type="text"]').value      = DB.Options.first['user-data'].name;
 
         } else {
-            document.body.removeChild($$('loader-container'));
+            Caissa.closeLoader();
+            // document.body.removeChild($$('loader-container'));
         }
 
         // take over error handling
@@ -109,27 +115,35 @@ const Caissa = {
         console.log(' ');
         DEBUG && console.log('%cCaissa.route.in %s %s %s', 'color:darkred; font-weight: 800', route, H.shrink(params), H.shrink(options) );
 
-        const page = ConfigPages[route];
+        const cfgPage = ConfigPages[route];
 
-        if (page) {
+        if (cfgPage) {
             History.prepare(route, params, options);
-            m.route.set(route, params, {title: page.title, ...options});
+            m.route.set(route, params, {title: cfgPage.title, ...options});
 
         } else {
-            console.warn('caissa.route.error', route, params, options);
+            console.error('caissa.route.error', route, params, options);
 
         }
+
     },
 
-    resolver (route, pageentry) {
+    resolver (route, pageConfig) {
+
+        const pageComp = pageConfig[1];
+
         return {
             onmatch ( params ) {
 
                 try {
-                    DEBUG && redraws && console.log(' ');
-                    const target  = m.buildPathname(route, params);
-                    const current = History.isCurrent(target) ? 'current' : 'new';
-                    DEBUG && console.log('%cCaissa.onmatch.in %s %s ', 'color:darkblue; font-weight: 800', target, current);
+
+                    if (DEBUG) {
+                        redraws && console.log(' ');
+                        const target  = m.buildPathname(route, params);
+                        const current = History.isCurrent(target) ? 'current' : 'new';
+                        console.log('%cCaissa.onmatch.in %s %s ', 'color:darkblue; font-weight: 800', target, current);
+                    }
+
                     History.prepare(route, params);
 
                 } catch (e) {console.log(JSON.stringify(e), e);}
@@ -137,12 +151,14 @@ const Caissa = {
             },
             render ( vnode ) {
 
-                const content = pageentry[1];
-                const target  = m.buildPathname(route, vnode.attrs);
-                const current = History.isCurrent(target) ? 'current' : 'new';
-                DEBUG && console.log('%cCaissa.render.in %s %s', 'color:darkorange; font-weight: 800', target, current);
+                if (DEBUG){
+                    const target  = m.buildPathname(route, vnode.attrs);
+                    const current = History.isCurrent(target) ? 'current' : 'new';
+                    const style   = 'color:darkorange; font-weight: 800';
+                    console.log('%cCaissa.render.in %s %s', style, target, current);
+                }
 
-                History.finalize(route, vnode.attrs, content);
+                History.finalize(route, vnode.attrs, pageComp);
 
                 return m(Caissa.comp, { route, params: vnode.attrs });
             },
@@ -153,12 +169,16 @@ const Caissa = {
         view ( vnode ) {
 
             const { route, params } = vnode.attrs;
-            const [ Layout, Content, Section, pagedata ] = ConfigPages[route];
-            const target   = m.buildPathname(route, params);
+            const [ Layout, Content, Section, pageOptions ] = ConfigPages[route];
 
-            DEBUG && console.log('%cCaissa.view.in %s %s', 'color:darkgreen; font-weight: 800', target, History.animation);
+            if (DEBUG) {
+                const target = m.buildPathname(route, params);
+                const style  = 'color:darkgreen; font-weight: 800';
+                console.log('%cCaissa.view.in %s %s', style, target, History.animation);
+            }
 
-            document.title = pagedata.title;
+            //TODO: this is actually dynamic
+            document.title = pageOptions.title;
 
             return m(Layout, { route, params }, [ Content, Section ]);
 
@@ -168,7 +188,6 @@ const Caissa = {
 
 };
 
-// const DefaultRoute = ConfigPages.DefaultRoute; //'/sources/';
 const Routes = H.transform(ConfigPages, Caissa.resolver);
 
 export {

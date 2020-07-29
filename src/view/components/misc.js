@@ -42,11 +42,6 @@ const ListFilter = {
     },
 };
 
-// const TitleLeft = {
-//     view ( v ) {
-//         return m('div.title-left.tl.saim.white', m('span', v.attrs, v.children));
-//     },
-// };
 const PageTitle = Factory.create('PageTitle', {
     view ( { attrs, children } ) {
         return m('page-title', { className: attrs.className, onclick: attrs.onclick },
@@ -80,6 +75,12 @@ const HeaderCentered = {
 const FlexList = {
     view ( vnode ) {
         return m('div.flexlist', vnode.attrs, vnode.children);
+    },
+};
+
+const FlexListGrow = {
+    view ( vnode ) {
+        return m('div.flexlist.h-100', vnode.attrs, vnode.children, m(GrowSpacer));
     },
 };
 
@@ -138,6 +139,7 @@ export {
     FlexList,
     FlexListFixed,
     FlexListShrink,
+    FlexListGrow,
     FixedButton,
     FlexListEntry,
     // FlexListPlayEntry,
