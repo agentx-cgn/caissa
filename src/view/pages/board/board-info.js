@@ -16,7 +16,7 @@ const BoardInfo = Factory.create('BoardInfo', {
 
             return m('div.flex.flex-row.board-bar-' + pos, [
                 m(ChessClock, { player }),
-                m('div.flex-auto.mh2.saim.f4.c333.ellipsis',  game.white),
+                m('div.flex-auto.mh2.saim.f4.c333.ellipsis',  game.header.White),
                 m('div.captured.tr.cfff', m('div.chess', { style }, board.captured.white.join(''))),
             ]);
 
@@ -24,7 +24,7 @@ const BoardInfo = Factory.create('BoardInfo', {
 
             return m('div.flex.flex-row.board-bar-' + pos, [
                 m(ChessClock, { player }),
-                m('div.flex-auto.mh2.saim.f4.cfff.ellipsis', game.black),
+                m('div.flex-auto.mh2.saim.f4.cfff.ellipsis', game.header.Black),
                 m('div.captured.tr.c333', m('div.chess', { style }, board.captured.black.join('') )),
             ]);
 

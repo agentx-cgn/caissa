@@ -9,6 +9,30 @@ back-drop.visible {
     background-color: rgba(255,255,255, 0.5);
 }
 
+div.panel-header.illustrations {
+    background: #658199;
+}
+
+div.panel-header {
+    min-height: 36px;
+}
+
+div.panel-header .caption {
+    margin-top: 0.5rem;
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    color: white;
+    font-family: 'SairaCondensed-Regular';
+    padding-left: 1rem;
+}
+div.panel-header .toggle {
+    color: white;
+    margin-top: 0.5rem;
+    width: 24px;
+}
+
+
 page-title {
     height: 5.25rem;
     min-height: 5.25rem;

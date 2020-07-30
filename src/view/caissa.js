@@ -103,8 +103,9 @@ const Caissa = {
         console.log(' ');
     },
 
-    redraw () {
+    redraw (e) {
         console.log(' ');
+        e && (e.redaw = false);
         History.prepare('',  {}, {redraw: true});
         m.redraw();
     },

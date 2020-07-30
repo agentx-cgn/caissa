@@ -7,6 +7,7 @@ import FormIllus  from '../../components/forms/form-illus';
 import Board      from '../board/board';
 import Moves      from './moves';
 
+import { PanelIllus, PanelEcos } from './game-panels';
 import { Spacer, GrowSpacer, PageTitle, TextCenter, FlexList } from '../../components/misc';
 
 const Game = Factory.create('Game', {
@@ -28,7 +29,7 @@ const Game = Factory.create('Game', {
         const titlePlayers = Tools.Format.titlePlayers(game);
         const lineResult   = Tools.Format.lineResult(game);
 
-        //TODO: only if large Moves
+        // make selected move visible
         Tools.Games.scrollTurnIntoView(~~turn);
 
         return innerWidth >= 720
@@ -47,10 +48,12 @@ const Game = Factory.create('Game', {
 
             // mobile, as page with inline board
             : m('div.page.game', { className, style }, [
-                m(PageTitle,     { className: 'gm-players tc' }, titlePlayers),
+                // m(PageTitle,     { className: 'gm-players tc' }, titlePlayers),
+                m(Board,         { params: { uuid, turn: ~~turn } }),
                 m(FlexList, [
-                    m(Board,         { params: { uuid, turn: ~~turn } }),
                     m(Moves,         { game }),
+                    m(PanelEcos),
+                    m(PanelIllus),
                     m(Spacer),
                     m(TextCenter,    { class: 'gm-result', title: 'result termination timecontrol'}, lineResult ),
                     m(GrowSpacer),

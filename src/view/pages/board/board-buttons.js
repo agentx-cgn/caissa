@@ -30,11 +30,10 @@ const actions = {
     play  (e)  { e.redraw = false; controller.play();},
     eval  (e)  { e.redraw = false; evaluate(game);},
     rotate (e) {
-        e.redraw = false;
         const board = DB.Boards.find(game.uuid);
         const orientation = board.orientation === 'w' ? 'b' : 'w';
         DB.Boards.update(game.uuid, {orientation});
-        Caissa.redraw();
+        Caissa.redraw(e);
     },
 };
 

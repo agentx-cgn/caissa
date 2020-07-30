@@ -51,7 +51,12 @@ export default {
     // },
 
     'ui': {
-        waitscreen: true,
+        'waitscreen': true,
+    },
+    'game-panel-toggles': {
+        'moves': 'show',
+        'illus': 'show',
+        'ecos':  'show',
     },
 
     'chessclock' : {
@@ -61,10 +66,10 @@ export default {
         },
         pressure: 10 * 1000,
     },
-    'other' : {
-        'ui-collapsed' : {
-            'section-left':  false,
-        },
-    },
+    // 'other' : {
+    //     'ui-collapsed' : {
+    //         'section-left':  false,
+    //     },
+    // },
 
 };

@@ -9,26 +9,25 @@ const FormIllus = Factory.create('FormIllus', {
 
     view () {
 
-        const illus     = DB.Options.first['board-illustrations'];
-        const formgroup = 'board-illustrations';
-        const formdata  = {
-            ...illus,
-            group: formgroup,
+        const group    = 'board-illustrations';
+        const options  = DB.Options.first[group];
+        const formdata = {
+            group,
+            ...options,
             autosubmit: true,
             submit : () => {
-                DEBUG && console.log(formdata);
+                DEBUG && console.log('FormIllus.submit', formdata);
                 delete formdata.group;
                 delete formdata.submit;
                 delete formdata.autosubmit;
-                DB.Options.update('0', { 'board-illustrations': formdata }, true);
+                DB.Options.update('0', { [group]: formdata }, true);
             },
         };
 
         return m(Forms, {
             formdata,
-            noheader: false,
-            style:'background: #658199',
-            className: 'default-options group-' + formgroup,
+            noheader: true,
+            className: 'default-options group-' + group,
         });
 
     },
