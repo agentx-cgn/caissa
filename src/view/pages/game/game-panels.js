@@ -35,7 +35,7 @@ const PanelEcos = Factory.create('PanelEcos', {
             Caissa.redraw(e);
         };
 
-        return m(Panel, { onclick, show, className: 'ecos'}, 'ECOS',  m(GameEcos));
+        return m(Panel, { onclick, show, className: 'ecos'}, 'ECO Browser',  m(GameEcos));
     },
 });
 
