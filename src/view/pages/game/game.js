@@ -52,7 +52,7 @@ const Game = Factory.create('Game', {
                 m(Board,         { params: { uuid, turn: ~~turn } }),
                 m(FlexList, [
                     m(Moves,         { game }),
-                    m(PanelEcos),
+                    m(PanelEcos,     { game }),
                     m(PanelIllus),
                     m(Spacer),
                     m(TextCenter,    { class: 'gm-result', title: 'result termination timecontrol'}, lineResult ),

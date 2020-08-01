@@ -76,6 +76,62 @@ const ECO = {
         return Openings[opening][1];
     },
 
+    walkTree (moves) {
+
+        let i, move, lost = {}, branch = Tree;
+
+        for (i=0; i<moves.length; i++) {
+            move   = moves[i];
+            branch = branch[move.san] ? branch[move.san] : lost;
+        }
+
+        return branch;
+
+    },
+
+    describeMoves (moves) {
+
+        let branch, tree = Tree;
+
+        return moves.map( move => {
+
+            if (tree[move.san]) {
+                branch  = tree[move.san];
+                tree = branch;
+                if (branch['__']){
+                    // return move.san + ' - ' + branch['__'];
+                    return [move.san, branch['__']];
+                } else {
+                    return [move.san, null];
+                    // return move.san + ' - no name';
+                }
+            } else {
+                // done
+                tree = {};
+                return [move.san, undefined];
+                // return move.san + ' - not found';
+            }
+
+        });
+
+    },
+    describeOptions (moves) {
+
+        const branch = ECO.walkTree(moves);
+
+        return Object.keys(branch)
+            .filter( key => key !== '__' )
+            .map( key => {
+                if (branch[key]['__']) {
+                    return [key, branch[key]['__']];
+                } else {
+                    return [key, null];
+                }
+            })
+        ;
+
+    },
+
 };
 
 export default ECO;

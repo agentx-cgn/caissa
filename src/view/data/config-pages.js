@@ -22,8 +22,10 @@ const CompPages    = [Error, Menu, Sources, Games, Game, Plays, Options, System,
 
 const ConfigPages  = H.create({
 
+    // routes must start with '/'
     // Route                Layout  Page     Content      Options (Title)
-    '/menu/':             [ Layout, Menu,     Board,     { title: 'Menu'}        ],
+    '/':                  [ Layout, Menu,     Board,     { title: 'Menu 1'}        ],
+    '/menu/':             [ Layout, Menu,     Board,     { title: 'Menu 2'}        ],
     '/sources/':          [ Layout, Sources,  Board,     { title: 'Sources'}     ],
     '/games/':            [ Layout, Games,    Board,     { title: 'Games'}       ],
     '/games/:idx/':       [ Layout, Games,    Board,     { title: 'Games %s'}    ],

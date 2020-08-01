@@ -11,11 +11,6 @@ import Opponent        from './opponent';
 
 const DEBUG = false;
 
-// const Dummy = {
-//     update:  () => {},
-//     destroy: () => {},
-// };
-
 /**
  * game modes:
  * a-a archived, game is finished, has no opponents, no timecontrol, can't be changed
