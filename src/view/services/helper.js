@@ -1,6 +1,10 @@
 
+// import _ from 'lodash';
+
 const $$    = document.querySelector.bind(document);
 const $$$   = document.querySelectorAll.bind(document);
+
+// https://lodash.com/docs/4.17.15
 
 const H = {
 
@@ -15,12 +19,13 @@ const H = {
         Object.setPrototypeOf(obj, null);
         return obj;
     },
-    clone1 (...args) {
-        const obj = Object.assign.apply(null, [ {}, ...args ]);
-        const clone = H.deepcopy(obj);
-        Object.setPrototypeOf(clone, null);
-        return clone;
-    },
+
+    // clone1 (...args) {
+    //     const obj = Object.assign.apply(null, [ {}, ...args ]);
+    //     const clone = H.deepcopy(obj);
+    //     Object.setPrototypeOf(clone, null);
+    //     return clone;
+    // },
 
     // deep combines params to reference free clone without prototypes
     // Caissa.H.clone({}, {a:99}, {a:1, b:{c:99, d:4}}, {b:{c:3}})
@@ -31,6 +36,8 @@ const H = {
         H.deepclean(clone);
         return clone;
     },
+
+    // removes all props, so refs will continue to work
     clear (obj) {
         Object.keys(obj).forEach( prop => delete obj[prop] );
         return obj;
@@ -74,27 +81,27 @@ const H = {
 
     },
 
-    freeze (obj) {
-        return Object.freeze(obj);
-    },
+    // freeze (obj) {
+    //     return Object.freeze(obj);
+    // },
 
-    deepFreeze (obj) {
+    // deepFreeze (obj) {
 
-        // Retrieve the property names defined on object
-        var propNames = Object.getOwnPropertyNames(obj);
+    //     // Retrieve the property names defined on object
+    //     var propNames = Object.getOwnPropertyNames(obj);
 
-        // Freeze properties before freezing self
-        for (let name of propNames) {
-            let value = obj[name];
+    //     // Freeze properties before freezing self
+    //     for (let name of propNames) {
+    //         let value = obj[name];
 
-            if(value && typeof value === 'object') {
-                H.deepFreeze(value);
-            }
-        }
+    //         if(value && typeof value === 'object') {
+    //             H.deepFreeze(value);
+    //         }
+    //     }
 
-        return Object.freeze(obj);
+    //     return Object.freeze(obj);
 
-    },
+    // },
 
     each (obj, fn){
         for(let prop in obj){

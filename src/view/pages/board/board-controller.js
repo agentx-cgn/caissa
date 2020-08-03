@@ -20,7 +20,11 @@ const DEBUG = false;
 
 class BoardController {
 
-    constructor (game, board) {
+    constructor () {}
+
+    init (game, board) {
+
+        this.destroy();
 
         this.game           = game;
         this.board          = board;
@@ -47,11 +51,15 @@ class BoardController {
 
         this.update();
 
+        return this;
+
     }
 
     destroy () {
-        this.opponents.w && this.opponents.w.destroy();
-        this.opponents.b && this.opponents.b.destroy();
+        if (this.opponents){
+            this.opponents.w && this.opponents.w.destroy();
+            this.opponents.b && this.opponents.b.destroy();
+        }
     }
 
     updateChess () {
@@ -163,8 +171,9 @@ class BoardController {
             // Caissa.redraw();
 
         }
-        this.opponents[this.tomove].destroy();
-        this.opponents[this.towait].destroy();
+        // this.opponents[this.tomove].destroy();
+        // this.opponents[this.towait].destroy();
+        this.destroy();
         this.clock.stop();
 
     }
@@ -475,4 +484,7 @@ class BoardController {
         //     chess.put({ type, color}, field);
         //     chessBoard.setPosition(chess.fen(), true);
 
-export default BoardController;
+//TODO: Class no longer needed
+const Controller = new BoardController();
+
+export default Controller;

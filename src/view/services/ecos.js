@@ -88,7 +88,38 @@ const ECO = {
         return branch;
 
     },
+    // sortContinuations (a, b) {
+    //     return a.slice(-2, -1) > b.slice(-2, -1);
+    // },
+    findContinuations (moves) {
 
+        const branch = ECO.walkTree(moves);
+
+        return Object.keys(branch)
+            .filter( key => key !== '__' )
+            .sort( (a, b) => a.slice(-2, -1) > b.slice(-2, -1) )
+            .map( move => {
+                const continuation = ECO.getContinuation(move, branch);
+                return continuation;
+            })
+        ;
+    },
+
+    getContinuation (move, branch, newkey=undefined, moves=[]) {
+
+        const curkey   = newkey || move;
+        const curlabel = branch[curkey]['__'];
+
+        if (curlabel) {
+            return [ move, moves, curlabel.split(' | ') ];
+
+        } else {
+            newkey = Object.keys(branch[curkey])[0];
+            return ECO.getContinuation(move, branch[curkey], newkey, [...moves, newkey]);
+
+        }
+
+    },
     describeMoves (moves) {
 
         let branch, tree = Tree;
@@ -99,38 +130,33 @@ const ECO = {
                 branch  = tree[move.san];
                 tree = branch;
                 if (branch['__']){
-                    // return move.san + ' - ' + branch['__'];
                     return [move.san, branch['__']];
                 } else {
                     return [move.san, null];
-                    // return move.san + ' - no name';
                 }
             } else {
                 // done
                 tree = {};
                 return [move.san, undefined];
-                // return move.san + ' - not found';
             }
 
         });
 
     },
-    describeOptions (moves) {
 
-        const branch = ECO.walkTree(moves);
+    // describeOptions (moves) {
 
-        return Object.keys(branch)
-            .filter( key => key !== '__' )
-            .map( key => {
-                if (branch[key]['__']) {
-                    return [key, branch[key]['__']];
-                } else {
-                    return [key, null];
-                }
-            })
-        ;
+    //     const branch = ECO.walkTree(moves);
 
-    },
+    //     return Object.keys(branch)
+    //         .filter( key => key !== '__' )
+    //         .map( key => {
+    //             const res = ECO.findVariation(branch, key);
+    //             return res;
+    //         })
+    //     ;
+
+    // },
 
 };
 

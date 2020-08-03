@@ -6,6 +6,7 @@ import Config          from './data/config';
 import Options         from './data/options';
 import Logger          from './services/logger';
 import DB              from './services/database';
+import ECOS            from './services/ecos';
 import History         from './services/history';
 import Events          from './services/events';
 import Factory         from './components/factory';
@@ -21,7 +22,7 @@ let redraws = 0; // that's a counter
 const Caissa = {
 
     // available for debugging
-    H, DB, System,
+    H, DB, ECOS, System,
 
     //
     dumpDB () {
