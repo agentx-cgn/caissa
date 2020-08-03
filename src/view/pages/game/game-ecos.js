@@ -32,11 +32,6 @@ function formatContinuation (cont) {
 
 }
 
-// const sortOptions = (a, b) => {
-//     // console.log(a[0][0], a[0][0].slice(-2), b[0][0], b[0][0].slice(-2));
-//     return a[0][0].slice(-2) > b[0][0].slice(-2);
-// };
-
 const GameEcos = Factory.create('GameEcos', {
 
     view ( vnode ) {
@@ -47,11 +42,12 @@ const GameEcos = Factory.create('GameEcos', {
         if (turn === -2) return;
 
         const moves = game.moves.slice(0, turn +1);
-        let path  = ECOS.describeMoves(moves);
-        path = path.map( (entry, idx) => {
-            const className = idx % 2 ? 'black' : 'white';
-            return m('div.ellipsis', { className }, formatEntry(entry) );
-        });
+        const path = ECOS.describeMoves(moves)
+            .map( (entry, idx) => {
+                const className = idx % 2 ? 'black' : 'white';
+                return m('div.ellipsis', { className }, formatEntry(entry) );
+            })
+        ;
 
         let continuations = ECOS.findContinuations(moves)
             .map ( (entry) => {
@@ -60,8 +56,7 @@ const GameEcos = Factory.create('GameEcos', {
                 const className = turn % 2 ? 'white' : 'black';
                 const onclick = e => {
                     e.redraw = false;
-                    // console.log(entry[0], entry[1]);
-                    console.log(entry[0], entry[2].join(', '));
+                    // console.log(entry[0], entry[2].join(', '));
                     BoardController.onmove(entry[0]);
                 };
                 return m('div.ellipsis.pl2', { className, onclick }, continuation );

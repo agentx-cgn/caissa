@@ -124,23 +124,26 @@ const ECO = {
 
         let branch, tree = Tree;
 
-        return moves.map( move => {
-
-            if (tree[move.san]) {
-                branch  = tree[move.san];
-                tree = branch;
-                if (branch['__']){
-                    return [move.san, branch['__']];
+        return moves
+            .map( move => {
+                if (tree[move.san]) {
+                    branch  = tree[move.san];
+                    tree = branch;
+                    if (branch['__']){
+                        return [move.san, branch['__']];
+                    } else {
+                        return [move.san, null];
+                    }
                 } else {
-                    return [move.san, null];
+                    // done
+                    tree = {};
+                    // return [move.san, undefined];
+                    return undefined;
                 }
-            } else {
-                // done
-                tree = {};
-                return [move.san, undefined];
-            }
 
-        });
+            })
+            .filter( move => move !== undefined)
+        ;
 
     },
 

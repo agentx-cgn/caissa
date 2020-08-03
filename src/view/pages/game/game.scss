@@ -44,11 +44,11 @@ div.gm-progress {
 }
 
 div.gm-moves {
-    // margin: 0.5rem 0;
     overflow-x: hidden;
     overflow-y: auto;
     background-color: #9998;
     min-height: 3rem;
+    flex: 0 0;
 }
 span.gm-move {
     display: inline-block;
