@@ -140,23 +140,22 @@ export default H.deepFreezeCreate({
             'N': 'j',
             'P': 'o',
         },
+        value : {
+            'k': 0,
+            'q': 9,
+            'r': 5,
+            'b': 3,
+            'n': 3,
+            'p': 1,
+            'K': 0,
+            'Q': 9,
+            'R': 5,
+            'B': 3,
+            'N': 3,
+            'P': 1,
+        },
 
     },
-
-    // menu : [
-    //     ['/sources/',        'PGNS',        {},                     { ifa: 'fa-chess-pawn'} ],
-    //     ['/games/',          'GAMES',       { idx: 0 },             { img: iconChess} ],  // loads imported games so far
-    //     ['/game/',           'GAME',        {},                     { img: iconChess} ],
-    //     ['/plays/',          'PLAY',        {},                     { img: iconChess} ],
-    //     ['/system/:module/', 'SYSTEM',      { module: 'system' },   { ifa: 'fa-microchip' } ],
-    //     ['/preferences/',    'PREFERENCES', {},                     { ifa: 'fa-cogs'} ],
-
-    //     // ['/analyzer/',       {}, 'ANALYSE'],
-    //     // ['/help/',           {}, 'HELP'],
-
-    //     // [`/info/${urls[1]}/`,   'INFO'],
-    //     // ['/test',     'TEST'],
-    // ],
 
     apis: [
         {idx: 1, caption: 'api.chess.com/pub/player/',   value: 'https://api.chess.com/pub/player/noiv/games/2020/04/pgn'},

@@ -94,10 +94,14 @@ const ECO = {
     findContinuations (moves) {
 
         const branch = ECO.walkTree(moves);
+        const sorter = (a, b) => {
+            console.log(a, b, a.slice(-2, -1), b.slice(-2, -1));
+            return a.slice(-2, -1) > b.slice(-2, -1);
+        };
 
         return Object.keys(branch)
             .filter( key => key !== '__' )
-            .sort( (a, b) => a.slice(-2, -1) > b.slice(-2, -1) )
+            .sort( sorter )
             .map( move => {
                 const continuation = ECO.getContinuation(move, branch);
                 return continuation;

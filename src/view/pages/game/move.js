@@ -65,8 +65,8 @@ const PlySP = {
             DB.Games.update(game.uuid, { turn: move.turn });
             Caissa.route('/game/:turn/:uuid/', {turn: move.turn, uuid: game.uuid}, { replace: true });
         };
-        return m('[', [
-            m('span.gm-ply-pic-' + player + back, { onclick, title, 'data-turn': move.turn }, piece ),
+        return m('span.mh1', {'data-turn': move.turn}, [
+            // m('span.gm-ply-pic-' + player + back, { onclick, title }, piece ),
             m('span.gm-ply-san-' + player + back, { onclick, title }, move.san ),
         ]);
     },

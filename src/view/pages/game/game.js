@@ -3,7 +3,7 @@ import './game.scss';
 import Tools      from '../../tools/tools';
 import DB         from '../../services/database';
 import Factory    from '../../components/factory';
-import FormIllus  from '../../components/forms/form-illus';
+// import FormIllus  from '../../components/forms/form-illus';
 import Board      from '../board/board';
 import Moves      from './moves';
 
@@ -38,8 +38,9 @@ const Game = Factory.create('Game', {
             ? m('div.page.game', { className, style }, [
                 m(PageTitle,     { className: 'gm-players tc'}, titlePlayers ),
                 m(FlexList, [
-                    m(FormIllus),
                     m(Moves,         { game }),
+                    m(PanelEcos,     { game }),
+                    m(PanelIllus),
                     m(Spacer),
                     m(TextCenter,    { class: 'gm-result', title: 'result termination timecontrol'}, lineResult ),
                     m(GrowSpacer),

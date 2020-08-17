@@ -36,13 +36,16 @@ function renderMoves (game) {
 const Moves = Factory.create('Moves', {
 
     view ( vnode ) {
-        //TODO: something for small screens
+
         return innerWidth >= 720
+
+            // Desktop, two columns
             ? m('div.gm-moves.flex-shrink',
                 m('div.mv2',
                     m('table.w-100.collapse', renderMoves(vnode.attrs.game)),
                 ),
             )
+            // mobile, floating
             : m('div.gm-moves',
                 m('div.ma2', renderMoves(vnode.attrs.game)),
             )

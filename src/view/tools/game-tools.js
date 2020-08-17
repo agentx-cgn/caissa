@@ -65,8 +65,8 @@ const gametools = {
                 white = white.replace(letter, '');
             }),
 
-            black = black.split('').sort(sorter).map( letter => Config.pieces.font[letter] );
-            white = white.split('').sort(sorter).map( letter => Config.pieces.font[letter] );
+            black = black.split('').sort(sorter); // .map( letter => Config.pieces.font[letter] );
+            white = white.split('').sort(sorter); // .map( letter => Config.pieces.font[letter] );
 
             return { black, white };
         }

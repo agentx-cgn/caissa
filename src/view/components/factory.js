@@ -28,7 +28,6 @@ const Factory = {
                 comp.onresize(innerWidth, innerHeight);
             }
         });
-        Caissa.redraw();
     },
     create (name, comp) {
 

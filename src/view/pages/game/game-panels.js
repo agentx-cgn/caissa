@@ -12,6 +12,7 @@ const PanelIllus = Factory.create('PanelIllus', {
 
         const group   = 'game-panel-toggles';
         const show    = DB.Options.first[group].illus === 'show';
+
         const onclick = function (e) {
             const value = show ? 'hide' : 'show';
             DB.Options.update('0', { [group]: { illus: value } }, true);
