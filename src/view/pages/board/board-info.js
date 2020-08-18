@@ -27,6 +27,7 @@ const CapturedPieces = Factory.create('CapturedPieces', {
 
         const { board, player } = vnode.attrs;
         const style = 'letter-spacing: -8px; font-size: 1.5rem;';
+
         let whitePieces = board.captured.white.map( piece => Config.pieces.font[piece] ).join('');
         let blackPieces = board.captured.black.map( piece => Config.pieces.font[piece] ).join('');
         const whiteValue  = board.captured.white.reduce(evalsum, 0);
@@ -52,7 +53,6 @@ const BoardInfo = Factory.create('BoardInfo', {
     view (vnode) {
 
         const { game, board, pos, player } = vnode.attrs;
-        // const style = 'letter-spacing: -8px; font-size: 1.5rem;';
 
         DEBUG && console.log('BoardInfo', { player, orientation: board.orientation});
 
@@ -62,7 +62,6 @@ const BoardInfo = Factory.create('BoardInfo', {
                 m(ChessClock, { player }),
                 m('div.flex-auto.mh2.saim.f4.cfff.ellipsis',  game.header.White),
                 m(CapturedPieces, { player, board }),
-                // m('div.captured.tr.cfff', m('div.chess', { style }, board.captured.white.join(''))),
             ]);
 
         } else {
@@ -70,7 +69,6 @@ const BoardInfo = Factory.create('BoardInfo', {
             return m('div.flex.flex-row.board-bar-' + pos, [
                 m(ChessClock, { player }),
                 m('div.flex-auto.mh2.saim.f4.c000.ellipsis', game.header.Black),
-                // m('div.captured.tr.c000', m('div.chess', { style }, board.captured.black.join('') )),
                 m(CapturedPieces, { player, board }),
             ]);
 

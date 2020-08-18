@@ -6,6 +6,8 @@ import History from '../services/history';
 import Factory from '../components/factory';
 import Logger  from '../services/logger';
 
+import BoardController from '../pages/board/board-controller';
+
 // https://developer.mozilla.org/en-US/docs/Web/Events
 
 const DEBUG = false;
@@ -18,12 +20,14 @@ const Events = {
 
     listen () {
         window.addEventListener('load',                  Caissa.onload);
+        window.addEventListener('unload',                Events.onunload);
         window.addEventListener('beforeunload',          Events.onbeforeunload);
         window.addEventListener('online',                Events.ononline);
         window.addEventListener('offline',               Events.onoffline);
         window.addEventListener('resize',                Events.onresize);
         window.addEventListener('popstate',              History.onpopstate);
         window.addEventListener('hashchange',            History.onhashchange);
+        window.addEventListener('keydown',               Events.onkeydown, true);
         window.addEventListener('deviceorientation',     Events.ondeviceorientation);
         document.addEventListener('beforeinstallprompt', Events.onbeforeinstallprompt);
         document.addEventListener('selectionchange',     Events.onselectionchange);
@@ -103,7 +107,12 @@ const Events = {
         DEBUG && console.log('onoffline');
         System.online = false;
     },
-    onbeforeunload () {
+    onbeforeunload (e) {
+        // DB.Usage.update('0', {lastend: Date.now()});
+        // DB.persist();
+        console.log('onbeforeunload', e);
+    },
+    onunload () {
         DB.Usage.update('0', {lastend: Date.now()});
         DB.persist();
         console.log('Bye...');
@@ -111,13 +120,26 @@ const Events = {
     onselectionchange () {
         DEBUG && console.log('Selection', document.getSelection().toString());
     },
-    // onpopstate () {
-    //     DEBUG && console.log('onpopstate');
-    // },
-    // hashchange (e) {
-    //     DEBUG && console.log('hashchange', e.oldURL);
-    //     DEBUG && console.log('hashchange', e.newURL);
-    // },
+    onkeydown (e) {
+
+        const keymap = Events.keymap();
+
+        if (e.code in keymap) {
+            console.log('Events.onkeydown.found', e.code);
+            e.redraw = false;
+            keymap[e.code]();
+        } else {
+            console.log('Events.onkeydown.unknown', e.code);
+        }
+
+    },
+    keymap () {
+        return {
+            'ArrowRight': () => BoardController.step( +1 ),
+            'ArrowLeft':  () => BoardController.step( -1 ),
+        };
+    },
+
 };
 
 export default Events;

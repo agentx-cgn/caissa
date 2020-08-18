@@ -10,29 +10,29 @@ const DEBUG = false;
 
 let game, board, controller;
 
-function setTurn (diff) {
-    const turn = game.turn;
-    return (
-        diff === '0' ? 0 :
-        diff === 'e' ? game.moves.length -1 :
-        turn === -2 && diff < 0  ? -2 :
-        turn === game.moves.length -1 && diff > 0  ? game.moves.length -1 :
-        turn + diff
-    );
-}
+// function setTurn (diff) {
+//     const turn = game.turn;
+//     return (
+//         diff === '0' ? 0 :
+//         diff === 'e' ? game.moves.length -1 :
+//         turn === -2 && diff < 0  ? -2 :
+//         turn === game.moves.length -1 && diff > 0  ? game.moves.length -1 :
+//         turn + diff
+//     );
+// }
 
 const actions = {
-    back  (e)  { e.redraw = false; controller.step(setTurn('0')) ;},
-    left  (e)  { e.redraw = false; controller.step(setTurn( -1)) ;},
-    right (e)  { e.redraw = false; controller.step(setTurn( +1)) ;},
-    fore  (e)  { e.redraw = false; controller.step(setTurn('e')) ;},
+    back  (e)  { e.redraw = false; controller.step( '0') ;},
+    left  (e)  { e.redraw = false; controller.step( -1 ) ;},
+    right (e)  { e.redraw = false; controller.step( +1 ) ;},
+    fore  (e)  { e.redraw = false; controller.step( 'e') ;},
     pause (e)  { e.redraw = false; controller.pause();},
     play  (e)  { e.redraw = false; controller.play();},
     eval  (e)  { e.redraw = false; evaluate(game);},
     rotate (e) {
         const board = DB.Boards.find(game.uuid);
         const orientation = board.orientation === 'w' ? 'b' : 'w';
-        DB.Boards.update(game.uuid, {orientation});
+        DB.Boards.update(game.uuid, { orientation });
         Caissa.redraw(e);
     },
 };
@@ -55,9 +55,6 @@ const BoardButtons = Factory.create('BoardButtons', {
         ({ game, board, controller } = vnode.attrs );
 
         DEBUG && console.log('BoardButtons.view', game.uuid, game.mode, game.turn);
-
-        // game       = game;
-        // controller = controller;
 
         return m('div.gm-bar', [
             m('div.gm-buttons',

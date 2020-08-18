@@ -58,7 +58,7 @@ const PlySP = {
 
         const { game, player, move, back } = vnode.attrs;
 
-        const piece     = Config.pieces.font[move.piece];
+        // const piece     = Config.pieces.font[move.piece];
         const title     = Config.flagTitles[move.flags];
         const onclick   = (e) => {
             e.redraw = false;

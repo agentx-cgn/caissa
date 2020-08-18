@@ -209,7 +209,18 @@ class BoardController {
         this.clock.pause();
         Caissa.redraw();
     }
-    step (turn) {
+    interpreteDiff (diff) {
+        const turn = this.game.turn;
+        return (
+            diff === '0' ? 0 :
+            diff === 'e' ? this.game.moves.length -1 :
+            turn === -2 && diff < 0  ? -2 :
+            turn === this.game.moves.length -1 && diff > 0  ? this.game.moves.length -1 :
+            turn + diff
+        );
+    }
+    step (diff) {
+        const turn = this.interpreteDiff(diff);
         DB.Games.update(this.game.uuid, { turn });
         Caissa.route('/game/:turn/:uuid/', { turn, uuid: this.game.uuid }, { replace: true });
     }
