@@ -50,22 +50,23 @@ const GameEcos = Factory.create('GameEcos', {
         ;
 
         let continuations = ECOS.findContinuations(moves)
-            .map ( (entry) => {
-                // entry: [ 'a3', ['a6', ''], ['A00', 'King Pawn', 'Duck Variation']
+            .map ( entry => {
+
                 const continuation = formatContinuation(entry);
                 const className = turn % 2 ? 'white' : 'black';
                 const onclick = e => {
                     e.redraw = false;
-                    // console.log(entry[0], entry[2].join(', '));
                     BoardController.onmove(entry[0]);
                 };
+
                 return m('div.ellipsis.pl2', { className, onclick }, continuation );
+
             })
         ;
 
         return m('div.mh3.mb2', [
             m('div.eco-path', path),
-            m('div.pl2.eco-continuations', continuations),
+            m('div.pl3.eco-continuations', continuations),
         ]);
 
     },

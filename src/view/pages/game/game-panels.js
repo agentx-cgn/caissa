@@ -4,12 +4,14 @@ import Caissa     from '../../caissa';
 import DB         from '../../services/database';
 import Factory    from '../../components/factory';
 import FormIllus  from '../../components/forms/form-illus';
-import { Panel }  from '../../components/misc';
+import Panel      from '../../components/panels';
+
 import GameEcos   from './game-ecos';
 
 const PanelIllus = Factory.create('PanelIllus', {
     view () {
 
+        //TODO: exchange onclick with group
         const group   = 'game-panel-toggles';
         const show    = DB.Options.first[group].illus === 'show';
 

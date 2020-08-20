@@ -1,0 +1,24 @@
+div.panel-header {
+    min-height: 36px;
+    background: linear-gradient(0deg, #689 20%,  #79a 100%);
+}
+
+div.panel-header .caption {
+    margin-top: 0.5rem;
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    color: white;
+    font-family: 'SairaCondensed-Regular';
+    padding-left: 1rem;
+}
+div.panel-header .toggle {
+    color: white;
+    margin-top: 0.5rem;
+    width: 24px;
+}
+
+div.panel-content {
+    padding: 1rem 0;
+    background: #abc8;
+}

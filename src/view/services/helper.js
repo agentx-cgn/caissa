@@ -5,6 +5,7 @@ const $$    = document.querySelector.bind(document);
 const $$$   = document.querySelectorAll.bind(document);
 
 // https://lodash.com/docs/4.17.15
+// https://gist.github.com/jbmusso/bcaafb36ab027ea6a13c
 
 const H = {
 
@@ -175,6 +176,7 @@ const H = {
 
     /**    A R R A Y S     */
 
+    // Array.from({length: n}, (v, i) => i);
     range (st, ed, sp) {
         var i,r=[],al=arguments.length;
         if(al===0){return r;}

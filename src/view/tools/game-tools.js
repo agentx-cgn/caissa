@@ -50,10 +50,11 @@ const gametools = {
             return { black: [], white: [] };
 
         } else {
+            const pieces = Config.pieces.fens.sorted;
             const sorter = (a, b) => {
                 return (
-                    Config.pieces.fens.sorted.indexOf(a.toLowerCase()) -
-                    Config.pieces.fens.sorted.indexOf(b.toLowerCase())
+                    pieces.indexOf(a.toLowerCase()) -
+                    pieces.indexOf(b.toLowerCase())
                 );
             };
 

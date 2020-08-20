@@ -233,32 +233,32 @@ class BoardController {
     }
     startListening () {
 
-        if (this.turn !== -2){
+        // No pieces, no moves either
+        if (this.turn === -2){ return; }
 
-            const oppToMove   = this.opponents[this.tomove];
-            const oppToWait   = this.opponents[this.towait];
-            const $chessboard = $$('div.chessboard');
+        const $chessboard = $$('div.chessboard');
+        const oppToMove   = this.opponents[this.tomove];
+        const oppToWait   = this.opponents[this.towait];
 
-            oppToMove.update(this);
-            oppToWait.update(this);
-
-            // if mobile div might not exist yet
-            if ($chessboard){
-                $$('div.chessboard').addEventListener('mousedown', this.listener.onfieldselect);
-                $$('div.chessboard').addEventListener('touchdown', this.listener.onfieldselect);
-            }
-
-            if (this.clock.isTicking() || this.game.rivals === 'x-x'){
-                ( async () => {
-                    this.opponents[this.towait].pause(this.chessBoard);
-                    const move = await this.opponents[this.tomove].domove(this.chessBoard);
-                    this.listener.onmove(move);
-                })();
-            }
-
-            DEBUG && console.log('BoardController.startListening.out', { rivals: this.game.rivals, tomove: this.tomove });
-
+        // if mobile div might not exist yet
+        if ($chessboard){
+            $$('div.chessboard').addEventListener('mousedown', this.listener.onfieldselect);
+            $$('div.chessboard').addEventListener('touchdown', this.listener.onfieldselect);
         }
+
+        // updates opps with position/fen
+        oppToMove.update(this);
+        oppToWait.update(this);
+
+        if (this.clock.isTicking() || this.game.rivals === 'x-x'){
+            ( async () => {
+                this.opponents[this.towait].pause(this.chessBoard);
+                const move = await this.opponents[this.tomove].domove(this.chessBoard);
+                this.listener.onmove(move);
+            })();
+        }
+
+        DEBUG && console.log('BoardController.startListening.out', { rivals: this.game.rivals, tomove: this.tomove });
 
     }
 
@@ -317,11 +317,9 @@ class BoardController {
                 if (move.turn < this.game.moves.length) {
                     // throw away all moves after this new one
                     this.game.moves.splice(this.turn +1);
-                    // pgn = Tools.Games.pgnFromMoves(this.game);
                 }
 
                 this.game.turn = move.turn;
-                // this.game.pgn  = pgn;
                 this.newmove   = move;
                 this.game.moves.push(move);
 
@@ -332,7 +330,7 @@ class BoardController {
 
         }
 
-        DEBUG && console.log('BoardController.onmove.out', candidate);
+        DEBUG && console.log('BoardController.onmove.out', move, candidate);
 
     }
 

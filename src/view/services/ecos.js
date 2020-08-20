@@ -96,7 +96,7 @@ const ECO = {
         const branch = ECO.walkTree(moves);
         const sorter = (a, b) => {
             console.log(a, b, a.slice(-2, -1), b.slice(-2, -1));
-            return a.slice(-2, -1) > b.slice(-2, -1);
+            return (a.slice(-2, -1)).charCodeAt() - (b.slice(-2, -1)).charCodeAt();
         };
 
         return Object.keys(branch)
