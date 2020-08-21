@@ -9,6 +9,9 @@ import Tools           from '../../tools/tools';
 import ChessClock      from '../../components/chessclock';
 import Opponent        from './opponent';
 
+import evaluate        from '../game/game-evaluate';
+
+
 const DEBUG = false;
 
 /**
@@ -25,6 +28,8 @@ class BoardController {
     init (game, board) {
 
         this.destroy();
+
+        this.evaluating     = false;
 
         this.game           = game;
         this.board          = board;
@@ -144,8 +149,8 @@ class BoardController {
         }
 
         // eval / spinner
-        btns.spinner   = null;
-        btns.evaluate  = lastTurn > 0 && !this.isRunning;
+        btns.spinner   = this.evaluating ? true : null;
+        btns.evaluate  = this.evaluating ? false : lastTurn > 0 && !this.isRunning;
 
         // game moves navigation
         btns.backward  = this.turn > 0;
@@ -209,6 +214,22 @@ class BoardController {
         this.clock.pause();
         Caissa.redraw();
     }
+    rotate () {
+        // const board = DB.Boards.find(game.uuid);
+        const orientation = this.board.orientation === 'w' ? 'b' : 'w';
+        DB.Boards.update(this.game.uuid, { orientation });
+        Caissa.redraw();
+    }
+    evaluate () {
+
+        this.evaluating = true;
+        evaluate(this.game, () => {
+            this.evaluating = false;
+            Caissa.redraw();
+        });
+
+    }
+
     interpreteDiff (diff) {
         const turn = this.game.turn;
         return (

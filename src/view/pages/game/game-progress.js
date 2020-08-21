@@ -1,14 +1,14 @@
 
 import Factory  from '../../components/factory';
 
-let progressdom;
+let domProgress;
 
 const GameProgressBar = Factory.create('GameProgressBar', {
     render ( percent ) {
-        progressdom && (progressdom.innerHTML = `<div class="gm-progress" style="width:${percent}%">`);
+        domProgress && (domProgress.innerHTML = `<div class="gm-progress" style="width:${percent}%">`);
     },
     oncreate ({ dom }) {
-        progressdom = dom;
+        domProgress = dom;
     },
     view () {
         return m('div.gm-bar-progress');

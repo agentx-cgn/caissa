@@ -6,24 +6,22 @@ import System              from '../../data/system';
 import Pool                from '../../services/engine/pool';
 import GameProgress        from './game-progress';
 
-export default function evaluate (state) {
+export default function evaluate (game, onfinish) {
 
     const t0         = Date.now();
     const bigStep    = 4;
-    const smallStep  = ( 99 - 3 * bigStep * threads ) / state.moves.length;
+    const smallStep  = ( 99 - 3 * bigStep * threads ) / game.moves.length;
     const divisor    = 2;
     const options    = DB.Options.first['game-evaluator'];
     const depth      = ~~options.maxdepth;
     const threads    = ~~options.maxthreads;
-    const partitions = H.partitions(state.moves, threads);
+    const partitions = H.partitions(game.moves, threads);
 
     let counter      = 0;
     let progress     = 0;
 
-    state.score.maxcp   = 0;
-    state.score.maxmate = 0;
-    state.buttons.evaluate = false;
-    state.buttons.spinner  = true;
+    game.score.maxcp   = 0;
+    game.score.maxmate = 0;
 
     const conditions = {
         depth,
@@ -38,7 +36,7 @@ export default function evaluate (state) {
     const callback = move => {
         counter += 1;
         updateProgress(smallStep);
-        state.score.maxcp = Math.abs(move.cp) > state.score.maxcp ? move.cp : state.score.maxcp;
+        game.score.maxcp = Math.abs(move.cp) > game.score.maxcp ? move.cp : game.score.maxcp;
         if(!(divisor % counter)){
             //TODO: use dom
             Caissa.redraw();
@@ -46,20 +44,20 @@ export default function evaluate (state) {
     };
     const finish = slots => {
 
-        state.buttons.evaluate = true;
-        state.buttons.spinner  = false;
-
         slots.forEach( slot => slot.idle = true );
         GameProgress.render(0);
-        Caissa.redraw();
 
         console.log('game.evaluator.finish',
-            state.moves.length, 'moves in',
+            game.moves.length, 'moves in',
             Date.now() - t0, 'msecs',
             `${threads}/${System.threads} threads`,
-            'depth:', conditions.depth,
+            'depth:',    conditions.depth,
+            'maxScrore:', game.score.maxcp,
             slots,
         );
+
+        onfinish();
+
     };
 
     console.log('game.evaluator.start', threads, '/', System.threads, 'depth', conditions.depth);

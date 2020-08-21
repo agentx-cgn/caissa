@@ -1,25 +1,14 @@
 
-import Caissa       from '../../caissa';
+// import Caissa       from '../../caissa';
 import { H }        from '../../services/helper';
 import Factory      from '../../components/factory';
-import DB           from '../../services/database';
-import evaluate     from '../game/game-evaluate';
+// import DB           from '../../services/database';
+// import evaluate     from '../game/game-evaluate';
 import GameProgress from '../game/game-progress';
 
 const DEBUG = false;
 
 let game, board, controller;
-
-// function setTurn (diff) {
-//     const turn = game.turn;
-//     return (
-//         diff === '0' ? 0 :
-//         diff === 'e' ? game.moves.length -1 :
-//         turn === -2 && diff < 0  ? -2 :
-//         turn === game.moves.length -1 && diff > 0  ? game.moves.length -1 :
-//         turn + diff
-//     );
-// }
 
 const actions = {
     back  (e)  { e.redraw = false; controller.step( '0') ;},
@@ -28,13 +17,8 @@ const actions = {
     fore  (e)  { e.redraw = false; controller.step( 'e') ;},
     pause (e)  { e.redraw = false; controller.pause();},
     play  (e)  { e.redraw = false; controller.play();},
-    eval  (e)  { e.redraw = false; evaluate(game);},
-    rotate (e) {
-        const board = DB.Boards.find(game.uuid);
-        const orientation = board.orientation === 'w' ? 'b' : 'w';
-        DB.Boards.update(game.uuid, { orientation });
-        Caissa.redraw(e);
-    },
+    eval  (e)  { e.redraw = false; controller.evaluate();},
+    rotate (e) { e.redraw = false; controller.rotate();},
 };
 
 const buttons = {
