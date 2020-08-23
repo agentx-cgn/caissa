@@ -8,6 +8,7 @@ import { H, $$ }       from '../../services/helper';
 import Tools           from '../../tools/tools';
 import ChessClock      from '../../components/chessclock';
 import Opponent        from './opponent';
+import Pool            from '../../services/engine/pool';
 
 import evaluate        from '../game/game-evaluate';
 
@@ -29,7 +30,8 @@ class BoardController {
 
         this.destroy();
 
-        this.evaluating     = false;
+        this.isEvaluating   = false; // scoring moves
+        this.isProposing    = false; // best move
 
         this.game           = game;
         this.board          = board;
@@ -38,6 +40,7 @@ class BoardController {
 
         this.newmove        = '';
 
+        this.bestmove       = '';
         this.selectedSquare = '';
         this.selectedPiece  = '';
         this.squareMoves    = []; // all moves from or to selected square
@@ -92,6 +95,7 @@ class BoardController {
         this.turn  = ~~this.game.turn;
 
         this.updateChess();
+        this.updateProposer();
 
         this.color  = this.chess.turn();
         this.tomove = (
@@ -114,6 +118,63 @@ class BoardController {
         this.updateButtons();
 
         DEBUG && console.log('BoardController.update.out', {uuid: this.game.uuid, turn: this.turn, color: this.color});
+
+    }
+
+    updateProposer () {
+
+        const optBestmove= DB.Options.first['board-illustrations'].bestmove;
+
+        if (!this.isProposing && optBestmove) {
+
+            // switch proposer on
+            this.isProposing = true;
+            this.slot = Pool.request(1)[0];
+            this.slot.idle   = false;
+            this.slot.engine.init()
+                .then( engine => {
+                    return engine.isready();
+                })
+                .then( engine => {
+                    return engine.ucinewgame();
+                })
+                .then( engine => {
+                    this.proposer   = engine;
+                    this.slot.name  = 'proposer';
+                    console.log('Proposer.engine', this.proposer);
+                })
+            ;
+            console.log('Proposer.on');
+
+        } else if (this.isProposing && !optBestmove) {
+            // switch proposer off
+            this.isProposing = false;
+            this.slot.idle   = true;
+            console.log('Proposer.off');
+
+        } else {
+            console.log('Proposer.nochange');
+
+        }
+
+        if (this.isProposing) {
+
+            const conditions = { depth: 3, maxtime: 1 };
+
+            ( async () => {
+
+                await this.proposer.isready();
+                await this.proposer.position(this.chess.fen());
+
+                const result   = await this.proposer.go(conditions);
+                console.log('Proposer.result', result);
+
+                this.bestmove  = result.bestmove;
+                this.ponder    = result.ponder;
+
+            })();
+        }
+
 
     }
 
@@ -149,8 +210,8 @@ class BoardController {
         }
 
         // eval / spinner
-        btns.spinner   = this.evaluating ? true : null;
-        btns.evaluate  = this.evaluating ? false : lastTurn > 0 && !this.isRunning;
+        btns.spinner   = this.isEvaluating ? true : null;
+        btns.evaluate  = this.isEvaluating ? false : lastTurn > 0 && !this.isRunning;
 
         // game moves navigation
         btns.backward  = this.turn > 0;
@@ -215,16 +276,15 @@ class BoardController {
         Caissa.redraw();
     }
     rotate () {
-        // const board = DB.Boards.find(game.uuid);
         const orientation = this.board.orientation === 'w' ? 'b' : 'w';
         DB.Boards.update(this.game.uuid, { orientation });
         Caissa.redraw();
     }
     evaluate () {
 
-        this.evaluating = true;
+        this.isEvaluating = true;
         evaluate(this.game, () => {
-            this.evaluating = false;
+            this.isEvaluating = false;
             Caissa.redraw();
         });
 
@@ -291,9 +351,9 @@ class BoardController {
         this.selectedPiece  = this.chessBoard.getPiece(this.selectedSquare) || '';
         this.updateIllustration();
 
-        // DEBUG && console.log('BoardController.onfieldselect.out', {
-        //     square: this.selectedSquare, piece: this.selectedPiece,
-        // });
+        DEBUG && console.log('BoardController.onfieldselect.out', {
+            square: this.selectedSquare, piece: this.selectedPiece,
+        });
 
     }
 
@@ -443,6 +503,12 @@ class BoardController {
             //
         }
 
+        if (illus.bestmove && this.bestmove){
+            const from = this.bestmove.slice(0, 2);
+            const to   = this.bestmove.slice(2, 4);
+            this.chessBoard.addArrow(from, to, {class: 'arrow bestmove'});
+        }
+
         if (illus.validmoves){
             this.squareMoves.forEach( move => {
                 this.chessBoard.addArrow(move.from, move.to, {class: 'arrow validmove'});
@@ -515,6 +581,6 @@ class BoardController {
         //     chessBoard.setPosition(chess.fen(), true);
 
 //TODO: Class no longer needed
-const Controller = new BoardController();
+// const Controller = new BoardController();
 
-export default Controller;
+export default new BoardController();

@@ -54,6 +54,7 @@ const Board = Factory.create('Board', {
             board = DB.Boards.find(uuid);
             DEBUG && console.log('Board.view.nochange', { uuid, turn }, lastuuid, lastturn);
             controller.updateButtons();
+            controller.updateProposer();
             // eslint-disable-next-line no-debugger
             // debugger;
         }

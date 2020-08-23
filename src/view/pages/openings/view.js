@@ -4,7 +4,7 @@ import { H }        from '../../services/helper';
 import Tree         from './tree';
 import { PageTitle, FlexListGrow } from '../../components/misc';
 
-const DEBUG = true;
+const DEBUG = false;
 
 const view = function ( vnode ) {
 
