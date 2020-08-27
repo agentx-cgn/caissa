@@ -57,11 +57,12 @@ export class ChessboardState {
         this.arrows.push({from, to, move, attributes})
     }
 
-    removeArrows(type = null) {
-        if (type === null) {
+    removeArrows(className = null) {
+        if (className === null) {
             this.arrows = []
         } else {
-            this.arrows = this.arrows.filter((arrow) => arrow.type !== type)
+            // console.log('removeArrows', this.arrows);
+            this.arrows = this.arrows.filter( arrow  => arrow.attributes.class !== className)
         }
     }
 

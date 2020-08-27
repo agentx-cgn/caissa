@@ -8,7 +8,7 @@ import {
     goReducer,
     parseInfo,
     parseBestmove,
-} from './parser/parser'; 
+} from './parser/parser';
 
 import Worker     from 'worker-loader!../../../worker/stockfish.asm';
 
@@ -54,8 +54,8 @@ export default class Engine {
                 data = data.trim();
                 if (data){
                     lines.push(data);
-                    if (condition(data)) { 
-                        return resolve(); 
+                    if (condition(data)) {
+                        return resolve();
                     }
                 }
             };
@@ -72,7 +72,7 @@ export default class Engine {
         });
 
         await promise;
-        
+
         //cleanup
         this.connect();
 
@@ -87,7 +87,7 @@ export default class Engine {
 
         this.connect();
         this.write('uci');
-        
+
         //parse lines
         const lines = await this.getBufferUntil(line => line === 'uciok');
         const { id, options } = lines.reduce(initReducer, {
@@ -111,7 +111,7 @@ export default class Engine {
 
     //     if (!this.worker)
     //         throw new Error('cannot call "terminate()": worker not running');
-        
+
     //     this.worker.terminate();
     //     return this;
     // }
@@ -129,7 +129,7 @@ export default class Engine {
 
         if (!this.worker)
             throw new Error(`cannot call "${command}()": worker not running`);
-        
+
         //send cmd to engine
         this.write(command);
 
@@ -146,13 +146,13 @@ export default class Engine {
         if (typeof value !== 'undefined') {
             command += ` value ${value.toString()}`;
         }
-        
+
         //send and wait for response
         await this.sendCmd('setoption ' + command);
         this.options.set(name, value);
-        
+
         return this;
-      
+
     }
 
     async ucinewgame() {
@@ -174,28 +174,25 @@ export default class Engine {
         }
 
         return this.sendCmd('position ' + cmd);
-    
+
     }
 
     async go(options) {
 
         if (!this.worker)
             throw new Error('cannot call "go()": worker not running');
-        
-        if (options.infinite)
-            throw new Error('go() does not support infinite search, use goInfinite()');
-        
+
         //construct command and send
         const command = goCommand(options);
         this.write(command);
-        
+
         //parse lines
         const lines = await this.getBufferUntil(line => REGEX.bestmove.test(line));
         const result = lines.reduce(goReducer, {
             bestmove: null,
             info: [],
         });
-        
+
         return result;
 
     }
@@ -204,7 +201,7 @@ export default class Engine {
 
         if (!this.worker)
             throw new Error('cannot call "goInfinite()": worker not running');
-        
+
         //set up emitter
         this.emitter = new EventEmitter();
         const listener = buffer => {
@@ -229,18 +226,18 @@ export default class Engine {
 
         this.write(command);
         return this.emitter;
-    
+
     }
 
     async stop() {
 
         if (!this.emitter)
             throw new Error('cannot call "stop()": goInfinite() is not in progress');
-        
+
         //send the stop message & end goInfinite() listener
         this.write('stop');
         this.emitter.emit('stop');
-        
+
         //same idea as go(), only we expect just bestmove line here
         const lines  = await this.getBufferUntil(line => REGEX.bestmove.test(line));
         const result = lines.reduce(goReducer, {
@@ -251,7 +248,7 @@ export default class Engine {
         return result;
 
     }
-    
+
     async evaluate (move, conditions={depth: 3, maxtime: 1}) {
 
         await this.isready();
@@ -259,7 +256,7 @@ export default class Engine {
 
         const result = await this.go(conditions);
         const info   = result.info.slice(-1)[0]; // should be max depth
-        
+
         // console.log(result);
 
         info.score.unit === 'cp'   && (move.cp   = Math.abs(info.score.value));

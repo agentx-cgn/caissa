@@ -22,8 +22,8 @@ const Board = Factory.create('Board', {
         // but don't replace current game with default
         uuid === 'default' && lastuuid ? (uuid = lastuuid, turn = lastturn) : (void(0));
 
+        // new game, TODO: will fail if deeplink
         if (uuid !== lastuuid) {
-            // new game, TODO: will fail if deeplink
             DEBUG && console.log('Board.view.newgame', { uuid, turn }, 'last:', lastuuid, lastturn);
             game  = DB.Games.find(uuid);
             board = DB.Boards.createget(uuid);
@@ -31,32 +31,28 @@ const Board = Factory.create('Board', {
                 fen :          Tools.Games.fen(game),
                 captured :     Tools.Games.captured(game),
             }, true);
-            // controller && controller.destroy();
-            // controller = new BoardController(game, board);
-            // controller && controller.destroy();
+
             controller = BoardController.init(game, board);
 
+        // new turn
         } else if (turn !== lastturn) {
-            // new turn
             DEBUG && console.log('Board.view.newturn', { uuid, turn }, 'last:', lastuuid, lastturn);
             DB.Games.update(uuid, { turn }, true);
             DB.Boards.update(uuid, {
                 fen :          Tools.Games.fen(game),
                 captured :     Tools.Games.captured(game),
             }, true);
+
             controller.update();
 
+        // same turn, new state
         } else {
-            // means no change...?
-            // activated clock
-            // click on same move
             game  = DB.Games.find(uuid);
             board = DB.Boards.find(uuid);
             DEBUG && console.log('Board.view.nochange', { uuid, turn }, lastuuid, lastturn);
+
             controller.updateButtons();
             controller.updateProposer();
-            // eslint-disable-next-line no-debugger
-            // debugger;
         }
 
         lastuuid = uuid;

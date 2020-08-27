@@ -29,7 +29,7 @@ export default {
         return result ? chess1.fen() : '';
     },
 
-    updateArrows (chess, chessBoard, state) {
+    updateArrowsX (chess, chessBoard, state) {
 
         // let validSquares;
 

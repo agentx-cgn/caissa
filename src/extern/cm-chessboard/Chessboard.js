@@ -186,8 +186,8 @@ export class Chessboard {
         this.view.illustrator.drawMarkersDebounced()
     }
 
-    removeArrows(type = null) {
-        this.state.removeArrows(type)
+    removeArrows(className = null) {
+        this.state.removeArrows(className)
         this.view.illustrator.drawArrowsDebounced()
     }
 

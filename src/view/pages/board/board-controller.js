@@ -5,13 +5,12 @@ import Caissa          from '../../caissa';
 import Config          from '../../data/config';
 import DB              from '../../services/database';
 import { H, $$ }       from '../../services/helper';
+import Pool            from '../../services/engine/pool';
 import Tools           from '../../tools/tools';
 import ChessClock      from '../../components/chessclock';
-import Opponent        from './opponent';
-import Pool            from '../../services/engine/pool';
-
 import evaluate        from '../game/game-evaluate';
-
+import Opponent        from './opponent';
+import Proposer        from './board-proposer';
 
 const DEBUG = false;
 
@@ -95,7 +94,7 @@ class BoardController {
         this.turn  = ~~this.game.turn;
 
         this.updateChess();
-        this.updateProposer();
+        // this.updateProposer();
 
         this.color  = this.chess.turn();
         this.tomove = (
@@ -123,58 +122,82 @@ class BoardController {
 
     updateProposer () {
 
-        const optBestmove= DB.Options.first['board-illustrations'].bestmove;
+        // const conditions  = { depth: 10, maxtime: 1 };
+
+        const optBestmove = DB.Options.first['board-illustrations'].bestmove;
+
+        // const propose = () => {
+        //     ( async () => {
+
+        //         await this.proposer.isready();
+        //         await this.proposer.position(this.chess.fen());
+
+        //         console.log('Proposer.go.in', conditions);
+        //         const result   = await this.proposer.go(conditions);
+        //         console.log('Proposer.result', result.bestmove, result.ponder, result.info.slice(-1)[0].pv);
+
+        //         this.bestmove  = result.bestmove;
+        //         this.ponder    = result.ponder;
+
+        //         this.updateArrows();
+
+        //     })();
+        // };
+
+        this.bestmove = '';
+        this.ponder   = '';
 
         if (!this.isProposing && optBestmove) {
 
-            // switch proposer on
+            Proposer.init();
             this.isProposing = true;
-            this.slot = Pool.request(1)[0];
-            this.slot.idle   = false;
-            this.slot.engine.init()
-                .then( engine => {
-                    return engine.isready();
-                })
-                .then( engine => {
-                    return engine.ucinewgame();
-                })
-                .then( engine => {
-                    this.proposer   = engine;
-                    this.slot.name  = 'proposer';
-                    console.log('Proposer.engine', this.proposer);
-                })
-            ;
-            console.log('Proposer.on');
+
+            //     .then( async () => {
+            //         const [bestmove, ponder] = await Proposer.propose();
+            //         this.bestmove = bestmove;
+            //         this.ponder = ponder;
+            //     })
+            // ;
+
+            // // switch proposer on
+            // this.slot = Pool.request(1)[0];
+            // this.slot.engine.init()
+            //     .then( engine => {
+            //         return engine.isready();
+            //     })
+            //     .then( engine => {
+            //         return engine.ucinewgame();
+            //     })
+            //     .then( engine => {
+            //         this.proposer    = engine;
+            //         this.slot.owner  = 'proposer';
+            //         this.isProposing = true;
+            //         console.log('Proposer.go', this.slot);
+            //         propose();
+            //     })
+            // ;
+            // // console.log('Proposer.on', this.slot);
 
         } else if (this.isProposing && !optBestmove) {
             // switch proposer off
             this.isProposing = false;
-            this.slot.idle   = true;
-            console.log('Proposer.off');
+            Proposer.stop();
+            // Pool.release([this.slot]);
+            // console.log('Proposer.off');
 
         } else {
             console.log('Proposer.nochange');
 
         }
 
-        if (this.isProposing) {
-
-            const conditions = { depth: 3, maxtime: 1 };
-
-            ( async () => {
-
-                await this.proposer.isready();
-                await this.proposer.position(this.chess.fen());
-
-                const result   = await this.proposer.go(conditions);
-                console.log('Proposer.result', result);
-
-                this.bestmove  = result.bestmove;
-                this.ponder    = result.ponder;
-
-            })();
-        }
-
+        this.isProposing && Proposer.initialization
+            .then( async () => {
+                const result = await Proposer.propose(this.chess.fen());
+                this.bestmove = result.bestmove;
+                this.ponder   = result.ponder;
+                this.updateArrows();
+            })
+        ;
 
     }
 
@@ -430,10 +453,14 @@ class BoardController {
         }
 
         // mark move as done
-        this.newmove = '';
+        this.newmove  = '';
+
+        //
+        this.bestmove = '';
 
         this.updateButtons();
         this.updateIllustration();
+        this.updateProposer();
 
         if (!this.game.over && this.chess.game_over()) {
             this.ongameover({
@@ -471,7 +498,7 @@ class BoardController {
         // chessboard on page w/ dn has height 0
         if (this.chessBoard && this.chessBoard.view.height && this.game.turn !== -2){
 
-            this.chessBoard.removeArrows( null );
+            // this.chessBoard.removeArrows( null );
 
             // keep internal markers (move, emphasize)
             this.chessBoard.removeMarkers( null, MARKER_TYPE.rectwhite);
@@ -499,23 +526,32 @@ class BoardController {
         //     }
         // }
 
-        if (illus.heatmap) {
-            //
-        }
 
         if (illus.bestmove && this.bestmove){
+
             const from = this.bestmove.slice(0, 2);
             const to   = this.bestmove.slice(2, 4);
+            this.chessBoard.removeArrows('arrow bestmove');
             this.chessBoard.addArrow(from, to, {class: 'arrow bestmove'});
+
+        } else {
+            this.chessBoard.removeArrows('arrow bestmove');
         }
 
         if (illus.validmoves){
+            this.chessBoard.removeArrows('arrow validmove');
             this.squareMoves.forEach( move => {
                 this.chessBoard.addArrow(move.from, move.to, {class: 'arrow validmove'});
             });
+
+        } else {
+            this.chessBoard.removeArrows('arrow validmove');
+
         }
 
         if (illus.lastmove){
+            this.chessBoard.removeArrows('arrow lastmove white');
+            this.chessBoard.removeArrows('arrow lastmove black');
             const lm = this.game.moves[this.turn];
             if (lm) {
                 this.chessBoard.addArrow(
@@ -523,6 +559,10 @@ class BoardController {
                     { class: lm.color === 'w' ? 'arrow lastmove white' : 'arrow lastmove black' },
                 );
             }
+        } else {
+            this.chessBoard.removeArrows('arrow lastmove white');
+            this.chessBoard.removeArrows('arrow lastmove black');
+
         }
 
         if (illus.test){
@@ -541,6 +581,10 @@ class BoardController {
             this.chessBoard.addArrow('g7', 'f6', {class: 'arrow test'} );
             this.chessBoard.addArrow('g7', 'f7', {class: 'arrow test'} );
             this.chessBoard.addArrow('g7', 'f8', {class: 'arrow test'} );
+
+        } else {
+            this.chessBoard.removeArrows('arrow test');
+
         }
 
     }
@@ -550,6 +594,10 @@ class BoardController {
         // Config.board, MARKER_TYPE and cm-chessboard/chessboard-sprite.svg
 
         const illus = this.illustrations;
+
+        if (illus.heatmap) {
+            //
+        }
 
         if (this.selectedSquare){
             if (this.squareMoves.length){

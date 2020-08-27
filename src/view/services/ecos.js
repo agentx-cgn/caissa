@@ -1,5 +1,4 @@
 
-// import Tree      from '../data/eco-tree.json';
 import Volumes   from '../data/eco-volumes.json';
 import Openings  from '../data/eco-openings.json';
 import Tree      from '../data/eco.tree.json';
@@ -88,24 +87,17 @@ const ECO = {
         return branch;
 
     },
-    // sortContinuations (a, b) {
-    //     return a.slice(-2, -1) > b.slice(-2, -1);
-    // },
     findContinuations (moves) {
 
         const branch = ECO.walkTree(moves);
         const sorter = (a, b) => {
-            console.log(a, b, a.slice(-2, -1), b.slice(-2, -1));
             return (a.slice(-2, -1)).charCodeAt() - (b.slice(-2, -1)).charCodeAt();
         };
 
         return Object.keys(branch)
             .filter( key => key !== '__' )
             .sort( sorter )
-            .map( move => {
-                const continuation = ECO.getContinuation(move, branch);
-                return continuation;
-            })
+            .map( move => ECO.getContinuation(move, branch))
         ;
     },
 
@@ -150,20 +142,6 @@ const ECO = {
         ;
 
     },
-
-    // describeOptions (moves) {
-
-    //     const branch = ECO.walkTree(moves);
-
-    //     return Object.keys(branch)
-    //         .filter( key => key !== '__' )
-    //         .map( key => {
-    //             const res = ECO.findVariation(branch, key);
-    //             return res;
-    //         })
-    //     ;
-
-    // },
 
 };
 
