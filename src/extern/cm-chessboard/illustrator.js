@@ -18,7 +18,7 @@ export class Illustrator {
     createSvgAndGroups (svg) {
         this.svg = svg;
         this.markersGroup = Svg.addElement(svg, 'g', {class: 'markers'});
-        this.arrowsGroup  = Svg.addElement(svg, 'g', {class: 'caissa-arrows'});
+        this.arrowsGroup  = Svg.addElement(svg, 'g', {class: 'arrows'});
     }
 
     drawMarkersDebounced() {

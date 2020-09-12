@@ -3,92 +3,60 @@ import System from '../../data/system';
 import Engine from './engine';
 
 const maxSlots = System.threads -1;
-const Slots    = new Array(maxSlots).fill(null).map( (_, idx) => ({idx, owner: '', idle: true, engine: null}) );
+const slotPool = new Array(maxSlots).fill(null).map( (_, idx) => ({idx, owner: '', idle: true, engine: null}) );
 
-const sorter = (a, b) => {
-
-    // idle + engine    > first
-    // idle + no engine > second
-    // rest
-    // return -1 puts a before b
-
-    return (
-        (a.idle &&  a.engine) &&  (b.idle &&  b.engine) ? 0 :
-        (a.idle && !a.engine) &&  (b.idle && !b.engine) ? 0 :
-        (!a.idle)             &&  (!b.idle)             ? 0 :
-        (a.idle && a.engine)  ? -1 :
-        (b.idle && b.engine)  ?  1 :
-        (b.idle && !a.engine) ? -1 :
-        (b.idle && !b.engine) ?  1 :
-        0
-    );
-
-    // return (
-    //     (a && a.idle) && (b.engine === null)   ? -1 :
-    //     (a && a.idle) && (b && !b.idle)        ? -1 :
-    //     (b && b.idle) && (a.engine === null)   ?  1 :
-    //     (b && b.idle) && (a && !a.idle)        ?  1 :
-    //     0 // not idle last
-    // );
-};
-
-const prepare = (candidate) => {
-
-    if (candidate.engine === null){
-        candidate.engine = new Engine(candidate);
-        candidate.idle   = false;
-        return candidate;
-
-    } else if (candidate.idle) {
-        candidate.idle = false;
-        return candidate;
-
-    } else {
-        console.log('WTF');
-
-    }
-
-};
-
-function debSlots (prefix) {
-    return (slot) => {
-        console.log(prefix, slot);
-        return slot;
-    };
-}
+const DEBUG = true;
 
 const Pool = {
 
-    request (amount) {
+    request (owner, amount) {
 
-        const result = Slots
+        const candidates = slotPool
             .filter( item => item.idle )
-            .map(debSlots('F'))
-            // .sort( sorter )
-            // .map(debSlots('S'))
             .slice( 0, amount )
-            .map( prepare )
-            // .map(debSlots('X'))
+            .map( slot => {
+
+                if (slot.engine === null){
+                    slot.engine = new Engine(slot);
+                }
+
+                slot.idle  = false;
+                slot.owner = owner;
+
+                return slot;
+            })
         ;
 
         // debug
-        if (result.length !== amount) {
-            console.warn('pool.request.failed', result.length, '/', amount, Slots, result);
+        if (candidates.length !== amount) {
+            console.warn('pool.request.failed', candidates.length, '/', amount, slotPool, candidates);
         } else {
-            result.forEach( slot => console.log('Pool.requested.res', slot));
+            DEBUG && candidates.forEach( slot => console.log('Pool.requested.res', slot));
         }
 
-        return result;
+        return Promise.all(candidates.map( slot => {
+
+            return slot.engine.init()
+                .then( engine => {
+                    return engine.isready();
+                })
+                .then( engine => {
+                    return engine.ucinewgame();
+                })
+                .then( () => slot )
+            ;
+
+        }));
 
     },
 
     release (slots) {
-        console.log('Pool.release', slots);
+        DEBUG && console.table(slots);
         slots.forEach( slot => {
             slot.idle  = true;
             slot.owner = '';
         });
-        console.log('Pool.release', Slots);
+
     },
 
 };

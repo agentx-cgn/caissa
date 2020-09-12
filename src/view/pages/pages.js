@@ -6,7 +6,7 @@ import { CompPages }  from '../data/config-pages';
 import System         from '../data/system';
 import touchSlider    from '../services/toucher';
 
-const DEBUG = false;
+const DEBUG = true;
 
 let
     anim, pageWidth,
@@ -24,9 +24,9 @@ const Pages = Factory.create('Pages', {
     oninit () {
         touchSlider.listen();
     },
-    oncreate() {
+    // oncreate() {
 
-    },
+    // },
     onbeforeupdate () {
         touchSlider.pause();
     },
@@ -43,7 +43,7 @@ const Pages = Factory.create('Pages', {
         const [ left, center, right, animation ] = slides;
 
         DEBUG && History.log();
-        true && console.log('Pages.view.slides', slides.slice(0, 3).map( s => s.content.name), animation);
+        DEBUG && console.log('Pages.view.slides', slides.slice(0, 3).map( s => s.content.name ), animation);
 
         // keep this
         anim = animation;
@@ -78,7 +78,7 @@ const Pages = Factory.create('Pages', {
                 }
                 else {
                     // eslint-disable-next-line no-debugger
-                    console.warn('Pages.view', Comp.name, 'not found');
+                    // console.warn('Pages.view', Comp.name, 'not found');
                 }
 
             } else {
@@ -117,7 +117,7 @@ const Pages = Factory.create('Pages', {
         const $Center = $$('div.slide.center');
         const $Right  = $$('div.slide.right');
 
-        DEBUG && console.log('pages.onafterupdates.in', !!$Left, !!$Center, !!$Right, anim);
+        // DEBUG && console.log('pages.onafterupdates.in', !!$Left, !!$Center, !!$Right, anim);
 
         if (anim === '=1=' || anim === '=r=' || anim === '=s=' || anim === '=w=') {
 
@@ -180,8 +180,8 @@ function onafteranimate( ) {
 
     }
 
-    DEBUG && console.log('pages.onafteranimate.out', anim);
-    DEBUG && console.log(' ');
+    // DEBUG && console.log('pages.onafteranimate.out', anim);
+    // DEBUG && console.log(' ');
 
     anim = '';
 

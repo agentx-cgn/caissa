@@ -65,12 +65,12 @@ const Factory = {
         }, comp);
 
         // monkeypatching
-        if (ice.oncreate){
-            ice.oncreate = function (orgvnode) {
-                vnode = orgvnode;
-                comp.oncreate(vnode);
-            };
-        }
+        // if (ice.oncreate){
+        ice.oncreate = function (orgvnode) {
+            vnode = orgvnode;
+            comp.oncreate && comp.oncreate(vnode);
+        };
+        // }
         if (ice.onupdate){
             ice.onupdate = function (orgvnode) {
                 vnode = orgvnode;

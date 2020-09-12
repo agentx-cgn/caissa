@@ -50,6 +50,7 @@ export const FEN_START_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w
 export const FEN_EMPTY_POSITION = "8/8/8/8/8/8/8/8"
 
 const DEFAULT_SPRITE_GRID = 40
+const SVG_SPRITES = './assets/images/chessboard-sprite.svg';
 
 export class Chessboard {
 
@@ -67,7 +68,7 @@ export class Chessboard {
             animationDuration: 300, // pieces animation duration in milliseconds
             moveInputMode: MOVE_INPUT_MODE.viewOnly, // set to MOVE_INPUT_MODE.dragPiece or MOVE_INPUT_MODE.dragMarker for interactive movement
             sprite: {
-                url: "./assets/images/chessboard-sprite.svg", // pieces and markers are stored es svg in the sprite
+                url:  SVG_SPRITES, // pieces and markers are stored es svg in the sprite
                 grid: DEFAULT_SPRITE_GRID // the sprite is tiled with one piece every 40px
             }
         }
@@ -100,6 +101,7 @@ export class Chessboard {
 
         })
     }
+
 
     // API //
 

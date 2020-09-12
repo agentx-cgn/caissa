@@ -7,7 +7,7 @@ export default function goReducer(result, line) {
 
     const cmdType = REGEX.cmdType.exec(line);
     if (!cmdType){
-        console.log('goReducer.unkown', line);
+        // console.log('goReducer.unkown', line);
         return result;
     }
     switch (cmdType[1]) {

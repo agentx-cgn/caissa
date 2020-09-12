@@ -5,12 +5,12 @@ import Caissa          from '../../caissa';
 import Config          from '../../data/config';
 import DB              from '../../services/database';
 import { H, $$ }       from '../../services/helper';
-import Pool            from '../../services/engine/pool';
+// import Pool            from '../../services/engine/pool';
 import Tools           from '../../tools/tools';
 import ChessClock      from '../../components/chessclock';
 import evaluate        from '../game/game-evaluate';
 import Opponent        from './opponent';
-import Proposer        from './board-proposer';
+import Proposer        from './proposer';
 
 const DEBUG = false;
 
@@ -30,7 +30,6 @@ class BoardController {
         this.destroy();
 
         this.isEvaluating   = false; // scoring moves
-        this.isProposing    = false; // best move
 
         this.game           = game;
         this.board          = board;
@@ -94,7 +93,6 @@ class BoardController {
         this.turn  = ~~this.game.turn;
 
         this.updateChess();
-        // this.updateProposer();
 
         this.color  = this.chess.turn();
         this.tomove = (
@@ -113,7 +111,6 @@ class BoardController {
         this.validMoves     = [];
 
         // actions have no moves, so update here too
-        // this.updateFlags();
         this.updateButtons();
 
         DEBUG && console.log('BoardController.update.out', {uuid: this.game.uuid, turn: this.turn, color: this.color});
@@ -122,77 +119,30 @@ class BoardController {
 
     updateProposer () {
 
-        // const conditions  = { depth: 10, maxtime: 1 };
-
+        const conditions  = { depth: 10, maxtime: 1 };
         const optBestmove = DB.Options.first['board-illustrations'].bestmove;
 
-        // const propose = () => {
-        //     ( async () => {
+        // this.bestmove = '';
+        // this.ponder   = '';
 
-        //         await this.proposer.isready();
-        //         await this.proposer.position(this.chess.fen());
+        if (!Proposer.enabled && optBestmove) {
+            this.bestmove = '';
+            this.ponder   = '';
+            Proposer.start();
 
-        //         console.log('Proposer.go.in', conditions);
-        //         const result   = await this.proposer.go(conditions);
-        //         console.log('Proposer.result', result.bestmove, result.ponder, result.info.slice(-1)[0].pv);
-
-        //         this.bestmove  = result.bestmove;
-        //         this.ponder    = result.ponder;
-
-        //         this.updateArrows();
-
-        //     })();
-        // };
-
-        this.bestmove = '';
-        this.ponder   = '';
-
-        if (!this.isProposing && optBestmove) {
-
-            Proposer.init();
-            this.isProposing = true;
-
-            //     .then( async () => {
-            //         const [bestmove, ponder] = await Proposer.propose();
-            //         this.bestmove = bestmove;
-            //         this.ponder = ponder;
-            //     })
-            // ;
-
-            // // switch proposer on
-            // this.slot = Pool.request(1)[0];
-            // this.slot.engine.init()
-            //     .then( engine => {
-            //         return engine.isready();
-            //     })
-            //     .then( engine => {
-            //         return engine.ucinewgame();
-            //     })
-            //     .then( engine => {
-            //         this.proposer    = engine;
-            //         this.slot.owner  = 'proposer';
-            //         this.isProposing = true;
-            //         console.log('Proposer.go', this.slot);
-            //         propose();
-            //     })
-            // ;
-            // // console.log('Proposer.on', this.slot);
-
-        } else if (this.isProposing && !optBestmove) {
-            // switch proposer off
-            this.isProposing = false;
+        } else if (Proposer.enabled && !optBestmove) {
+            this.bestmove = '';
+            this.ponder   = '';
             Proposer.stop();
-            // Pool.release([this.slot]);
-            // console.log('Proposer.off');
 
-        } else {
-            console.log('Proposer.nochange');
+        // } else {
+        //     console.log('Proposer.nochange');
 
         }
 
-        this.isProposing && Proposer.initialization
+        Proposer.enabled && Proposer.initialization
             .then( async () => {
-                const result = await Proposer.propose(this.chess.fen());
+                const result = await Proposer.propose(this.chess.fen(), conditions);
                 this.bestmove = result.bestmove;
                 this.ponder   = result.ponder;
                 this.updateArrows();
@@ -368,15 +318,18 @@ class BoardController {
 
     onfieldselect (e) {
 
-        const idx           = e.target.dataset.index;
-        const square        = Tools.Board.squareIndexToField(idx);
-        this.selectedSquare = square !== this.selectedSquare ? square : '';
-        this.selectedPiece  = this.chessBoard.getPiece(this.selectedSquare) || '';
-        this.updateIllustration();
+        const idx    = e.target.dataset.index;
+        const square = Tools.Board.squareIndexToField(idx);
 
-        DEBUG && console.log('BoardController.onfieldselect.out', {
-            square: this.selectedSquare, piece: this.selectedPiece,
-        });
+        if (idx) {
+            this.selectedSquare = square !== this.selectedSquare ? square : '';
+            this.selectedPiece  = this.chessBoard.getPiece(this.selectedSquare) || '';
+            this.updateIllustration();
+
+            DEBUG && console.log('BoardController.onfieldselect.out', {
+                square: this.selectedSquare, piece: this.selectedPiece,
+            });
+        }
 
     }
 
@@ -403,11 +356,9 @@ class BoardController {
                 const timestamp = Date.now();
                 const uuid = H.hash(String(timestamp));
                 const game = H.clone(this.game, {
-                    uuid,
+                    uuid, pgn, timestamp,
                     rivals: 'x-x',
                     turn :  0,
-                    pgn,
-                    timestamp,
                 });
 
                 Tools.Games.updateMoves(game);
@@ -456,7 +407,7 @@ class BoardController {
         this.newmove  = '';
 
         //
-        this.bestmove = '';
+        // this.bestmove = '';
 
         this.updateButtons();
         this.updateIllustration();
@@ -531,6 +482,7 @@ class BoardController {
 
             const from = this.bestmove.slice(0, 2);
             const to   = this.bestmove.slice(2, 4);
+
             this.chessBoard.removeArrows('arrow bestmove');
             this.chessBoard.addArrow(from, to, {class: 'arrow bestmove'});
 

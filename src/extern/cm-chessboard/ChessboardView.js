@@ -116,13 +116,15 @@ export class ChessboardView {
             this.svg.setAttribute("class", "cm-chessboard " + cssClass)
         }
         this.updateMetrics()
+
+        // order here defines SVG Z-Order
         this.boardGroup = Svg.addElement(this.svg, "g", {class: "board"})
         this.coordinatesGroup = Svg.addElement(this.svg, "g", {class: "coordinates"})
-        this.piecesGroup  = Svg.addElement(this.svg, "g", {class: "pieces"})
 
         this.illustrator.createSvgAndGroups(this.svg);
-        // this.markersGroup = Svg.addElement(this.svg, "g", {class: "markers"})
-        // this.arrowsGroup  = Svg.addElement(this.svg, "g", {class: "caissa-arrows"})
+
+        this.piecesGroup  = Svg.addElement(this.svg, "g", {class: "pieces"})
+
 
     }
 
@@ -204,6 +206,7 @@ export class ChessboardView {
             squareRect.setAttribute("class", fieldClass)
             squareRect.setAttribute("data-index", "" + index)
         }
+        // console.log('drawBoard');
     }
 
     drawCoordinates() {

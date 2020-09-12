@@ -16,6 +16,8 @@ import Worker     from 'worker-loader!../../../worker/stockfish.asm';
 // import Worker from '../../../worker/stockfish.wasm';
 // import gh from '../../../worker/stockfish.asm'
 
+const DEBUG = false;
+
 export default class Engine {
 
     constructor(slot) {
@@ -32,7 +34,7 @@ export default class Engine {
 
     // eslint-disable-next-line no-unused-vars
     listener ({ data }) {
-        console.log('engine.listener', data);
+        DEBUG && console.log('engine.listener', data);
     }
     errorListener ( e ) {
         console.warn('engine.errorListener', e);
@@ -78,10 +80,6 @@ export default class Engine {
 
         return lines;
     }
-
-    // chain() {
-    //     return new EngineChain(this);
-    // }
 
     async init() {
 

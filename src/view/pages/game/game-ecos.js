@@ -5,9 +5,7 @@ import BoardController from '../board/board-controller';
 
 function formatEntry( [ moves, entry='' ] ){
 
-    if (!Array.isArray(moves)) {
-        moves = [ moves ];
-    }
+    moves = Array.isArray(moves) ? moves : [moves];
 
     const first   = (' ' + moves[0]).slice(-3).replace(' ', '&nbsp;');
     const rest    = ' ' + moves.slice(1).join(' ');
@@ -29,7 +27,6 @@ function formatContinuation (cont) {
         m('span.fiom', m.trust(move)),
         m('span.sair.pl1', label),
     ];
-
 }
 
 const GameEcos = Factory.create('GameEcos', {
@@ -37,11 +34,15 @@ const GameEcos = Factory.create('GameEcos', {
     view ( vnode ) {
 
         const { game } = vnode.attrs;
-        const turn  = game.turn;
+        const turn     = game.turn;
 
+        // copy up to current turn
+        const moves    = game.moves.slice(0, turn +1);
+
+        // no pieces, no moves
         if (turn === -2) return;
 
-        const moves = game.moves.slice(0, turn +1);
+        // build
         const path = ECOS.describeMoves(moves)
             .map( (entry, idx) => {
                 const className = idx % 2 ? 'black' : 'white';
@@ -49,11 +50,13 @@ const GameEcos = Factory.create('GameEcos', {
             })
         ;
 
-        let continuations = ECOS.findContinuations(moves)
+        let continuations = ECOS
+            .findContinuations(moves)
             .map ( entry => {
 
                 const continuation = formatContinuation(entry);
                 const className = turn % 2 ? 'white' : 'black';
+
                 const onclick = e => {
                     e.redraw = false;
                     BoardController.onmove(entry[0]);
@@ -64,7 +67,7 @@ const GameEcos = Factory.create('GameEcos', {
             })
         ;
 
-        return m('div.mh3.mb2', [
+        return m('div.mh3', [
             m('div.eco-path', path),
             m('div.pl3.eco-continuations', continuations),
         ]);

@@ -1,9 +1,6 @@
 
-// import Caissa       from '../../caissa';
 import { H }        from '../../services/helper';
 import Factory      from '../../components/factory';
-// import DB           from '../../services/database';
-// import evaluate     from '../game/game-evaluate';
 import GameProgress from '../game/game-progress';
 
 const DEBUG = false;

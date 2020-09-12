@@ -4,7 +4,7 @@ import Forms         from '../../components/forms/forms';
 import Factory       from '../../components/factory';
 import { PageTitle } from '../../components/misc';
 
-const Options = Factory.create('Options', {
+const Preferences = Factory.create('Preferences', {
 
     view ( vnode ) {
 
@@ -14,7 +14,7 @@ const Options = Factory.create('Options', {
         // throw '';
 
         return m('div.page.options', { className, style }, [
-            m(PageTitle, 'Options'),
+            m(PageTitle, 'Preferences'),
             m('div.viewport-y', [
                 //TODO: use formgrous to hide uuid
                 ...formgroups.map( formgroup => {
@@ -41,4 +41,4 @@ const Options = Factory.create('Options', {
 
 });
 
-export default Options;
+export default Preferences;
