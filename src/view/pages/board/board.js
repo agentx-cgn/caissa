@@ -22,7 +22,7 @@ const Board = Factory.create('Board', {
         // but don't replace current game with default
         uuid === 'default' && lastuuid ? (uuid = lastuuid, turn = lastturn) : (void(0));
 
-        // new game, TODO: will fail if deeplink
+        // new game, //TODO: will fail if deeplink
         if (uuid !== lastuuid) {
             DEBUG && console.log('Board.view.newgame', { uuid, turn }, 'last:', lastuuid, lastturn);
             game  = DB.Games.find(uuid);
@@ -44,15 +44,16 @@ const Board = Factory.create('Board', {
             }, true);
 
             controller.update();
+            controller.updateProposer();
 
         // same turn, new state
         } else {
-            game  = DB.Games.find(uuid);
-            board = DB.Boards.find(uuid);
-            DEBUG && console.log('Board.view.nochange', { uuid, turn }, lastuuid, lastturn);
+            // game  = DB.Games.find(uuid);
+            // board = DB.Boards.find(uuid);
+            // DEBUG && console.log('Board.view.nochange', { uuid, turn }, lastuuid, lastturn);
 
             controller.updateButtons();
-            controller.updateProposer();
+
         }
 
         lastuuid = uuid;

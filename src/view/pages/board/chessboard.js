@@ -9,20 +9,16 @@ const DEBUG = true;
 
 let chessBoard;
 
-const ChessBoard = Factory.create('ChessBoard', {
+const   ChessBoard = Factory.create('ChessBoard', {
 
     onresize : Tools.Board.resize,
 
     oncreate ( vnode ) {
 
-        // DEBUG && console.log('ChessBoard.oncreate.in', vnode);
-
         const { board } = vnode.attrs;
-        // curBoard      = board;
-        // curController = controller;
 
         chessBoard = new Chessboard(
-            $$('div.chessboard'),
+            $$('div.chessboard'), // try vnode.dom
             Config.board.config,
         );
         chessBoard.initialization.then( () => {
@@ -30,8 +26,8 @@ const ChessBoard = Factory.create('ChessBoard', {
             Tools.Board.resize(innerWidth, innerHeight);
             chessBoard.view.handleResize();
             chessBoard.setOrientation(board.orientation);
-            // DEBUG && console.log('ChessBoard.oncreate.then');
         });
+
     },
     view (  ) {
         return m('div.chessboard');
@@ -39,8 +35,6 @@ const ChessBoard = Factory.create('ChessBoard', {
     onupdate ( vnode ) {
 
         const { board, controller } = vnode.attrs;
-        // curBoard      = board;
-        // curController = controller;
 
         controller.stopListening(chessBoard);
         chessBoard.view.handleResize();
@@ -66,7 +60,7 @@ const ChessBoard = Factory.create('ChessBoard', {
     onbeforeremove ( vnode ) {
 
         const { controller } = vnode.attrs;
-        const $chessboard = $$('div.chessboard');
+        const $chessboard = $$('div.chessboard'); // vnode.dom
 
         $chessboard.removeEventListener('mousedown', controller.listener.onmousedown);
         $chessboard.removeEventListener('touchdown', controller.listener.ontouchdown);
